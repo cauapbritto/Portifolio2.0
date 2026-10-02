@@ -46,7 +46,7 @@
 }
 .cursor__texto {
   grid-area: 1 / 1;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 9px;
   letter-spacing: .1em;
   text-transform: uppercase;
@@ -62,3 +62,5 @@
 .cursor.is-rotulo .cursor__texto { opacity: 1; transform: none; }
 .cursor.is-apertado .cursor__circulo { transform: scale(.75); }
 .cursor.is-rotulo.is-apertado .cursor__circulo { transform: scale(2); }
+
+:root:is([data-font="titulos"], [data-font="tudo"]) .cursor__texto { font-size: 10px; letter-spacing: .04em; }

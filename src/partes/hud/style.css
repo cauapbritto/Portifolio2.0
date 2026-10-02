@@ -21,7 +21,7 @@
   min-height: 40px;
   padding: 0 4px;
   border-radius: 4px;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 12px;
   font-weight: 500;
   letter-spacing: .14em;
@@ -44,7 +44,7 @@
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   color: var(--text-2);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 11px;
   letter-spacing: .08em;
   text-transform: uppercase;
@@ -59,7 +59,7 @@
   height: 24px;
   border: 1px solid var(--line-2);
   border-radius: 999px;
-  font-family: var(--font-mono);
+  font-family: var(--font-code);
   font-size: 11px;
   color: var(--muted);
 }
@@ -70,6 +70,63 @@
   .hud__btn kbd { display: none; }
   .hud__btn { min-height: 44px; padding-right: 14px; }
 }
+
+.hud__acoes { display: flex; align-items: center; gap: 10px; }
+
+/* Troca de fonte: um botão "Aa" que abre as três opções, cada uma escrita na própria fonte. */
+.fonte { position: relative; }
+.fonte__btn { justify-content: center; width: 40px; padding: 0; }
+.fonte__aa { font-family: "Schibsted Grotesk", system-ui, sans-serif; font-size: 15px; font-weight: 500; letter-spacing: 0; text-transform: none; color: var(--text); }
+.fonte__btn[aria-expanded="true"] { border-color: var(--accent); }
+.fonte__painel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  display: grid;
+  gap: 4px;
+  min-width: 230px;
+  padding: 8px;
+  border: 1px solid var(--line-2);
+  border-radius: 12px;
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  box-shadow: var(--shadow), 0 24px 60px -20px rgba(0, 0, 0, .6);
+  animation: fonte-abre 220ms var(--ease-out);
+}
+.fonte__painel[hidden] { display: none; }
+@keyframes fonte-abre { from { opacity: 0; transform: translateY(-6px); } }
+.fonte__titulo {
+  padding: 4px 10px 6px;
+  font-family: var(--font-label);
+  font-size: 11px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.fonte__opcao {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-2);
+  font-size: 15px;
+  line-height: 1.2;
+  text-align: left;
+  cursor: pointer;
+  transition: color var(--dur-1) var(--ease-out), background-color var(--dur-1) var(--ease-out);
+}
+.fonte__opcao::before { content: ""; flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--line-2); transition: background-color var(--dur-1) var(--ease-out); }
+.fonte__opcao[aria-pressed="true"] { background: var(--surface-2); color: var(--text); box-shadow: inset 0 0 0 1px var(--line-2); }
+.fonte__opcao[aria-pressed="true"]::before { background: var(--accent); }
+.fonte__opcao--zh { font-family: "Zero Hour UI", "Schibsted Grotesk", sans-serif; letter-spacing: .02em; }
+.fonte__opcao--nova { font-family: "Schibsted Grotesk", system-ui, sans-serif; }
+@media (hover: hover) { .fonte__opcao:hover { color: var(--text); background: var(--surface-2); } }
+@media (pointer: coarse) { .fonte__opcao { min-height: 44px; } .fonte__btn { width: 44px; } }
 
 /* Trilho de capítulos, na lateral direita. */
 .trilho {
@@ -87,7 +144,7 @@
   gap: 12px;
   min-height: 34px;
   padding: 0 0 0 10px;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 11px;
   letter-spacing: .1em;
   text-transform: uppercase;
@@ -146,7 +203,7 @@
   align-items: flex-end;
   padding: 0 calc(var(--hud) + 6px) calc(var(--hud) + 6px);
   pointer-events: none;
-  font-family: var(--font-mono);
+  font-family: var(--font-code);
   font-size: 10px;
   line-height: 1.6;
   letter-spacing: .12em;
@@ -192,6 +249,7 @@
 
 /* Sem JS: o terminal, o relógio e os degradês não têm o que fazer. */
 html:not(.js) .hud__btn,
+html:not(.js) .fonte,
 html:not(.js) .hud-base { display: none; }
 
 @media (max-width: 760px) {
@@ -199,9 +257,15 @@ html:not(.js) .hud-base { display: none; }
   .hud-base__tempo, .hud-base__pct { display: none; }
 }
 @media (max-width: 420px) {
-  .hud__btn span { display: none; }
+  .hud__btn:not(.fonte__btn) span { display: none; }
   .hud__btn { padding: 0 12px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .trilho__nome, .trilho__n::after, .hud__marca .quadrado { transition: none; }
+  .fonte__painel { animation: none; }
 }
+
+/* Fonte antiga: rótulos do HUD com menos espaço entre letras. */
+:root:is([data-font="titulos"], [data-font="tudo"]) .hud__marca { font-size: 14px; letter-spacing: .06em; }
+:root:is([data-font="titulos"], [data-font="tudo"]) .hud__btn { font-size: 12px; letter-spacing: .04em; }
+:root:is([data-font="titulos"], [data-font="tudo"]) .trilho__item { font-size: 11px; letter-spacing: .03em; }

@@ -77,8 +77,11 @@
   CZ.on('rolagem', ({ y }) => atualizar(y));
   CZ.on('movimento', layout);
   CZ.ouvir(mqLarga, layout);
+  CZ.on('fonte', layout);
+  CZ.on('fonte:pronta', layout);
   addEventListener('resize', layout, { passive: true });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
+  if (document.fonts && document.fonts.addEventListener) document.fonts.addEventListener('loadingdone', layout);
   layout();
 
   /* ---------- luz e inclinação no print, seguindo o cursor ---------- */

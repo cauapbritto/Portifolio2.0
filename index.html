@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-font="titulos">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -27,21 +27,35 @@
 }
 </script>
 <script>
-  // Antes de pintar: marca que há JS e aplica o tema salvo, para a página não piscar.
+  // Antes de pintar: marca que há JS e aplica o tema e a fonte salvos, para a página não piscar.
+  // Fonte: "titulos" (antiga nos títulos) por padrão, "tudo" ou "nova" (sem data-font).
   (function () {
     var d = document.documentElement;
+    var f = 'titulos';
     d.classList.add('js');
     try {
       var t = localStorage.getItem('cz-tema');
       if (t === 'light' || t === 'dark') d.setAttribute('data-theme', t);
+      var v = localStorage.getItem('cz-fonte') || localStorage.getItem('g-font');
+      if (v === 'titulos' || v === 'tudo' || v === 'nova') f = v;
     } catch (e) {}
+    if (f === 'nova') d.removeAttribute('data-font');
+    else d.setAttribute('data-font', f);
   })();
 </script>
 <link rel="preload" href="assets/ZeroHour.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Martian+Mono:wght@400;500&family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
-<style>@font-face { font-family: "Zero Hour"; src: url("assets/ZeroHour.woff2") format("woff2"); font-display: swap; }</style>
+<style>
+/* Zero Hour, a fonte do site antigo, em três tamanhos do mesmo arquivo:
+   "Zero Hour" no nome Cauanzera, "Zero Hour UI" (86%) em títulos, botões e rótulos e "Zero Hour Texto" (80%)
+   no texto corrido, porque ela é toda em maiúsculas e bem mais larga. font-weight 100 900: ela só tem um peso,
+   assim o navegador não inventa um negrito falso. Sem o "~" (U+007E), que nela é um traço reto. */
+@font-face { font-family: "Zero Hour"; src: url("assets/ZeroHour.woff2") format("woff2"); font-display: swap; font-weight: 100 900; }
+@font-face { font-family: "Zero Hour UI"; src: url("assets/ZeroHour.woff2") format("woff2"); font-display: swap; size-adjust: 86%; font-weight: 100 900; unicode-range: U+0000-007D, U+007F-10FFFF; }
+@font-face { font-family: "Zero Hour Texto"; src: url("assets/ZeroHour.woff2") format("woff2"); font-display: swap; size-adjust: 80%; font-weight: 100 900; unicode-range: U+0000-007D, U+007F-10FFFF; }
+</style>
 <style>
 /* Tokens do site. Escuro por padrao; claro pelo sistema ou por data-theme="light". */
 :root {
@@ -63,9 +77,20 @@
   --glass: rgba(13, 14, 16, .62);
   --shadow: 0 1px 0 rgba(255,255,255,.04) inset, 0 18px 40px -24px rgba(0,0,0,.8);
 
-  --font-sans: "Schibsted Grotesk", system-ui, sans-serif;
-  --font-mono: "Martian Mono", ui-monospace, monospace;
+  /* Fontes por papel. A troca de fonte (data-font no :root) so mexe nestes quatro papeis:
+     --font-head: titulos, nomes de projeto, botoes, itens de menu
+     --font-text: texto corrido (paragrafos, descricoes, valores de lista, e-mail)
+     --font-label: rotulos pequenos em caixa alta, kickers, tags, chips de tecnologia
+     --font-code: terminal e qualquer coisa que precise de largura fixa
+     --font-display: o nome "Cauanzera" (sempre Zero Hour) */
+  --font-head: "Schibsted Grotesk", system-ui, sans-serif;
+  --font-text: "Schibsted Grotesk", system-ui, sans-serif;
+  --font-label: "Martian Mono", ui-monospace, monospace;
+  --font-code: "Martian Mono", ui-monospace, monospace;
   --font-display: "Zero Hour", "Schibsted Grotesk", sans-serif;
+  /* aliases antigos: preferir os papeis acima */
+  --font-sans: var(--font-text);
+  --font-mono: var(--font-code);
 
   --radius: 6px;
   --gutter: clamp(16px, 4vw, 56px);
@@ -118,6 +143,19 @@
   --glass: rgba(244, 242, 236, .72);
   --shadow: 0 1px 0 rgba(255,255,255,.6) inset, 0 18px 40px -26px rgba(40,30,10,.35);
 }
+
+/* Fonte antiga (Zero Hour, a do site v1). "Zero Hour UI" e "Zero Hour Texto" sao o mesmo arquivo com size-adjust,
+   porque a Zero Hour e toda em maiusculas e bem mais larga: 100% estouraria os layouts feitos para a Schibsted.
+   As @font-face ficam em src/pagina.html (precisam da URL do arquivo). Sem data-font: a fonte nova. */
+:root[data-font="titulos"] {
+  --font-head: "Zero Hour UI", "Schibsted Grotesk", sans-serif;
+  --font-label: "Zero Hour UI", "Martian Mono", monospace;
+}
+:root[data-font="tudo"] {
+  --font-head: "Zero Hour UI", "Schibsted Grotesk", sans-serif;
+  --font-label: "Zero Hour UI", "Martian Mono", monospace;
+  --font-text: "Zero Hour Texto", "Schibsted Grotesk", sans-serif;
+}
 /* Base: reset, tipografia e utilidades usadas por todas as partes. */
 *, *::before, *::after { box-sizing: border-box; }
 html {
@@ -132,7 +170,7 @@ body {
   min-height: 100vh;
   background: transparent;
   color: var(--text);
-  font-family: var(--font-sans);
+  font-family: var(--font-text);
   font-size: 17px;
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
@@ -147,7 +185,7 @@ ul[role="list"], ol[role="list"] { list-style: none; padding: 0; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
 .sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
-.rotulo { font-family: var(--font-mono); font-size: 12px; font-weight: 400; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.rotulo { font-family: var(--font-label); font-size: 12px; font-weight: 400; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .quadrado { display: inline-block; flex: none; width: 8px; height: 8px; background: var(--accent); }
 
 .pular {
@@ -165,7 +203,7 @@ main { position: relative; z-index: 2; }
   display: flex;
   align-items: center;
   gap: 12px;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 12px;
   font-weight: 400;
   line-height: 1.4;
@@ -175,6 +213,7 @@ main { position: relative; z-index: 2; }
 }
 .capitulo::before { content: ""; width: 8px; height: 8px; background: var(--accent); flex: none; }
 .capitulo__n { color: var(--accent); }
+.capitulo__n::after { word-spacing: normal; }
 .capitulo__n::after { content: " —"; color: var(--muted); }
 
 /* Revelar ao entrar na tela: o JS liga .is-in. Sem JS ou com movimento reduzido, tudo visível. */
@@ -201,6 +240,21 @@ main { position: relative; z-index: 2; }
   .js [data-revelar],
   .js [data-revelar="mascara"] > span { opacity: 1; transform: none; transition: none; }
 }
+
+/* ---------- Fonte antiga (Zero Hour), nos modos "titulos" e "tudo" ----------
+   Ela só tem maiúsculas, é larga e tem um peso só: rótulos com pouco espaço entre letras e um pouco
+   mais entre palavras (o espaço dela é curto). */
+:root:is([data-font="titulos"], [data-font="tudo"]) .rotulo { font-size: 13px; letter-spacing: .03em; word-spacing: .15em; }
+:root:is([data-font="titulos"], [data-font="tudo"]) .capitulo { font-size: 13px; letter-spacing: .04em; word-spacing: .15em; }
+/* Na Zero Hour o "1" é o mesmo traço do "I" ("01" leria "OI"): uma bandeirinha no topo, com a espessura
+   e a altura de maiúscula da própria fonte (Zero Hour UI = 86%), devolve o 1. */
+:root:is([data-font="titulos"], [data-font="tudo"]) .um {
+  margin-left: .075em;
+  padding-left: .15em;
+  background: linear-gradient(currentColor, currentColor) 0 calc((.968 - .749) * .86em) / .21em calc(.118 * .86em) no-repeat;
+}
+/* Palavras com hífen não quebram no meio: em caixa alta larga, "E-" sozinho no fim da linha lê mal. */
+:root:is([data-font="titulos"], [data-font="tudo"]) .nobr { white-space: nowrap; }
 </style>
 <style>/* universo */
 /* Universo: o céu fixo atrás da página inteira. A página rola por cima e a câmera avança pelas estrelas. */
@@ -298,14 +352,14 @@ main { position: relative; z-index: 2; }
   display: flex;
   align-items: center;
   gap: 10px;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 11px;
   letter-spacing: .14em;
   text-transform: uppercase;
   color: var(--muted);
 }
 .abertura__num {
-  font-family: var(--font-mono);
+  font-family: var(--font-code);
   font-size: clamp(44px, 9vw, 96px);
   font-weight: 400;
   line-height: 1;
@@ -330,7 +384,7 @@ main { position: relative; z-index: 2; }
 }
 .abertura__fase {
   min-height: 1.4em;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 11px;
   letter-spacing: .1em;
   text-transform: uppercase;
@@ -342,7 +396,7 @@ main { position: relative; z-index: 2; }
   right: 0;
   bottom: calc(var(--hud) + 8px);
   text-align: center;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 10px;
   letter-spacing: .12em;
   text-transform: uppercase;
@@ -367,6 +421,11 @@ main { position: relative; z-index: 2; }
 @media (prefers-reduced-motion: reduce) {
   .js .abertura { display: none; }
 }
+
+:root:is([data-font="titulos"], [data-font="tudo"]) .abertura__topo,
+:root:is([data-font="titulos"], [data-font="tudo"]) .abertura__fase,
+:root:is([data-font="titulos"], [data-font="tudo"]) .abertura__pular { letter-spacing: .05em; word-spacing: .15em; }
+:root:is([data-font="titulos"], [data-font="tudo"]) .abertura__topo { font-size: 13px; }
 </style>
 <style>/* hud */
 /* HUD: a interface fixa por cima do céu, como um visor. */
@@ -392,7 +451,7 @@ main { position: relative; z-index: 2; }
   min-height: 40px;
   padding: 0 4px;
   border-radius: 4px;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 12px;
   font-weight: 500;
   letter-spacing: .14em;
@@ -415,7 +474,7 @@ main { position: relative; z-index: 2; }
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   color: var(--text-2);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 11px;
   letter-spacing: .08em;
   text-transform: uppercase;
@@ -430,7 +489,7 @@ main { position: relative; z-index: 2; }
   height: 24px;
   border: 1px solid var(--line-2);
   border-radius: 999px;
-  font-family: var(--font-mono);
+  font-family: var(--font-code);
   font-size: 11px;
   color: var(--muted);
 }
@@ -441,6 +500,63 @@ main { position: relative; z-index: 2; }
   .hud__btn kbd { display: none; }
   .hud__btn { min-height: 44px; padding-right: 14px; }
 }
+
+.hud__acoes { display: flex; align-items: center; gap: 10px; }
+
+/* Troca de fonte: um botão "Aa" que abre as três opções, cada uma escrita na própria fonte. */
+.fonte { position: relative; }
+.fonte__btn { justify-content: center; width: 40px; padding: 0; }
+.fonte__aa { font-family: "Schibsted Grotesk", system-ui, sans-serif; font-size: 15px; font-weight: 500; letter-spacing: 0; text-transform: none; color: var(--text); }
+.fonte__btn[aria-expanded="true"] { border-color: var(--accent); }
+.fonte__painel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  display: grid;
+  gap: 4px;
+  min-width: 230px;
+  padding: 8px;
+  border: 1px solid var(--line-2);
+  border-radius: 12px;
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  box-shadow: var(--shadow), 0 24px 60px -20px rgba(0, 0, 0, .6);
+  animation: fonte-abre 220ms var(--ease-out);
+}
+.fonte__painel[hidden] { display: none; }
+@keyframes fonte-abre { from { opacity: 0; transform: translateY(-6px); } }
+.fonte__titulo {
+  padding: 4px 10px 6px;
+  font-family: var(--font-label);
+  font-size: 11px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.fonte__opcao {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-2);
+  font-size: 15px;
+  line-height: 1.2;
+  text-align: left;
+  cursor: pointer;
+  transition: color var(--dur-1) var(--ease-out), background-color var(--dur-1) var(--ease-out);
+}
+.fonte__opcao::before { content: ""; flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--line-2); transition: background-color var(--dur-1) var(--ease-out); }
+.fonte__opcao[aria-pressed="true"] { background: var(--surface-2); color: var(--text); box-shadow: inset 0 0 0 1px var(--line-2); }
+.fonte__opcao[aria-pressed="true"]::before { background: var(--accent); }
+.fonte__opcao--zh { font-family: "Zero Hour UI", "Schibsted Grotesk", sans-serif; letter-spacing: .02em; }
+.fonte__opcao--nova { font-family: "Schibsted Grotesk", system-ui, sans-serif; }
+@media (hover: hover) { .fonte__opcao:hover { color: var(--text); background: var(--surface-2); } }
+@media (pointer: coarse) { .fonte__opcao { min-height: 44px; } .fonte__btn { width: 44px; } }
 
 /* Trilho de capítulos, na lateral direita. */
 .trilho {
@@ -458,7 +574,7 @@ main { position: relative; z-index: 2; }
   gap: 12px;
   min-height: 34px;
   padding: 0 0 0 10px;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 11px;
   letter-spacing: .1em;
   text-transform: uppercase;
@@ -517,7 +633,7 @@ main { position: relative; z-index: 2; }
   align-items: flex-end;
   padding: 0 calc(var(--hud) + 6px) calc(var(--hud) + 6px);
   pointer-events: none;
-  font-family: var(--font-mono);
+  font-family: var(--font-code);
   font-size: 10px;
   line-height: 1.6;
   letter-spacing: .12em;
@@ -563,6 +679,7 @@ main { position: relative; z-index: 2; }
 
 /* Sem JS: o terminal, o relógio e os degradês não têm o que fazer. */
 html:not(.js) .hud__btn,
+html:not(.js) .fonte,
 html:not(.js) .hud-base { display: none; }
 
 @media (max-width: 760px) {
@@ -570,12 +687,18 @@ html:not(.js) .hud-base { display: none; }
   .hud-base__tempo, .hud-base__pct { display: none; }
 }
 @media (max-width: 420px) {
-  .hud__btn span { display: none; }
+  .hud__btn:not(.fonte__btn) span { display: none; }
   .hud__btn { padding: 0 12px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .trilho__nome, .trilho__n::after, .hud__marca .quadrado { transition: none; }
+  .fonte__painel { animation: none; }
 }
+
+/* Fonte antiga: rótulos do HUD com menos espaço entre letras. */
+:root:is([data-font="titulos"], [data-font="tudo"]) .hud__marca { font-size: 14px; letter-spacing: .06em; }
+:root:is([data-font="titulos"], [data-font="tudo"]) .hud__btn { font-size: 12px; letter-spacing: .04em; }
+:root:is([data-font="titulos"], [data-font="tudo"]) .trilho__item { font-size: 11px; letter-spacing: .03em; }
 </style>
 <style>/* cursor */
 /* Cursor: um ponto exato e um anel que segue com atraso. Só com mouse e com movimento liberado. */
@@ -626,7 +749,7 @@ html:not(.js) .hud-base { display: none; }
 }
 .cursor__texto {
   grid-area: 1 / 1;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 9px;
   letter-spacing: .1em;
   text-transform: uppercase;
@@ -642,6 +765,8 @@ html:not(.js) .hud-base { display: none; }
 .cursor.is-rotulo .cursor__texto { opacity: 1; transform: none; }
 .cursor.is-apertado .cursor__circulo { transform: scale(.75); }
 .cursor.is-rotulo.is-apertado .cursor__circulo { transform: scale(2); }
+
+:root:is([data-font="titulos"], [data-font="tudo"]) .cursor__texto { font-size: 10px; letter-spacing: .04em; }
 </style>
 <style>/* inicio */
 /* Início: o nome no meio do céu e a borda de um planeta embaixo. Ao rolar, a câmera decola. */
@@ -690,7 +815,7 @@ html:not(.js) .hud-base { display: none; }
   color: var(--text-2);
   text-wrap: balance;
 }
-.inicio__nome { display: block; margin-bottom: 4px; font-family: var(--font-mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--text); }
+.inicio__nome { display: block; margin-bottom: 4px; font-family: var(--font-label); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--text); }
 
 .inicio__descer {
   display: inline-flex;
@@ -700,7 +825,7 @@ html:not(.js) .hud-base { display: none; }
   margin-top: clamp(6px, 2vh, 22px);
   padding: 0 6px;
   border-radius: 4px;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 11px;
   letter-spacing: .14em;
   text-transform: uppercase;
@@ -735,7 +860,7 @@ html:not(.js) .hud-base { display: none; }
   z-index: 2;
   right: calc(var(--hud) + 6px);
   top: calc(var(--hud) + 62px);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 10px;
   letter-spacing: .12em;
   text-transform: uppercase;
@@ -805,6 +930,12 @@ html:not(.js) .hud-base { display: none; }
   .inicio__conteudo { transform: none; opacity: 1; }
   .inicio__planeta { transform: translateX(-50%); }
 }
+
+/* Fonte antiga */
+:root:is([data-font="titulos"], [data-font="tudo"]) .inicio__nome { font-size: 13px; letter-spacing: .08em; }
+:root:is([data-font="titulos"], [data-font="tudo"]) .inicio__descer,
+:root:is([data-font="titulos"], [data-font="tudo"]) .inicio__dica { font-size: 12px; letter-spacing: .06em; word-spacing: .15em; }
+:root[data-font="tudo"] .inicio__frase { letter-spacing: .02em; line-height: 1.6; }
 </style>
 <style>/* sobre */
 /* Sobre: um texto grande que acende palavra por palavra enquanto a página rola. */
@@ -901,6 +1032,10 @@ html:not(.js) .hud-base { display: none; }
   .sobre__w { opacity: 1; transition: none; }
   .sobre__numero { transform: none; }
 }
+
+/* Fonte antiga em tudo: o texto grande e os fatos também em Zero Hour, com mais ar entre as letras. */
+:root[data-font="tudo"] .sobre__manifesto { max-width: 26ch; font-size: clamp(22px, 2.9vw, 46px); letter-spacing: .01em; line-height: 1.2; }
+:root[data-font="tudo"] .sobre__fato dd { letter-spacing: .02em; line-height: 1.55; }
 </style>
 <style>/* projetos */
 /* Projetos: em tela larga, a rolagem vertical atravessa uma trilha horizontal de projetos.
@@ -919,7 +1054,7 @@ html:not(.js) .hud-base { display: none; }
 }
 .projetos__contador {
   margin-left: auto;
-  font-family: var(--font-mono);
+  font-family: var(--font-code);
   font-size: 12px;
   letter-spacing: .1em;
   color: var(--muted);
@@ -939,7 +1074,7 @@ html:not(.js) .hud-base { display: none; }
 
 /* ---------- Trilha horizontal ---------- */
 .projetos--trilha {
-  --slide: min(1120px, 76vw);
+  --slide: min(1080px, 72vw);
   --vao: 8vw;
 }
 .projetos--trilha .projetos__palco {
@@ -1057,7 +1192,7 @@ html:not(.js) .hud-base { display: none; }
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 12px;
   letter-spacing: .08em;
   text-transform: uppercase;
@@ -1065,14 +1200,14 @@ html:not(.js) .hud-base { display: none; }
 }
 .projeto__n { color: var(--accent); }
 .projeto__nome {
-  font-family: var(--font-display);
-  font-size: clamp(34px, 4.2vw, 64px);
-  font-weight: 400;
-  line-height: 1;
-  letter-spacing: .01em;
+  font-family: var(--font-head);
+  font-size: clamp(34px, 4.2vw, 62px);
+  font-weight: 600;
+  line-height: 1.02;
+  letter-spacing: -.03em;
   color: var(--text);
 }
-.projeto__versao { font-family: var(--font-mono); font-size: .5em; letter-spacing: 0; color: var(--accent); vertical-align: .55em; }
+.projeto__versao { font-family: var(--font-code); font-size: .5em; letter-spacing: 0; color: var(--accent); vertical-align: .55em; }
 .projeto__sub { font-size: clamp(17px, 1.4vw, 20px); font-weight: 500; color: var(--text); }
 .projeto__desc { max-width: 48ch; font-size: 15.5px; line-height: 1.62; color: var(--text-2); text-wrap: pretty; }
 .projeto__chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 0; }
@@ -1081,7 +1216,7 @@ html:not(.js) .hud-base { display: none; }
   border: 1px solid var(--line);
   border-radius: 999px;
   background: var(--glass);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 11.5px;
   line-height: 1.6;
   color: var(--text-2);
@@ -1093,7 +1228,7 @@ html:not(.js) .hud-base { display: none; }
   align-items: center;
   gap: 8px;
   min-height: 40px;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 12px;
   letter-spacing: .08em;
   text-transform: uppercase;
@@ -1118,9 +1253,11 @@ html:not(.js) .hud-base { display: none; }
   background: var(--glass);
 }
 .projeto__fim-titulo {
-  font-family: var(--font-display);
+  font-family: var(--font-head);
   font-size: clamp(28px, 3.2vw, 46px);
+  font-weight: 600;
   line-height: 1.05;
+  letter-spacing: -.025em;
   color: var(--text);
 }
 .projeto__github {
@@ -1136,18 +1273,18 @@ html:not(.js) .hud-base { display: none; }
 .lib__fundo { fill: #0A0B0D; }
 .lib__grade { stroke: rgba(255, 255, 255, .045); stroke-width: .5; }
 .lib__mira path { fill: none; stroke: rgba(255, 255, 255, .28); stroke-width: 1; }
-.lib__txt { font-family: var(--font-mono); font-size: 7px; letter-spacing: .1em; fill: #9C9A93; }
+.lib__txt { font-family: var(--font-code); font-size: 7px; letter-spacing: .1em; fill: #9C9A93; }
 .lib__txt--fim { text-anchor: end; }
 .lib__rec { fill: #FF7A45; }
 .lib__osso { stroke: rgba(255, 122, 69, .78); stroke-width: 1.3; stroke-linecap: round; }
 .lib__ponto { fill: #ECEAE4; }
 .lib__ponta { fill: #FF7A45; }
 .lib__sinal rect { fill: rgba(255, 255, 255, .04); stroke: rgba(255, 255, 255, .2); stroke-width: .8; }
-.lib__sinal text { font-family: var(--font-mono); font-size: 8px; letter-spacing: .06em; fill: #ECEAE4; text-anchor: middle; }
+.lib__sinal text { font-family: var(--font-code); font-size: 8px; letter-spacing: .06em; fill: #ECEAE4; text-anchor: middle; }
 .lib__barra { fill: rgba(255, 255, 255, .1); }
 .lib__nivel { fill: #FF7A45; transform-box: fill-box; transform-origin: 0 50%; transform: scaleX(var(--c, 1)); transition: transform 600ms var(--ease-out); }
 .lib__limite { stroke: #ECEAE4; stroke-width: 1; }
-.lib__frase { font-family: var(--font-sans); font-size: 11px; font-weight: 600; fill: #ECEAE4; }
+.lib__frase { font-family: "Schibsted Grotesk", system-ui, sans-serif; font-size: 11px; font-weight: 600; fill: #ECEAE4; }
 .lib--js .lib__sinal,
 .lib--js .lib__frase { opacity: 0; transition: opacity 360ms var(--ease-out), transform 420ms var(--ease-out); }
 .lib--js .lib__sinal { transform: translateX(-6px); }
@@ -1162,10 +1299,10 @@ html:not(.js) .hud-base { display: none; }
 .v1__arco path { fill: rgba(0, 255, 255, .06); stroke: #00E5E5; stroke-width: .8; }
 .v1__botao { fill: #04080A; stroke: #00E5E5; stroke-width: .8; }
 .v1__marca { font-family: var(--font-display); font-size: 25px; letter-spacing: 1px; text-anchor: middle; fill: none; stroke: rgba(0, 255, 255, .7); stroke-width: .55; }
-.v1__hud { font-family: var(--font-mono); font-size: 7px; letter-spacing: .1em; fill: rgba(0, 255, 255, .7); }
+.v1__hud { font-family: var(--font-code); font-size: 7px; letter-spacing: .1em; fill: rgba(0, 255, 255, .7); }
 .v1__term rect { fill: rgba(0, 22, 26, .9); stroke: rgba(0, 255, 255, .5); stroke-width: .6; }
 .v1__term line { stroke: rgba(0, 255, 255, .35); stroke-width: .5; }
-.v1__term text { font-family: var(--font-mono); font-size: 5px; fill: #7FFFFF; }
+.v1__term text { font-family: var(--font-code); font-size: 5px; fill: #7FFFFF; }
 .v1__cursor { animation: v1-cursor 1.1s steps(2, jump-none) infinite; }
 @keyframes v1-pisca { from { opacity: .15; } to { opacity: 1; } }
 @keyframes v1-cursor { 0% { opacity: 1; } 100% { opacity: .2; } }
@@ -1182,6 +1319,18 @@ html:not(.js) .hud-base { display: none; }
   .v1__pisca, .v1__cursor { animation: none; }
   .lib__nivel { transition: none; }
 }
+
+/* ---------- Fonte antiga (Zero Hour) ----------
+   Nomes sem negrito sintético nem tracking negativo, e um corpo maior para compensar os 86% da Zero Hour UI. */
+:root:is([data-font="titulos"], [data-font="tudo"]) .projeto__nome { font-size: clamp(40px, 4.9vw, 74px); font-weight: 400; line-height: 1; letter-spacing: .01em; }
+:root:is([data-font="titulos"], [data-font="tudo"]) .projeto__fim-titulo { font-size: clamp(32px, 3.7vw, 53px); font-weight: 400; letter-spacing: .01em; }
+:root:is([data-font="titulos"], [data-font="tudo"]) .projeto__meta,
+:root:is([data-font="titulos"], [data-font="tudo"]) .projeto__link,
+:root:is([data-font="titulos"], [data-font="tudo"]) .projeto__github { font-size: 13px; letter-spacing: .03em; word-spacing: .15em; }
+:root:is([data-font="titulos"], [data-font="tudo"]) .projeto__chips li { padding: 2px 8px; line-height: 18px; font-size: 12px; letter-spacing: .02em; }
+/* Texto corrido em maiúsculas: um pouco mais de entrelinha e de ar entre as letras. */
+:root[data-font="tudo"] .projeto__desc { line-height: 1.65; letter-spacing: .02em; }
+:root[data-font="tudo"] .projeto__sub { letter-spacing: .02em; }
 </style>
 <style>/* contato */
 /* Contato: o último capítulo, com órbitas no fundo e o rodapé. */
@@ -1205,10 +1354,11 @@ html:not(.js) .hud-base { display: none; }
   padding: 140px var(--gutter) 60px;
 }
 .contato__titulo {
-  font-family: var(--font-display);
-  font-size: clamp(30px, 6.9vw, 118px);
+  font-family: var(--font-head);
+  font-size: clamp(40px, 7.6vw, 124px);
+  font-weight: 600;
   line-height: .95;
-  letter-spacing: .005em;
+  letter-spacing: -.04em;
   color: var(--text);
   text-shadow: 0 0 60px rgba(var(--glow), .2);
 }
@@ -1263,7 +1413,7 @@ html:not(.js) .hud-base { display: none; }
   margin: 0 auto;
   padding: 22px var(--gutter) calc(var(--hud) + 116px);
   border-top: 1px solid var(--line);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 11px;
   letter-spacing: .08em;
   text-transform: uppercase;
@@ -1318,7 +1468,7 @@ html:not(.js) .hud-base { display: none; }
 /* O e-mail em si. Texto, não link: um clique seleciona o endereço inteiro. */
 .email__email {
   margin: 0;
-  font-family: var(--font-sans);
+  font-family: var(--font-text);
   font-size: clamp(24px, 4.4vw, 52px);
   font-weight: 500;
   line-height: 1.08;
@@ -1363,7 +1513,7 @@ html:not(.js) .hud-base { display: none; }
   border-radius: var(--radius);
   background: var(--surface);
   color: var(--text);
-  font: 500 15px/1 var(--font-sans);
+  font: 500 15px/1 var(--font-head);
   letter-spacing: -.005em;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
@@ -1453,6 +1603,7 @@ html:not(.js) .hud-base { display: none; }
   min-height: 44px;
   border-radius: var(--radius); /* anel de foco com o mesmo canto do botão */
   color: var(--text);
+  font-family: var(--font-head);
   font-size: 17px;
   font-weight: 500;
   text-decoration: none;
@@ -1555,6 +1706,20 @@ html:not(.js) .hud-base { display: none; }
 }
 @keyframes email-fade-in { from { opacity: 0; } to { opacity: 1; } }
 @keyframes email-fade-out { from { opacity: 1; } to { opacity: 0; } }
+
+/* ---------- Fonte antiga (Zero Hour), nos modos "titulos" e "tudo" ----------
+   Título maior para compensar os 86% da Zero Hour UI; rótulo, botão e links com corpo menor e pouco espaço
+   entre letras. Sem descendentes, a folga embaixo do link sobrava: a entrelinha fecha e o fio fica a uns 6px. */
+:root:is([data-font="titulos"], [data-font="tudo"]) .contato__titulo { font-size: clamp(35px, 8vw, 137px); font-weight: 400; letter-spacing: .005em; }
+:root:is([data-font="titulos"], [data-font="tudo"]) .email__label { font-size: 13px; letter-spacing: .03em; word-spacing: .15em; }
+:root:is([data-font="titulos"], [data-font="tudo"]) .email__btn { font-size: 14px; font-weight: 400; letter-spacing: .03em; }
+:root:is([data-font="titulos"], [data-font="tudo"]) .email__link { font-size: 15px; font-weight: 400; letter-spacing: .03em; }
+:root:is([data-font="titulos"], [data-font="tudo"]) .email__link-text { line-height: 16px; padding-bottom: 4px; }
+:root:is([data-font="titulos"], [data-font="tudo"]) .email__arrow { margin-bottom: 4px; }
+:root:is([data-font="titulos"], [data-font="tudo"]) .rodape { font-size: 12px; letter-spacing: .03em; word-spacing: .15em; }
+/* "tudo": o e-mail e o texto também viram Zero Hour. Corpo mínimo menor para o e-mail caber numa linha em 390px. */
+:root[data-font="tudo"] .email__email { font-size: clamp(21px, 4.4vw, 52px); line-height: 1.15; letter-spacing: .01em; }
+:root[data-font="tudo"] .contato__texto { letter-spacing: .02em; line-height: 1.6; }
 </style>
 <style>/* arco */
 /* Menu em meio-arco: fixo embaixo, no centro. Fechado, só o botão aparece; aberto, as fatias abrem em leque. */
@@ -1641,7 +1806,7 @@ html:not(.js) .hud-base { display: none; }
 }
 .arco__icon * { vector-effect: non-scaling-stroke; }
 .arco__label {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 7.4px;
   font-weight: 500;
   letter-spacing: .06em;
@@ -1811,7 +1976,7 @@ html:not(.js) .hud-base { display: none; }
   padding: 0 10px;
   border-radius: 999px;
   background: var(--glass);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 12px;
   line-height: 20px;
   color: var(--text-2);
@@ -1869,6 +2034,24 @@ html:not(.js) .arco { display: none; }
 .arco.arco--init .arco__g,
 .arco.arco--init .arco__tema-icon,
 .arco.arco--init .arco__status { transition: none; }
+
+/* Fonte antiga (Zero Hour). Ela é ~25% mais larga que a Martian Mono no mesmo corpo: os rótulos encolhem e
+   perdem o espaçamento extra para PROJETOS caber na fatia com a mesma folga. geometricPrecision: sem ela o
+   Chrome ajusta o avanço das letras ao pixel no corpo pequeno e, no celular, aparecem buracos ("S OBRE").
+   Só que aí a linha "central" sai do lugar; então a base volta a ser a alfabética e o texto desce meia altura
+   de maiúscula (0,749 x 0,86 / 2 = .322em): as maiúsculas ficam centradas no y. */
+:root:is([data-font="titulos"], [data-font="tudo"]) .arco__label {
+  font-size: 6.6px;
+  letter-spacing: .02em;
+  text-rendering: geometricPrecision;
+  dominant-baseline: alphabetic;
+  transform: translateY(.322em);
+}
+/* Traço fino e corpo menor: um tom acima do --muted para ler igual. :where() mantém a especificidade baixa,
+   então hover e foco (--text) continuam ganhando. */
+:where(:root[data-font="titulos"], :root[data-font="tudo"]) .arco__label { fill: var(--text-2); }
+/* Retorno: um corpo abaixo, para não competir com as fatias; entrelinha ímpar centra as maiúsculas no quadrado. */
+:root:is([data-font="titulos"], [data-font="tudo"]) .arco__status { font-size: 11px; line-height: 21px; letter-spacing: .03em; }
 </style>
 <style>/* terminal */
 /* Terminal: abre por cima de tudo (tecla /, botão do topo), como um console da nave. */
@@ -1882,7 +2065,7 @@ html:not(.js) .arco { display: none; }
   place-items: center;
   padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
   color: var(--text);
-  font-family: var(--font-mono);
+  font-family: var(--font-code);
 }
 .term[hidden] { display: none; }
 .term__fundo {
@@ -1936,7 +2119,7 @@ html:not(.js) .arco { display: none; }
   border-radius: 999px;
   background: transparent;
   color: var(--text);
-  font-family: var(--font-mono);
+  font-family: var(--font-code);
   font-size: 12px;
   cursor: pointer;
   transition: border-color var(--dur-1) var(--ease-out), color var(--dur-1) var(--ease-out);
@@ -1959,6 +2142,7 @@ html:not(.js) .arco { display: none; }
   height: 38px;
   padding: 0 var(--term-px);
   border-bottom: 1px solid var(--line);
+  font-family: var(--font-label);
   font-size: 11px;
   letter-spacing: .02em;
   color: var(--muted);
@@ -2164,7 +2348,7 @@ html:not(.js) .arco { display: none; }
   border-radius: 0;
   background: transparent;
   color: var(--text);
-  font-family: var(--font-mono);
+  font-family: var(--font-code);
   font-size: 14px;
   caret-color: var(--accent);
   -webkit-appearance: none;
@@ -2184,6 +2368,7 @@ html:not(.js) .arco { display: none; }
 }
 .term__chips-label {
   margin-right: 6px;
+  font-family: var(--font-label);
   font-size: 10px;
   letter-spacing: .08em;
   text-transform: uppercase;
@@ -2196,7 +2381,7 @@ html:not(.js) .arco { display: none; }
   border-radius: var(--radius);
   background: transparent;
   color: var(--text-2);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 12px;
   line-height: 1;
   cursor: pointer;
@@ -2237,6 +2422,19 @@ html:not(.js) .arco { display: none; }
   .term__out { transition: none; }
   .term__rain { transition: opacity 160ms linear; }
 }
+
+/* Fonte antiga (Zero Hour): só a moldura muda (título, estado, atalhos); a tela continua em mono, como o
+   terminal do site antigo. line-height inteiro: com 15.5px o Chrome arredonda a meia-entrelinha para baixo e as
+   maiúsculas da Zero Hour sobem 1px. */
+:root:is([data-font="titulos"], [data-font="tudo"]) .term__bar { font-size: 12px; letter-spacing: .03em; }
+:root:is([data-font="titulos"], [data-font="tudo"]) .term__status,
+:root:is([data-font="titulos"], [data-font="tudo"]) .term__chips-label { letter-spacing: .03em; line-height: 16px; }
+:root:is([data-font="titulos"], [data-font="tudo"]) .term__chip { letter-spacing: .02em; }
+@media (max-width: 560px) {
+  :root:is([data-font="titulos"], [data-font="tudo"]) .term__bar { gap: 10px; }
+  :root:is([data-font="titulos"], [data-font="tudo"]) .term__title { font-size: 10.5px; line-height: 17px; letter-spacing: 0; }
+  :root:is([data-font="titulos"], [data-font="tudo"]) .term__chip { font-size: 11px; padding: 0 4px; }
+}
 </style>
 </head>
 <body>
@@ -2262,19 +2460,32 @@ html:not(.js) .arco { display: none; }
 </div>
 <header class="hud">
   <a class="hud__marca" href="#inicio" data-ir="inicio" aria-label="Cauanzera, voltar ao início"><span class="quadrado" aria-hidden="true"></span><span aria-hidden="true">Cauanzera</span></a>
-  <button class="hud__btn" type="button" data-terminal aria-haspopup="dialog" aria-controls="terminal">
-    <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M3 4.5 6.5 8 3 11.5M8.5 11.5H13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    <span>Terminal</span>
-    <kbd aria-hidden="true">/</kbd>
-  </button>
+  <div class="hud__acoes">
+    <div class="fonte">
+      <button class="hud__btn fonte__btn" type="button" aria-expanded="false" aria-controls="fonte-painel" data-cursor="fonte">
+        <span class="fonte__aa" aria-hidden="true">Aa</span><span class="sr">Fonte</span>
+      </button>
+      <div class="fonte__painel" id="fonte-painel" role="group" aria-labelledby="fonte-titulo" hidden>
+        <p class="fonte__titulo" id="fonte-titulo">Fonte</p>
+        <button class="fonte__opcao fonte__opcao--zh" type="button" data-fonte="titulos" aria-pressed="false">Antiga nos títulos</button>
+        <button class="fonte__opcao fonte__opcao--zh" type="button" data-fonte="tudo" aria-pressed="false">Antiga em tudo</button>
+        <button class="fonte__opcao fonte__opcao--nova" type="button" data-fonte="nova" aria-pressed="false">Nova</button>
+      </div>
+    </div>
+    <button class="hud__btn" type="button" data-terminal aria-haspopup="dialog" aria-controls="terminal">
+      <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M3 4.5 6.5 8 3 11.5M8.5 11.5H13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Terminal</span>
+      <kbd aria-hidden="true">/</kbd>
+    </button>
+  </div>
 </header>
 
 <nav class="trilho" aria-label="Capítulos">
   <ol role="list">
-    <li><a class="trilho__item" href="#inicio" data-ir="inicio"><span class="trilho__nome">Início</span><span class="trilho__n">00</span></a></li>
-    <li><a class="trilho__item" href="#sobre" data-ir="sobre"><span class="trilho__nome">Sobre</span><span class="trilho__n">01</span></a></li>
-    <li><a class="trilho__item" href="#projetos" data-ir="projetos"><span class="trilho__nome">Projetos</span><span class="trilho__n">02</span></a></li>
-    <li><a class="trilho__item" href="#contato" data-ir="contato"><span class="trilho__nome">Contato</span><span class="trilho__n">03</span></a></li>
+    <li><a class="trilho__item" href="#inicio" data-ir="inicio"><span class="trilho__nome">Início</span><span class="trilho__n"><span>00</span></span></a></li>
+    <li><a class="trilho__item" href="#sobre" data-ir="sobre"><span class="trilho__nome">Sobre</span><span class="trilho__n"><span>0<span class="um">1</span></span></span></a></li>
+    <li><a class="trilho__item" href="#projetos" data-ir="projetos"><span class="trilho__nome">Projetos</span><span class="trilho__n"><span>02</span></span></a></li>
+    <li><a class="trilho__item" href="#contato" data-ir="contato"><span class="trilho__nome">Contato</span><span class="trilho__n"><span>03</span></span></a></li>
   </ol>
   <span class="trilho__fio" aria-hidden="true"><span class="trilho__cheio"></span></span>
 </nav>
@@ -2299,7 +2510,7 @@ html:not(.js) .arco { display: none; }
       <span class="sr">Cauanzera, portfólio de Cauã Pedrozo Brito</span>
       <span class="inicio__palavra" aria-hidden="true">Cauanzera</span>
     </h1>
-    <p class="inicio__frase"><span class="inicio__nome">Cauã Pedrozo Brito</span> Desenvolvedor front-end em formação, focado em experiências visuais e interfaces imersivas.</p>
+    <p class="inicio__frase"><span class="inicio__nome">Cauã Pedrozo Brito</span> Desenvolvedor <span class="nobr">front-end</span> em formação, focado em experiências visuais e interfaces imersivas.</p>
     <a class="inicio__descer" href="#sobre" data-ir="sobre" data-cursor="descer">
       <span class="inicio__trilha" aria-hidden="true"><span></span></span>
       <span>Role para explorar</span>
@@ -2312,11 +2523,11 @@ html:not(.js) .arco { display: none; }
   <div class="sobre__palco">
     <span class="sobre__numero" aria-hidden="true">01</span>
     <div class="sobre__miolo">
-      <h2 class="capitulo" id="sobre-t" data-foco><span class="capitulo__n">01</span>Sobre</h2>
+      <h2 class="capitulo" id="sobre-t" data-foco><span class="capitulo__n">0<span class="um">1</span></span>Sobre</h2>
       <p class="sobre__manifesto" data-revelar>Sou o Cauã. Estudo Análise e Desenvolvimento de Sistemas e gosto de transformar código em <em>lugares para explorar</em>: céus que reagem ao cursor, terminais com segredos e interfaces que respondem a quem passa por elas.</p>
       <dl class="sobre__fatos">
         <div class="sobre__fato" data-revelar style="--i:0"><dt class="rotulo">Curso</dt><dd>Tecnologia em Análise e Desenvolvimento de Sistemas</dd></div>
-        <div class="sobre__fato" data-revelar style="--i:1"><dt class="rotulo">Foco</dt><dd>Front-end, experiências visuais e interfaces imersivas</dd></div>
+        <div class="sobre__fato" data-revelar style="--i:1"><dt class="rotulo">Foco</dt><dd><span class="nobr">Front-end</span>, experiências visuais e interfaces imersivas</dd></div>
         <div class="sobre__fato" data-revelar style="--i:2"><dt class="rotulo">Ferramentas</dt><dd>HTML, CSS, JavaScript, Canvas 2D, Python, Git e GitHub</dd></div>
         <div class="sobre__fato" data-revelar style="--i:3"><dt class="rotulo">Agora</dt><dd>Construindo o Librahin e este portfólio</dd></div>
       </dl>
@@ -2407,7 +2618,7 @@ html:not(.js) .arco { display: none; }
             </div>
           </div>
           <div class="projeto__info">
-            <p class="projeto__meta"><span class="projeto__n">01</span><span>Visão computacional · 2026</span></p>
+            <p class="projeto__meta"><span class="projeto__n">0<span class="um">1</span></span><span>Visão computacional · 2026</span></p>
             <h3 class="projeto__nome" id="projeto-librahin">Librahin</h3>
             <p class="projeto__sub">Tradução de Libras para texto e voz</p>
             <p class="projeto__desc">A webcam reconhece sinais de Libras em tempo real, o programa monta a frase e fala em português. Roda inteiro no computador, sem internet. Trabalho em grupo do curso de Análise e Desenvolvimento de Sistemas, com Adryel Rocha, Alber Cabral e João Malaquias, orientado pelo professor Éder Lemes.</p>
@@ -2548,7 +2759,7 @@ html:not(.js) .arco { display: none; }
             <p class="projeto__meta"><span class="projeto__n">03</span><span>Site · Canvas 2D</span></p>
             <h3 class="projeto__nome" id="projeto-v1">Portfólio <span class="projeto__versao">v1</span></h3>
             <p class="projeto__sub">A primeira versão deste site</p>
-            <p class="projeto__desc">Escrita sem framework: campo de estrelas em canvas, menu em meio-arco, terminal com segredos, trilha sonora e tema claro e escuro. Muitos efeitos deste site nasceram lá.</p>
+            <p class="projeto__desc">Escrita sem framework: campo de estrelas em canvas, menu em <span class="nobr">meio-arco</span>, terminal com segredos, trilha sonora e tema claro e escuro. Muitos efeitos deste site nasceram lá.</p>
             <ul class="projeto__chips" role="list" aria-label="Tecnologias">
               <li>HTML</li><li>CSS</li><li>JavaScript</li><li>Canvas 2D</li>
             </ul>
@@ -2579,7 +2790,7 @@ html:not(.js) .arco { display: none; }
   <div class="contato__miolo">
     <h2 class="capitulo" id="contato-t" data-foco><span class="capitulo__n">03</span>Contato</h2>
     <p class="contato__titulo" data-revelar="mascara"><span>Vamos conversar?</span></p>
-    <p class="contato__texto" data-revelar style="--i:1">Quer trocar uma ideia, propor um projeto ou só dizer oi? O e-mail é o caminho mais curto.</p>
+    <p class="contato__texto" data-revelar style="--i:1">Quer trocar uma ideia, propor um projeto ou só dizer oi? O <span class="nobr">e-mail</span> é o caminho mais curto.</p>
     <div class="email" data-revelar style="--i:2">
       <p class="email__label rotulo">
         <span class="email__label-text">E-mail</span>
@@ -2817,6 +3028,23 @@ window.CZ = (() => {
   const alternarTema = (x, y) => definirTema((temaPedido || tema()) === 'light' ? 'dark' : 'light', x, y);
   ouvir(mqLight, () => { corDoNavegador(); emit('tema', tema()); });
 
+  /* ---------- fonte ---------- */
+
+  // "titulos": Zero Hour nos títulos e rótulos; "tudo": Zero Hour também no texto; "nova": Schibsted e Martian Mono.
+  const FONTES = ['titulos', 'tudo', 'nova'];
+  const fonte = () => html.getAttribute('data-font') || 'nova';
+  function definirFonte(f) {
+    if (!FONTES.includes(f)) return;
+    if (f === 'nova') html.removeAttribute('data-font');
+    else html.setAttribute('data-font', f);
+    store.set('cz-fonte', f);
+    emit('fonte', f);
+    // As medidas mudam com a fonte: mede agora e de novo quando ela terminar de carregar.
+    medir();
+    agendar();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { medir(); agendar(); emit('fonte:pronta', f); });
+  }
+
   /* ---------- capítulos e rolagem ---------- */
 
   const capitulos = Array.from(document.querySelectorAll('[data-capitulo]'), (el) => ({
@@ -2951,6 +3179,7 @@ window.CZ = (() => {
   return {
     on, emit, store, reduzido, mouse, ouvir,
     tema, definirTema, alternarTema,
+    fonte, definirFonte,
     capitulos, ir, rolarAte, medir, revelar, pronto,
     get atual() { return atual; },
   };
@@ -3733,6 +3962,51 @@ window.CZ = (() => {
     if (cheio) cheio.style.setProperty('--p', p.toFixed(3));
   });
 
+  /* ---------- troca de fonte ---------- */
+  const fonteBox = document.querySelector('.fonte');
+  const fonteBtn = fonteBox && fonteBox.querySelector('.fonte__btn');
+  const painel = fonteBox && fonteBox.querySelector('.fonte__painel');
+  const opcoes = painel ? Array.from(painel.querySelectorAll('[data-fonte]')) : [];
+  const syncFonte = () => {
+    const f = CZ.fonte();
+    opcoes.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.fonte === f)));
+  };
+  function painelAberto(on, focar) {
+    if (!painel) return;
+    painel.hidden = !on;
+    fonteBtn.setAttribute('aria-expanded', String(on));
+    if (on) {
+      document.addEventListener('pointerdown', fora, true);
+      if (focar) (opcoes.find((b) => b.getAttribute('aria-pressed') === 'true') || opcoes[0]).focus({ preventScroll: true });
+    } else {
+      document.removeEventListener('pointerdown', fora, true);
+    }
+  }
+  const fora = (e) => { if (!(e.target instanceof Element && fonteBox.contains(e.target))) painelAberto(false); };
+  if (fonteBox) {
+    fonteBtn.addEventListener('click', (e) => painelAberto(painel.hidden, e.detail === 0));
+    opcoes.forEach((b) => b.addEventListener('click', () => CZ.definirFonte(b.dataset.fonte)));
+    fonteBox.addEventListener('keydown', (e) => {
+      if (painel.hidden) return;
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        painelAberto(false);
+        fonteBtn.focus({ preventScroll: true });
+        return;
+      }
+      const i = opcoes.indexOf(document.activeElement);
+      if (i < 0 || !['ArrowDown', 'ArrowUp'].includes(e.key)) return;
+      e.preventDefault();
+      opcoes[(i + (e.key === 'ArrowDown' ? 1 : opcoes.length - 1)) % opcoes.length].focus();
+    });
+    // Foco saiu do seletor (Tab adiante): fecha.
+    fonteBox.addEventListener('focusout', (e) => {
+      if (!painel.hidden && e.relatedTarget && !fonteBox.contains(e.relatedTarget)) painelAberto(false);
+    });
+    CZ.on('fonte', syncFonte);
+    syncFonte();
+  }
+
   /* ---------- terminal e atalhos ---------- */
   if (btnTerminal) btnTerminal.addEventListener('click', () => CZ.emit('terminal:abrir', btnTerminal));
 
@@ -3936,6 +4210,9 @@ window.CZ = (() => {
 
   CZ.on('rolagem', ({ y }) => atualizar(y));
   CZ.on('movimento', avaliar);
+  CZ.on('fonte', avaliar);
+  CZ.on('fonte:pronta', avaliar);
+  if (document.fonts && document.fonts.addEventListener) document.fonts.addEventListener('loadingdone', avaliar);
   CZ.ouvir(mqAlta, () => { avaliar(); CZ.medir(); });
   addEventListener('resize', avaliar, { passive: true });
   CZ.on('pronto', () => { medir(); atualizar(scrollY); });
@@ -4022,8 +4299,11 @@ window.CZ = (() => {
   CZ.on('rolagem', ({ y }) => atualizar(y));
   CZ.on('movimento', layout);
   CZ.ouvir(mqLarga, layout);
+  CZ.on('fonte', layout);
+  CZ.on('fonte:pronta', layout);
   addEventListener('resize', layout, { passive: true });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
+  if (document.fonts && document.fonts.addEventListener) document.fonts.addEventListener('loadingdone', layout);
   layout();
 
   /* ---------- luz e inclinação no print, seguindo o cursor ---------- */
@@ -5084,6 +5364,7 @@ window.CZ = (() => {
     { name: 'ir', aliases: ['cd', 'go', 'voar'], desc: 'voa até um capítulo: ir projetos', run: ir },
     { name: 'tema', aliases: ['theme'], desc: 'alterna claro e escuro', run: tema },
     { name: 'som', aliases: ['sound', 'audio', 'música'], desc: 'liga ou desliga o som', run: som },
+    { name: 'fonte', aliases: ['font', 'fontes'], desc: 'troca a fonte: fonte titulos, tudo ou nova', run: fonte },
     { name: 'limpar', aliases: ['clear', 'cls'], desc: 'limpa a tela', run: limpar },
     { name: 'sair', aliases: ['exit', 'quit', 'fechar', 'q'], desc: 'fecha o terminal', run: sair },
   ];
@@ -5162,6 +5443,18 @@ window.CZ = (() => {
   function som() {
     CZ.emit('som:alternar');
     print(somLigado ? 'som ligado. use fones para a melhor viagem.' : 'som desligado.', 'muted');
+  }
+  const FONTES = { titulos: 'titulos', titulo: 'titulos', antiga: 'titulos', tudo: 'tudo', nova: 'nova', new: 'nova' };
+  const NOMES_FONTE = { titulos: 'antiga nos títulos', tudo: 'antiga em tudo', nova: 'nova' };
+  function fonte(args) {
+    const pedido = FONTES[normalize(args[0] || '')];
+    if (!pedido) {
+      print(`fonte atual: ${NOMES_FONTE[CZ.fonte()]}.`, 'muted');
+      print(['opções: ', node('span', 'term__k', 'fonte titulos'), ', ', node('span', 'term__k', 'fonte tudo'), ' ou ', node('span', 'term__k', 'fonte nova')], 'muted');
+      return;
+    }
+    CZ.definirFonte(pedido);
+    print(`fonte: ${NOMES_FONTE[pedido]}.`, 'muted');
   }
   function sair() {
     fechar();

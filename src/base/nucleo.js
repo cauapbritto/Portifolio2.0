@@ -82,6 +82,23 @@ window.CZ = (() => {
   const alternarTema = (x, y) => definirTema((temaPedido || tema()) === 'light' ? 'dark' : 'light', x, y);
   ouvir(mqLight, () => { corDoNavegador(); emit('tema', tema()); });
 
+  /* ---------- fonte ---------- */
+
+  // "titulos": Zero Hour nos títulos e rótulos; "tudo": Zero Hour também no texto; "nova": Schibsted e Martian Mono.
+  const FONTES = ['titulos', 'tudo', 'nova'];
+  const fonte = () => html.getAttribute('data-font') || 'nova';
+  function definirFonte(f) {
+    if (!FONTES.includes(f)) return;
+    if (f === 'nova') html.removeAttribute('data-font');
+    else html.setAttribute('data-font', f);
+    store.set('cz-fonte', f);
+    emit('fonte', f);
+    // As medidas mudam com a fonte: mede agora e de novo quando ela terminar de carregar.
+    medir();
+    agendar();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { medir(); agendar(); emit('fonte:pronta', f); });
+  }
+
   /* ---------- capítulos e rolagem ---------- */
 
   const capitulos = Array.from(document.querySelectorAll('[data-capitulo]'), (el) => ({
@@ -216,6 +233,7 @@ window.CZ = (() => {
   return {
     on, emit, store, reduzido, mouse, ouvir,
     tema, definirTema, alternarTema,
+    fonte, definirFonte,
     capitulos, ir, rolarAte, medir, revelar, pronto,
     get atual() { return atual; },
   };

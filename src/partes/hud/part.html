@@ -1,18 +1,31 @@
 <header class="hud">
   <a class="hud__marca" href="#inicio" data-ir="inicio" aria-label="Cauanzera, voltar ao início"><span class="quadrado" aria-hidden="true"></span><span aria-hidden="true">Cauanzera</span></a>
-  <button class="hud__btn" type="button" data-terminal aria-haspopup="dialog" aria-controls="terminal">
-    <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M3 4.5 6.5 8 3 11.5M8.5 11.5H13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    <span>Terminal</span>
-    <kbd aria-hidden="true">/</kbd>
-  </button>
+  <div class="hud__acoes">
+    <div class="fonte">
+      <button class="hud__btn fonte__btn" type="button" aria-expanded="false" aria-controls="fonte-painel" data-cursor="fonte">
+        <span class="fonte__aa" aria-hidden="true">Aa</span><span class="sr">Fonte</span>
+      </button>
+      <div class="fonte__painel" id="fonte-painel" role="group" aria-labelledby="fonte-titulo" hidden>
+        <p class="fonte__titulo" id="fonte-titulo">Fonte</p>
+        <button class="fonte__opcao fonte__opcao--zh" type="button" data-fonte="titulos" aria-pressed="false">Antiga nos títulos</button>
+        <button class="fonte__opcao fonte__opcao--zh" type="button" data-fonte="tudo" aria-pressed="false">Antiga em tudo</button>
+        <button class="fonte__opcao fonte__opcao--nova" type="button" data-fonte="nova" aria-pressed="false">Nova</button>
+      </div>
+    </div>
+    <button class="hud__btn" type="button" data-terminal aria-haspopup="dialog" aria-controls="terminal">
+      <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M3 4.5 6.5 8 3 11.5M8.5 11.5H13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Terminal</span>
+      <kbd aria-hidden="true">/</kbd>
+    </button>
+  </div>
 </header>
 
 <nav class="trilho" aria-label="Capítulos">
   <ol role="list">
-    <li><a class="trilho__item" href="#inicio" data-ir="inicio"><span class="trilho__nome">Início</span><span class="trilho__n">00</span></a></li>
-    <li><a class="trilho__item" href="#sobre" data-ir="sobre"><span class="trilho__nome">Sobre</span><span class="trilho__n">01</span></a></li>
-    <li><a class="trilho__item" href="#projetos" data-ir="projetos"><span class="trilho__nome">Projetos</span><span class="trilho__n">02</span></a></li>
-    <li><a class="trilho__item" href="#contato" data-ir="contato"><span class="trilho__nome">Contato</span><span class="trilho__n">03</span></a></li>
+    <li><a class="trilho__item" href="#inicio" data-ir="inicio"><span class="trilho__nome">Início</span><span class="trilho__n"><span>00</span></span></a></li>
+    <li><a class="trilho__item" href="#sobre" data-ir="sobre"><span class="trilho__nome">Sobre</span><span class="trilho__n"><span>0<span class="um">1</span></span></span></a></li>
+    <li><a class="trilho__item" href="#projetos" data-ir="projetos"><span class="trilho__nome">Projetos</span><span class="trilho__n"><span>02</span></span></a></li>
+    <li><a class="trilho__item" href="#contato" data-ir="contato"><span class="trilho__nome">Contato</span><span class="trilho__n"><span>03</span></span></a></li>
   </ol>
   <span class="trilho__fio" aria-hidden="true"><span class="trilho__cheio"></span></span>
 </nav>

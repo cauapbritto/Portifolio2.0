@@ -60,6 +60,51 @@
     if (cheio) cheio.style.setProperty('--p', p.toFixed(3));
   });
 
+  /* ---------- troca de fonte ---------- */
+  const fonteBox = document.querySelector('.fonte');
+  const fonteBtn = fonteBox && fonteBox.querySelector('.fonte__btn');
+  const painel = fonteBox && fonteBox.querySelector('.fonte__painel');
+  const opcoes = painel ? Array.from(painel.querySelectorAll('[data-fonte]')) : [];
+  const syncFonte = () => {
+    const f = CZ.fonte();
+    opcoes.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.fonte === f)));
+  };
+  function painelAberto(on, focar) {
+    if (!painel) return;
+    painel.hidden = !on;
+    fonteBtn.setAttribute('aria-expanded', String(on));
+    if (on) {
+      document.addEventListener('pointerdown', fora, true);
+      if (focar) (opcoes.find((b) => b.getAttribute('aria-pressed') === 'true') || opcoes[0]).focus({ preventScroll: true });
+    } else {
+      document.removeEventListener('pointerdown', fora, true);
+    }
+  }
+  const fora = (e) => { if (!(e.target instanceof Element && fonteBox.contains(e.target))) painelAberto(false); };
+  if (fonteBox) {
+    fonteBtn.addEventListener('click', (e) => painelAberto(painel.hidden, e.detail === 0));
+    opcoes.forEach((b) => b.addEventListener('click', () => CZ.definirFonte(b.dataset.fonte)));
+    fonteBox.addEventListener('keydown', (e) => {
+      if (painel.hidden) return;
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        painelAberto(false);
+        fonteBtn.focus({ preventScroll: true });
+        return;
+      }
+      const i = opcoes.indexOf(document.activeElement);
+      if (i < 0 || !['ArrowDown', 'ArrowUp'].includes(e.key)) return;
+      e.preventDefault();
+      opcoes[(i + (e.key === 'ArrowDown' ? 1 : opcoes.length - 1)) % opcoes.length].focus();
+    });
+    // Foco saiu do seletor (Tab adiante): fecha.
+    fonteBox.addEventListener('focusout', (e) => {
+      if (!painel.hidden && e.relatedTarget && !fonteBox.contains(e.relatedTarget)) painelAberto(false);
+    });
+    CZ.on('fonte', syncFonte);
+    syncFonte();
+  }
+
   /* ---------- terminal e atalhos ---------- */
   if (btnTerminal) btnTerminal.addEventListener('click', () => CZ.emit('terminal:abrir', btnTerminal));
 

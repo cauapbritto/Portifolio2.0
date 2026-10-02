@@ -20,6 +20,7 @@ Sempre na tela:
 - **Trilho de capítulos** (à direita): mostra onde você está e leva a qualquer capítulo.
 - **Terminal** (botão no topo ou tecla `/`): `help`, `sobre`, `projetos`, `contato`, `ir <capítulo>`, `tema`, `som`, `limpar` e `sair`, e os segredos `matrix`, `scan`, `warp` e `cauanzera`.
 - **Som** (desligado no começo): um ambiente grave gerado na hora com Web Audio, um vento que cresce com a velocidade da rolagem e cliques curtos na interface.
+- **Fonte** (botão "Aa" no topo ou comando `fonte` no terminal): antiga nos títulos, antiga em tudo ou nova. Veja [Fontes](#fontes).
 - **Atalhos**: `/` abre o terminal, `0` a `3` levam aos capítulos, `Esc` fecha o terminal e o menu.
 
 ## Como abrir
@@ -62,13 +63,33 @@ node build.js
 
 Esse comando reescreve o `index.html`, que junta tudo num arquivo só, pronto para o GitHub Pages.
 
+## Fontes
+
+O botão "Aa" no topo (ou `fonte titulos`, `fonte tudo` e `fonte nova` no terminal) troca a fonte:
+
+- **Antiga nos títulos** (padrão): Zero Hour, a fonte do site antigo, nos títulos, nomes de projeto, botões e rótulos, e Schibsted Grotesk no texto corrido.
+- **Antiga em tudo**: Zero Hour também no texto corrido, como no site antigo.
+- **Nova**: Schibsted Grotesk e Martian Mono.
+
+A escolha fica salva no navegador. As partes usam fontes por papel, definidas em `src/base/tokens.css`:
+
+| Papel | Uso |
+| --- | --- |
+| `--font-head` | títulos, nomes de projeto, botões |
+| `--font-text` | texto corrido e o e-mail |
+| `--font-label` | rótulos pequenos, tags, chips e o trilho de capítulos |
+| `--font-code` | o terminal e os números que mudam (relógio, contadores), que precisam de largura fixa |
+| `--font-display` | o nome Cauanzera (sempre Zero Hour) |
+
+Na Zero Hour o "1" é o mesmo traço do "I": nos rótulos, o número ganha `<span class="um">1</span>`, que desenha uma bandeirinha no topo. Palavras com hífen ficam em `<span class="nobr">` para não quebrar no meio.
+
 ## Desempenho e acessibilidade
 
 - O céu é um único canvas 2D e para quando a aba fica escondida. As outras animações usam só `transform` e `opacity`.
 - Quem ativa "reduzir movimento" no sistema vê o céu parado, sem abertura nem rastros, e os capítulos empilhados.
 - Sem JavaScript, todo o conteúdo aparece em ordem e o trilho de capítulos continua funcionando.
 - Tudo funciona pelo teclado, com foco visível. O terminal é um diálogo que segura o foco e devolve ao fechar.
-- O tema escolhido e o som ficam salvos no navegador.
+- O tema, a fonte e o som escolhidos ficam salvos no navegador.
 
 ## Créditos
 

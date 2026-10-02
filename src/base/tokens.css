@@ -18,9 +18,20 @@
   --glass: rgba(13, 14, 16, .62);
   --shadow: 0 1px 0 rgba(255,255,255,.04) inset, 0 18px 40px -24px rgba(0,0,0,.8);
 
-  --font-sans: "Schibsted Grotesk", system-ui, sans-serif;
-  --font-mono: "Martian Mono", ui-monospace, monospace;
+  /* Fontes por papel. A troca de fonte (data-font no :root) so mexe nestes quatro papeis:
+     --font-head: titulos, nomes de projeto, botoes, itens de menu
+     --font-text: texto corrido (paragrafos, descricoes, valores de lista, e-mail)
+     --font-label: rotulos pequenos em caixa alta, kickers, tags, chips de tecnologia
+     --font-code: terminal e qualquer coisa que precise de largura fixa
+     --font-display: o nome "Cauanzera" (sempre Zero Hour) */
+  --font-head: "Schibsted Grotesk", system-ui, sans-serif;
+  --font-text: "Schibsted Grotesk", system-ui, sans-serif;
+  --font-label: "Martian Mono", ui-monospace, monospace;
+  --font-code: "Martian Mono", ui-monospace, monospace;
   --font-display: "Zero Hour", "Schibsted Grotesk", sans-serif;
+  /* aliases antigos: preferir os papeis acima */
+  --font-sans: var(--font-text);
+  --font-mono: var(--font-code);
 
   --radius: 6px;
   --gutter: clamp(16px, 4vw, 56px);
@@ -72,4 +83,17 @@
   --cool: 70, 90, 170;
   --glass: rgba(244, 242, 236, .72);
   --shadow: 0 1px 0 rgba(255,255,255,.6) inset, 0 18px 40px -26px rgba(40,30,10,.35);
+}
+
+/* Fonte antiga (Zero Hour, a do site v1). "Zero Hour UI" e "Zero Hour Texto" sao o mesmo arquivo com size-adjust,
+   porque a Zero Hour e toda em maiusculas e bem mais larga: 100% estouraria os layouts feitos para a Schibsted.
+   As @font-face ficam em src/pagina.html (precisam da URL do arquivo). Sem data-font: a fonte nova. */
+:root[data-font="titulos"] {
+  --font-head: "Zero Hour UI", "Schibsted Grotesk", sans-serif;
+  --font-label: "Zero Hour UI", "Martian Mono", monospace;
+}
+:root[data-font="tudo"] {
+  --font-head: "Zero Hour UI", "Schibsted Grotesk", sans-serif;
+  --font-label: "Zero Hour UI", "Martian Mono", monospace;
+  --font-text: "Zero Hour Texto", "Schibsted Grotesk", sans-serif;
 }

@@ -82,7 +82,7 @@
 }
 .arco__icon * { vector-effect: non-scaling-stroke; }
 .arco__label {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 7.4px;
   font-weight: 500;
   letter-spacing: .06em;
@@ -252,7 +252,7 @@
   padding: 0 10px;
   border-radius: 999px;
   background: var(--glass);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 12px;
   line-height: 20px;
   color: var(--text-2);
@@ -310,3 +310,21 @@ html:not(.js) .arco { display: none; }
 .arco.arco--init .arco__g,
 .arco.arco--init .arco__tema-icon,
 .arco.arco--init .arco__status { transition: none; }
+
+/* Fonte antiga (Zero Hour). Ela é ~25% mais larga que a Martian Mono no mesmo corpo: os rótulos encolhem e
+   perdem o espaçamento extra para PROJETOS caber na fatia com a mesma folga. geometricPrecision: sem ela o
+   Chrome ajusta o avanço das letras ao pixel no corpo pequeno e, no celular, aparecem buracos ("S OBRE").
+   Só que aí a linha "central" sai do lugar; então a base volta a ser a alfabética e o texto desce meia altura
+   de maiúscula (0,749 x 0,86 / 2 = .322em): as maiúsculas ficam centradas no y. */
+:root:is([data-font="titulos"], [data-font="tudo"]) .arco__label {
+  font-size: 6.6px;
+  letter-spacing: .02em;
+  text-rendering: geometricPrecision;
+  dominant-baseline: alphabetic;
+  transform: translateY(.322em);
+}
+/* Traço fino e corpo menor: um tom acima do --muted para ler igual. :where() mantém a especificidade baixa,
+   então hover e foco (--text) continuam ganhando. */
+:where(:root[data-font="titulos"], :root[data-font="tudo"]) .arco__label { fill: var(--text-2); }
+/* Retorno: um corpo abaixo, para não competir com as fatias; entrelinha ímpar centra as maiúsculas no quadrado. */
+:root:is([data-font="titulos"], [data-font="tudo"]) .arco__status { font-size: 11px; line-height: 21px; letter-spacing: .03em; }

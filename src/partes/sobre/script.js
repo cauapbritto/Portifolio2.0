@@ -63,6 +63,9 @@
 
   CZ.on('rolagem', ({ y }) => atualizar(y));
   CZ.on('movimento', avaliar);
+  CZ.on('fonte', avaliar);
+  CZ.on('fonte:pronta', avaliar);
+  if (document.fonts && document.fonts.addEventListener) document.fonts.addEventListener('loadingdone', avaliar);
   CZ.ouvir(mqAlta, () => { avaliar(); CZ.medir(); });
   addEventListener('resize', avaliar, { passive: true });
   CZ.on('pronto', () => { medir(); atualizar(scrollY); });

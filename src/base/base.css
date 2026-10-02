@@ -12,7 +12,7 @@ body {
   min-height: 100vh;
   background: transparent;
   color: var(--text);
-  font-family: var(--font-sans);
+  font-family: var(--font-text);
   font-size: 17px;
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
@@ -27,7 +27,7 @@ ul[role="list"], ol[role="list"] { list-style: none; padding: 0; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
 .sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
-.rotulo { font-family: var(--font-mono); font-size: 12px; font-weight: 400; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.rotulo { font-family: var(--font-label); font-size: 12px; font-weight: 400; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .quadrado { display: inline-block; flex: none; width: 8px; height: 8px; background: var(--accent); }
 
 .pular {
@@ -45,7 +45,7 @@ main { position: relative; z-index: 2; }
   display: flex;
   align-items: center;
   gap: 12px;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 12px;
   font-weight: 400;
   line-height: 1.4;
@@ -55,6 +55,7 @@ main { position: relative; z-index: 2; }
 }
 .capitulo::before { content: ""; width: 8px; height: 8px; background: var(--accent); flex: none; }
 .capitulo__n { color: var(--accent); }
+.capitulo__n::after { word-spacing: normal; }
 .capitulo__n::after { content: " —"; color: var(--muted); }
 
 /* Revelar ao entrar na tela: o JS liga .is-in. Sem JS ou com movimento reduzido, tudo visível. */
@@ -81,3 +82,18 @@ main { position: relative; z-index: 2; }
   .js [data-revelar],
   .js [data-revelar="mascara"] > span { opacity: 1; transform: none; transition: none; }
 }
+
+/* ---------- Fonte antiga (Zero Hour), nos modos "titulos" e "tudo" ----------
+   Ela só tem maiúsculas, é larga e tem um peso só: rótulos com pouco espaço entre letras e um pouco
+   mais entre palavras (o espaço dela é curto). */
+:root:is([data-font="titulos"], [data-font="tudo"]) .rotulo { font-size: 13px; letter-spacing: .03em; word-spacing: .15em; }
+:root:is([data-font="titulos"], [data-font="tudo"]) .capitulo { font-size: 13px; letter-spacing: .04em; word-spacing: .15em; }
+/* Na Zero Hour o "1" é o mesmo traço do "I" ("01" leria "OI"): uma bandeirinha no topo, com a espessura
+   e a altura de maiúscula da própria fonte (Zero Hour UI = 86%), devolve o 1. */
+:root:is([data-font="titulos"], [data-font="tudo"]) .um {
+  margin-left: .075em;
+  padding-left: .15em;
+  background: linear-gradient(currentColor, currentColor) 0 calc((.968 - .749) * .86em) / .21em calc(.118 * .86em) no-repeat;
+}
+/* Palavras com hífen não quebram no meio: em caixa alta larga, "E-" sozinho no fim da linha lê mal. */
+:root:is([data-font="titulos"], [data-font="tudo"]) .nobr { white-space: nowrap; }

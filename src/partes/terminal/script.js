@@ -352,6 +352,7 @@
     { name: 'ir', aliases: ['cd', 'go', 'voar'], desc: 'voa até um capítulo: ir projetos', run: ir },
     { name: 'tema', aliases: ['theme'], desc: 'alterna claro e escuro', run: tema },
     { name: 'som', aliases: ['sound', 'audio', 'música'], desc: 'liga ou desliga o som', run: som },
+    { name: 'fonte', aliases: ['font', 'fontes'], desc: 'troca a fonte: fonte titulos, tudo ou nova', run: fonte },
     { name: 'limpar', aliases: ['clear', 'cls'], desc: 'limpa a tela', run: limpar },
     { name: 'sair', aliases: ['exit', 'quit', 'fechar', 'q'], desc: 'fecha o terminal', run: sair },
   ];
@@ -430,6 +431,18 @@
   function som() {
     CZ.emit('som:alternar');
     print(somLigado ? 'som ligado. use fones para a melhor viagem.' : 'som desligado.', 'muted');
+  }
+  const FONTES = { titulos: 'titulos', titulo: 'titulos', antiga: 'titulos', tudo: 'tudo', nova: 'nova', new: 'nova' };
+  const NOMES_FONTE = { titulos: 'antiga nos títulos', tudo: 'antiga em tudo', nova: 'nova' };
+  function fonte(args) {
+    const pedido = FONTES[normalize(args[0] || '')];
+    if (!pedido) {
+      print(`fonte atual: ${NOMES_FONTE[CZ.fonte()]}.`, 'muted');
+      print(['opções: ', node('span', 'term__k', 'fonte titulos'), ', ', node('span', 'term__k', 'fonte tudo'), ' ou ', node('span', 'term__k', 'fonte nova')], 'muted');
+      return;
+    }
+    CZ.definirFonte(pedido);
+    print(`fonte: ${NOMES_FONTE[pedido]}.`, 'muted');
   }
   function sair() {
     fechar();

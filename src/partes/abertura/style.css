@@ -44,14 +44,14 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 11px;
   letter-spacing: .14em;
   text-transform: uppercase;
   color: var(--muted);
 }
 .abertura__num {
-  font-family: var(--font-mono);
+  font-family: var(--font-code);
   font-size: clamp(44px, 9vw, 96px);
   font-weight: 400;
   line-height: 1;
@@ -76,7 +76,7 @@
 }
 .abertura__fase {
   min-height: 1.4em;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 11px;
   letter-spacing: .1em;
   text-transform: uppercase;
@@ -88,7 +88,7 @@
   right: 0;
   bottom: calc(var(--hud) + 8px);
   text-align: center;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 10px;
   letter-spacing: .12em;
   text-transform: uppercase;
@@ -113,3 +113,8 @@
 @media (prefers-reduced-motion: reduce) {
   .js .abertura { display: none; }
 }
+
+:root:is([data-font="titulos"], [data-font="tudo"]) .abertura__topo,
+:root:is([data-font="titulos"], [data-font="tudo"]) .abertura__fase,
+:root:is([data-font="titulos"], [data-font="tudo"]) .abertura__pular { letter-spacing: .05em; word-spacing: .15em; }
+:root:is([data-font="titulos"], [data-font="tudo"]) .abertura__topo { font-size: 13px; }

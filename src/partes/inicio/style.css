@@ -44,7 +44,7 @@
   color: var(--text-2);
   text-wrap: balance;
 }
-.inicio__nome { display: block; margin-bottom: 4px; font-family: var(--font-mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--text); }
+.inicio__nome { display: block; margin-bottom: 4px; font-family: var(--font-label); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--text); }
 
 .inicio__descer {
   display: inline-flex;
@@ -54,7 +54,7 @@
   margin-top: clamp(6px, 2vh, 22px);
   padding: 0 6px;
   border-radius: 4px;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 11px;
   letter-spacing: .14em;
   text-transform: uppercase;
@@ -89,7 +89,7 @@
   z-index: 2;
   right: calc(var(--hud) + 6px);
   top: calc(var(--hud) + 62px);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 10px;
   letter-spacing: .12em;
   text-transform: uppercase;
@@ -159,3 +159,9 @@
   .inicio__conteudo { transform: none; opacity: 1; }
   .inicio__planeta { transform: translateX(-50%); }
 }
+
+/* Fonte antiga */
+:root:is([data-font="titulos"], [data-font="tudo"]) .inicio__nome { font-size: 13px; letter-spacing: .08em; }
+:root:is([data-font="titulos"], [data-font="tudo"]) .inicio__descer,
+:root:is([data-font="titulos"], [data-font="tudo"]) .inicio__dica { font-size: 12px; letter-spacing: .06em; word-spacing: .15em; }
+:root[data-font="tudo"] .inicio__frase { letter-spacing: .02em; line-height: 1.6; }
