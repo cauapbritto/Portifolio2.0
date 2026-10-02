@@ -17,7 +17,7 @@
 <meta property="og:url" content="https://cauabrito.com.br/" data-en-content="https://cauabrito.com.br/en.html">
 <meta property="og:title" content="Cauã Pedrozo Brito · Desenvolvedor Front-end" data-en-content="Cauã Pedrozo Brito · Front-end Developer">
 <meta property="og:description" content="Desenvolvedor front-end em formação em Cuiabá, MT. Aberto a oportunidades, também remoto." data-en-content="Front-end developer in training based in Cuiabá, Brazil. Open to opportunities, including remote.">
-<meta property="og:image" content="https://cauabrito.com.br/assets/og.jpg" data-en-content="https://cauabrito.com.br/assets/og-en.jpg">
+<meta property="og:image" content="https://cauabrito.com.br/assets/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Cauã Pedrozo Brito, desenvolvedor front-end: o nome Cauanzera sobre um céu de estrelas" data-en-content="Cauã Pedrozo Brito, front-end developer: the name Cauanzera over a starry sky">
@@ -107,7 +107,6 @@
   --muted: #9C9A93;
   --accent: #FF7A45;
   --accent-ink: #0D0E10;      /* texto em cima do accent */
-  --ok: #4ADE80;              /* "disponível" */
   --star: 236, 234, 228;      /* rgb das estrelas do canvas, use rgba(var(--star), a) */
   --glow: 255, 122, 69;       /* rgb do brilho, use rgba(var(--glow), a) */
   --cool: 120, 150, 255;      /* rgb da nebulosa fria */
@@ -155,7 +154,6 @@
     --muted: #66645D;
     --accent: #B03A0A;
     --accent-ink: #FFFFFF;
-    --ok: #15803D;
     --star: 22, 23, 26;
     --glow: 176, 58, 10;
     --cool: 70, 90, 170;
@@ -165,7 +163,6 @@
 }
 :root[data-theme="light"] {
   color-scheme: light;
-  --ok: #15803D;
   --bg: #F4F2EC;
   --bg-2: #EEEBE3;
   --surface: #FFFFFF;
@@ -359,11 +356,10 @@ main { position: relative; z-index: 2; }
   .projetos__nav, .projetos__progresso, .projetos__contador, .sobre__numero, .rodape__topo { display: none !important; }
   [data-revelar], [data-revelar="mascara"] > span, .sobre__w { opacity: 1 !important; transform: none !important; }
   .inicio, .sobre__palco, .contato, .contato__miolo, .projetos__palco { min-height: 0 !important; height: auto !important; padding: 18px 0 !important; }
-  .inicio, .inicio__conteudo, .inicio__rotulo { display: block !important; justify-items: start !important; text-align: left !important; }
+  .inicio, .inicio__conteudo { display: block !important; justify-items: start !important; text-align: left !important; }
   .inicio__conteudo { transform: none !important; opacity: 1 !important; }
   .inicio__conteudo > * + * { margin-top: 8px !important; }
-  .inicio__marca { font-size: 44px !important; text-shadow: none; }
-  .inicio__acoes { display: none !important; }
+  .inicio__marca { font-size: 31px !important; text-shadow: none; }
   .sobre, .projetos { height: auto !important; }
   .sobre__palco, .projetos__palco { position: static !important; overflow: visible !important; }
   .projetos__topo { position: static !important; margin: 0 0 16px !important; }
@@ -373,7 +369,7 @@ main { position: relative; z-index: 2; }
   .projeto__card { transform: none !important; opacity: 1 !important; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr) !important; }
   .projeto__midia { translate: none !important; box-shadow: none !important; }
   .projeto__img, .projeto__quadro svg { translate: none !important; scale: none !important; }
-  .contato__titulo { font-size: 36px !important; text-shadow: none; }
+  .contato__titulo { font-size: 25px !important; text-shadow: none; }
   .email__email { font-size: 22px !important; }
   .rodape { padding: 12px 0 0 !important; }
   .botao, .projeto__chips li { background: #fff !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
@@ -993,37 +989,11 @@ html:not(.js) .hud-base { display: none; }
   opacity: calc(1 - var(--sai) * 1.4);
 }
 
-.inicio__rotulo { max-width: 100%; color: var(--text-2); text-wrap: balance; }
-/* Ponto verde de "disponível", pulsando devagar. Fica na linha do texto, colado na primeira palavra, mesmo quando o rótulo quebra. */
-.inicio__status {
-  position: relative;
-  display: inline-block;
-  vertical-align: .08em;
-  margin-right: 10px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--ok);
-}
-.inicio__status::after {
-  content: "";
-  position: absolute;
-  inset: -4px;
-  border-radius: 50%;
-  border: 1px solid var(--ok);
-  opacity: 0;
-  animation: inicio-status 2.4s var(--ease-out) infinite;
-}
-@keyframes inicio-status {
-  0% { transform: scale(.5); opacity: .8; }
-  100% { transform: scale(1.6); opacity: 0; }
-}
-
 .inicio__marca {
   font-family: var(--font-display);
   font-weight: 400;
-  /* Zero Hour mede ~9,2em em "Cauanzera": 9,4vw ocupa ~86% da largura. */
-  font-size: clamp(30px, 9.4vw, 176px);
+  /* Zero Hour mede ~9,2em em "Cauanzera": 6,6vw ocupa ~60% da largura. */
+  font-size: clamp(21px, 6.6vw, 123px);
   line-height: .95;
   letter-spacing: 0;
   white-space: nowrap;
@@ -1033,13 +1003,6 @@ html:not(.js) .hud-base { display: none; }
 .inicio__palavra { display: inline-block; }
 .inicio__char { display: inline-block; }
 
-.inicio__frase {
-  max-width: 42ch;
-  font-size: clamp(16px, 1.45vw, 20px);
-  line-height: 1.55;
-  color: var(--text-2);
-  text-wrap: balance;
-}
 /* O nome real, legível em qualquer modo de fonte (o "Cauanzera" acima é a marca). */
 .inicio__nome {
   margin-top: calc(clamp(16px, 2.2vw, 26px) * -.55);
@@ -1049,13 +1012,6 @@ html:not(.js) .hud-base { display: none; }
   line-height: 1.15;
   letter-spacing: -.01em;
   color: var(--text);
-}
-.inicio__acoes {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 4px;
 }
 
 .inicio__descer {
@@ -1154,11 +1110,8 @@ html:not(.js) .hud-base { display: none; }
 }
 
 /* Antes da abertura terminar, o conteúdo espera escondido. */
-.abrindo .inicio__rotulo,
 .abrindo .inicio__char,
 .abrindo .inicio__nome,
-.abrindo .inicio__acoes,
-.abrindo .inicio__frase,
 .abrindo .inicio__descer,
 .abrindo .inicio__dica,
 .abrindo .inicio__planeta { opacity: 0; }
@@ -1170,11 +1123,10 @@ html:not(.js) .hud-base { display: none; }
 }
 /* Tela baixa: o nome-marca encolhe para caber tudo acima do planeta. */
 @media (max-height: 760px) and (min-width: 641px) {
-  .inicio__marca { font-size: clamp(30px, 7.4vw, 120px); }
+  .inicio__marca { font-size: clamp(21px, 5.2vw, 84px); }
   .inicio { padding-top: 88px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .inicio__status::after { animation: none; }
   .inicio__trilha span { animation: none; transform: translateY(11px); }
   .inicio__conteudo { transform: none; opacity: 1; }
   .inicio__planeta { transform: translateX(-50%); }
@@ -1183,7 +1135,6 @@ html:not(.js) .hud-base { display: none; }
 /* Fonte antiga */
 :root:is([data-font="titulos"], [data-font="tudo"]) .inicio__descer,
 :root:is([data-font="titulos"], [data-font="tudo"]) .inicio__dica { font-size: 12px; letter-spacing: .06em; word-spacing: .15em; }
-:root[data-font="tudo"] .inicio__frase { letter-spacing: .02em; line-height: 1.6; }
 
 .calmo .inicio__conteudo { transform: none; opacity: 1; }
 .calmo .inicio__planeta { transform: translateX(-50%); }
@@ -1234,23 +1185,6 @@ html:not(.js) .inicio__dica { display: none; }
 }
 .sobre--cena .sobre__manifesto[data-revelar] { opacity: 1; transform: none; }
 
-.sobre__fatos {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0 clamp(16px, 2.4vw, 32px);
-  margin: 0;
-}
-.sobre__fato {
-  display: grid;
-  align-content: start;
-  gap: 8px;
-  padding-top: 16px;
-  border-top: 1px solid var(--line);
-}
-.sobre__fato dd { margin: 0; font-size: 15px; line-height: 1.45; color: var(--text-2); text-wrap: pretty; }
-
-/* Os fatos (o que o recrutador procura) ficam visíveis desde o começo; só o texto acende com a rolagem. */
-.sobre--cena .sobre__fato[data-revelar] { opacity: 1; transform: none; }
 /* Quem chega pelo menu, trilho ou terminal vê o texto já aceso. */
 .sobre.is-aceso .sobre__w { opacity: 1; }
 
@@ -1269,31 +1203,17 @@ html:not(.js) .inicio__dica { display: none; }
   user-select: none;
 }
 
-/* Tela larga: o texto à esquerda e os fatos numa coluna à direita. */
+/* Tela larga: o texto um pouco maior. */
 @media (min-width: 1100px) {
-  .sobre__miolo { grid-template-columns: minmax(0, 1fr) minmax(260px, 360px); grid-template-rows: auto 1fr; column-gap: clamp(40px, 5vw, 96px); align-items: end; }
-  .sobre__miolo > .capitulo { grid-column: 1 / -1; }
-  .sobre__fatos { grid-template-columns: minmax(0, 1fr); gap: 12px; align-self: end; }
-  .sobre__fato { gap: 4px; padding-top: 10px; }
-  .sobre__fato dd { font-size: 14px; line-height: 1.4; }
   .sobre__manifesto { font-size: clamp(30px, 3.6vw, 60px); }
-}
-@media (max-width: 900px) {
-  .sobre__fatos { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 20px; }
-}
-@media (max-width: 480px) {
-  .sobre__fatos { grid-template-columns: minmax(0, 1fr); gap: 0; }
-  .sobre__fato { padding: 12px 0; grid-template-columns: 9.5em 1fr; align-items: baseline; }
-  .sobre__fato dd { font-size: 14px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .sobre__w { opacity: 1; transition: none; }
   .sobre__numero { transform: none; }
 }
 
-/* Fonte antiga em tudo: o texto grande e os fatos também em Zero Hour, com mais ar entre as letras. */
+/* Fonte antiga em tudo: o texto grande também em Zero Hour, com mais ar entre as letras. */
 :root[data-font="tudo"] .sobre__manifesto { max-width: 26ch; font-size: clamp(22px, 2.9vw, 46px); letter-spacing: .01em; line-height: 1.2; }
-:root[data-font="tudo"] .sobre__fato dd { letter-spacing: .02em; line-height: 1.55; }
 
 /* Notebook com tela baixa (768–820px): texto um pouco menor para a cena caber. */
 @media (min-width: 1100px) and (max-height: 820px) {
@@ -1666,7 +1586,7 @@ html:not(.js) .projetos__contador { display: none; }
 }
 .contato__titulo {
   font-family: var(--font-head);
-  font-size: clamp(40px, 7.6vw, 124px);
+  font-size: clamp(28px, 5.3vw, 87px);
   font-weight: 600;
   line-height: .95;
   letter-spacing: -.04em;
@@ -2037,7 +1957,7 @@ html:not(.js) .email__magnet { display: none; }
 /* ---------- Fonte antiga (Zero Hour), nos modos "titulos" e "tudo" ----------
    Título maior para compensar os 86% da Zero Hour UI; rótulo, botão e links com corpo menor e pouco espaço
    entre letras. Sem descendentes, a folga embaixo do link sobrava: a entrelinha fecha e o fio fica a uns 6px. */
-:root:is([data-font="titulos"], [data-font="tudo"]) .contato__titulo { font-size: clamp(35px, 8vw, 137px); font-weight: 400; letter-spacing: .005em; }
+:root:is([data-font="titulos"], [data-font="tudo"]) .contato__titulo { font-size: clamp(25px, 5.6vw, 96px); font-weight: 400; letter-spacing: .005em; }
 :root:is([data-font="titulos"], [data-font="tudo"]) .email__label { font-size: 13px; letter-spacing: .03em; word-spacing: .15em; }
 :root:is([data-font="titulos"], [data-font="tudo"]) .email__btn { font-size: 14px; font-weight: 400; letter-spacing: .03em; }
 :root:is([data-font="titulos"], [data-font="tudo"]) .email__link { font-size: 15px; font-weight: 400; letter-spacing: .03em; }
@@ -2959,15 +2879,8 @@ html:not(.js) .arco { display: none; }
   </div>
 
   <div class="inicio__conteudo">
-    <p class="inicio__rotulo rotulo"><span class="inicio__status" aria-hidden="true"></span><span data-en='Open to <span class="nobr">front-end</span> roles · Cuiabá, Brazil or remote'>Aberto a oportunidades em <span class="nobr">front-end</span> · Cuiabá, MT · remoto</span></p>
     <p class="inicio__marca" aria-hidden="true"><span class="inicio__palavra">Cauanzera</span></p>
     <h1 class="inicio__nome" id="inicio-t" data-foco>Cauã Pedrozo Brito</h1>
-    <p class="inicio__frase" data-en='<span class="nobr">Front-end</span> developer in training. I build interactive, accessible interfaces with plain HTML, CSS and JavaScript, no frameworks.'>Desenvolvedor <span class="nobr">front-end</span> em formação. Crio interfaces interativas e acessíveis com HTML, CSS e JavaScript, sem framework.</p>
-    <div class="inicio__acoes">
-      <a class="botao botao--forte" href="#projetos" data-ir="projetos" data-cursor="ver" data-en="See projects">Ver projetos</a>
-      <a class="botao" href="assets/Curriculo_Caua_Pedrozo_Brito.pdf" download data-cursor="baixar" data-en='Résumé <span class="botao__extra">PDF · PT</span>'>Currículo <span class="botao__extra">PDF</span></a>
-      <a class="botao" href="mailto:caua.pbritto@gmail.com?subject=Contato%20pelo%20portf%C3%B3lio" data-en-href="mailto:caua.pbritto@gmail.com?subject=Hello%20from%20your%20portfolio" data-cursor="escrever" data-en="Email">E-mail</a>
-    </div>
     <a class="inicio__descer" href="#sobre" data-ir="sobre" data-cursor="descer">
       <span class="inicio__trilha" aria-hidden="true"><span></span></span>
       <span data-en="Scroll to explore">Role para explorar</span>
@@ -2982,14 +2895,6 @@ html:not(.js) .arco { display: none; }
     <div class="sobre__miolo">
       <h2 class="capitulo" id="sobre-t" data-foco data-en='<span class="capitulo__n">0<span class="um">1</span></span>About'><span class="capitulo__n">0<span class="um">1</span></span>Sobre</h2>
       <p class="sobre__manifesto" data-revelar data-en='I’m Cauã. I work in IT in Cuiabá, study Systems Analysis and Development, and I enjoy turning code into <em>places to explore</em>: interfaces that respond to the people moving through them, fast, accessible and crafted with attention to detail.'>Sou o Cauã. Trabalho com TI em Cuiabá, estudo Análise e Desenvolvimento de Sistemas e gosto de transformar código em <em>lugares para explorar</em>: interfaces que respondem a quem passa por elas, rápidas, acessíveis e cuidadas nos detalhes.</p>
-      <dl class="sobre__fatos">
-        <div class="sobre__fato" data-revelar style="--i:0"><dt class="rotulo" data-en="Now">Hoje</dt><dd data-en="IT Analyst at the Casa Civil (Chief of Staff’s Office) of the Mato Grosso State Government">Analista de TI na Casa Civil do Governo de Mato Grosso</dd></div>
-        <div class="sobre__fato" data-revelar style="--i:1"><dt class="rotulo" data-en="Education">Formação</dt><dd data-en="Systems Analysis and Development · FASIPE · 3rd semester, expected graduation Dec 2027">Análise e Desenvolvimento de Sistemas · FASIPE · 3º semestre, conclusão prevista em dez/2027</dd></div>
-        <div class="sobre__fato" data-revelar style="--i:2"><dt class="rotulo" data-en="Focus">Foco</dt><dd data-en='<span class="nobr">Front-end</span>, interactive interfaces and accessibility'><span class="nobr">Front-end</span>, interfaces interativas e acessibilidade</dd></div>
-        <div class="sobre__fato" data-revelar style="--i:3"><dt class="rotulo"><span class="nobr">Front-end</span></dt><dd data-en="HTML, CSS, JavaScript, Canvas 2D and Web Audio">HTML, CSS, JavaScript, Canvas 2D e Web Audio</dd></div>
-        <div class="sobre__fato" data-revelar style="--i:4"><dt class="rotulo" data-en="Also">Também</dt><dd data-en="Python (OpenCV, MediaPipe, scikit-learn), Git and GitHub">Python (OpenCV, MediaPipe, scikit-learn), Git e GitHub</dd></div>
-        <div class="sobre__fato" data-revelar style="--i:5"><dt class="rotulo" data-en="Based in">Base</dt><dd data-en="Cuiabá, Brazil · open to remote work">Cuiabá, MT · aberto a remoto</dd></div>
-      </dl>
     </div>
   </div>
 </section>
@@ -3084,10 +2989,9 @@ html:not(.js) .arco { display: none; }
             <p class="projeto__meta"><span class="projeto__n">0<span class="um">1</span></span><span data-en="2026 · Academic · Team of 4">2026 · Acadêmico · Grupo de 4</span></p>
             <h3 class="projeto__nome" id="projeto-librahin">Librahin</h3>
             <p class="projeto__sub" data-en="Brazilian Sign Language (Libras) to text and speech">Tradução de Libras para texto e voz</p>
-            <p class="projeto__desc" data-en="Recognizes Libras signs through the webcam in real time, builds the sentence and speaks it in Portuguese. Runs entirely on the computer, no internet needed.">Reconhece sinais de Libras pela webcam, em tempo real, monta a frase e fala em português. Roda inteiro no computador, sem internet.</p>
+            <p class="projeto__desc" data-en="Recognizes Libras signs through the webcam and speaks the sentence in Portuguese, offline.">Reconhece sinais de Libras pela webcam e fala a frase em português, sem internet.</p>
             <dl class="projeto__detalhes">
-              <div><dt class="rotulo" data-en="My role">Minha parte</dt><dd data-en="I did almost all of the project, especially the coding. A Systems Analysis and Development course project with Adryel Rocha, Alber Cabral and João Malaquias, supervised by Prof. Éder Lemes.">Fiz praticamente todo o projeto, principalmente o desenvolvimento. Trabalho do curso de ADS com Adryel Rocha, Alber Cabral e João Malaquias, orientado pelo professor Éder Lemes.</dd></div>
-              <div><dt class="rotulo" data-en="Decisions">Decisões</dt><dd data-en="Stores only hand and body landmarks (MediaPipe), never the images; analyzes 1.5 s windows, because many signs involve movement; compares Random Forest, SVM and MLP; accepts a sign only above 75% confidence.">Guarda só os pontos da mão e do corpo (MediaPipe), não as imagens; lê janelas de 1,5 s, porque vários sinais têm movimento; compara Random Forest, SVM e MLP; aceita um sinal só acima de 75% de confiança.</dd></div>
+              <div><dt class="rotulo" data-en="My role">Minha parte</dt><dd data-en="I did almost all of the project, especially the coding.">Fiz praticamente todo o projeto, principalmente o desenvolvimento.</dd></div>
             </dl>
             <ul class="projeto__chips" role="list" aria-label="Tecnologias" data-en-aria-label="Technologies">
               <li>Python</li><li>OpenCV</li><li>MediaPipe</li><li>scikit-learn</li><li>CustomTkinter</li>
@@ -3108,14 +3012,10 @@ html:not(.js) .arco { display: none; }
             </div>
           </div>
           <div class="projeto__info">
-            <p class="projeto__meta"><span class="projeto__n">02</span><span data-en="2026 · Solo project · Cuiabá, Brazil">2026 · Projeto solo · Cuiabá, MT</span></p>
+            <p class="projeto__meta"><span class="projeto__n">02</span><span data-en="2026 · Solo project">2026 · Projeto solo</span></p>
             <h3 class="projeto__nome" id="projeto-ecopontos">EcoPontos</h3>
             <p class="projeto__sub" data-en="Where to drop off e-waste">Onde descartar lixo eletrônico</p>
-            <p class="projeto__desc" data-en="A site that helps people find e-waste collection points in Cuiabá: public drop-off points, stores, supermarkets and cooperatives.">Site que ajuda a encontrar pontos de coleta de lixo eletrônico em Cuiabá: ecopontos públicos, lojas, supermercados e cooperativas.</p>
-            <dl class="projeto__detalhes">
-              <div><dt class="rotulo" data-en="My role">Minha parte</dt><dd data-en="I built it solo, from scratch, with no frameworks.">Fiz sozinho, do zero, sem framework.</dd></div>
-              <div><dt class="rotulo" data-en="Highlights">Destaques</dt><dd data-en="Search by name and filter by type of place; light and dark themes that remember your choice; share a collection point via the Web Share API; works with screen readers, reduced motion and high contrast.">Busca por nome e filtro por tipo de local; tema claro e escuro que lembra a escolha; compartilhar um ponto pela Web Share API; leitor de tela, movimento reduzido e alto contraste.</dd></div>
-            </dl>
+            <p class="projeto__desc" data-en="Finds e-waste collection points in Cuiabá, with search and filters.">Encontra pontos de coleta de lixo eletrônico em Cuiabá, com busca e filtros.</p>
             <ul class="projeto__chips" role="list" aria-label="Tecnologias" data-en-aria-label="Technologies">
               <li>HTML</li><li>CSS</li><li>JavaScript</li>
             </ul>
@@ -3139,10 +3039,7 @@ html:not(.js) .arco { display: none; }
             <p class="projeto__meta"><span class="projeto__n">03</span><span data-en="2026 · Personal project">2026 · Projeto pessoal</span></p>
             <h3 class="projeto__nome" id="projeto-portfolio" data-en="Portfolio 2.0">Portfólio 2.0</h3>
             <p class="projeto__sub" data-en="This site">Este site</p>
-            <p class="projeto__desc" data-en='A single full-screen page: a 3D starfield you travel through as you scroll, with a terminal, a half-arc menu, light and dark themes, and Portuguese and English versions. The next step after Portfolio <span class="projeto__versao-inline">v1</span>.'>Uma página só, em tela cheia: um céu de estrelas em 3D que a rolagem atravessa, com terminal, menu em meio-arco, tema claro e escuro e versão em inglês. Evolução do Portfólio <span class="projeto__versao-inline">v1</span>.</p>
-            <dl class="projeto__detalhes">
-              <div><dt class="rotulo" data-en="Highlights">Destaques</dt><dd data-en="Fully usable by keyboard, without JavaScript and with “reduce motion” on; the sky pauses when the tab is hidden and saves battery while the page is idle; a Node build outputs a single HTML file.">Funciona pelo teclado, sem JavaScript e com “reduzir movimento”; o céu pausa com a aba escondida e economiza bateria com a página parada; um build em Node gera um único HTML.</dd></div>
-            </dl>
+            <p class="projeto__desc" data-en="A 3D starfield you travel through as you scroll, with a terminal, in Portuguese and English. No frameworks.">Um céu de estrelas em 3D que a rolagem atravessa, com terminal e versão em inglês. Sem framework.</p>
             <ul class="projeto__chips" role="list" aria-label="Tecnologias" data-en-aria-label="Technologies">
               <li>HTML</li><li>CSS</li><li>JavaScript</li><li>Canvas 2D</li><li>Web Audio</li>
             </ul>
@@ -4556,15 +4453,12 @@ window.CZ = (() => {
     if (CZ.reduzido()) return;
     const add = (el, kf, opts) => { if (el && el.animate) el.animate(kf, { fill: 'backwards', easing: OUT, ...opts }); };
     add(root.querySelector('.inicio__planeta'), [{ opacity: 0, transform: 'translate3d(-50%, 12vh, 0)' }, { opacity: 1, transform: 'translate3d(-50%, 0, 0)' }], { duration: 1600, delay: 100 });
-    add(root.querySelector('.inicio__rotulo'), [{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], { duration: 600, delay: 420 });
     letras.forEach((el, i) => add(el, [
       { opacity: 0, transform: 'translateY(60%) scale(.9)' },
       { opacity: 1, offset: 0.4 },
       { opacity: 1, transform: 'none' },
     ], { duration: 900, delay: 360 + i * 55 }));
     add(root.querySelector('.inicio__nome'), [{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'none' }], { duration: 700, delay: 420 });
-    add(root.querySelector('.inicio__frase'), [{ opacity: 0, transform: 'translateY(12px)' }, { opacity: 1, transform: 'none' }], { duration: 700, delay: 520 });
-    add(root.querySelector('.inicio__acoes'), [{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'none' }], { duration: 700, delay: 640 });
     add(root.querySelector('.inicio__descer'), [{ opacity: 0 }, { opacity: 1 }], { duration: 600, delay: 900 });
     add(root.querySelector('.inicio__dica'), [{ opacity: 0 }, { opacity: 1 }], { duration: 600, delay: 1400 });
   }

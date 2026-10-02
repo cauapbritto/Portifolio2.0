@@ -9,9 +9,9 @@ O site é uma viagem só, em tela cheia: um céu de estrelas em 3D fica atrás d
 | Capítulo | O que acontece |
 | --- | --- |
 | Abertura | Um contador curto liga o sistema; a tela se abre ao meio e as estrelas chegam como quem sai do hiperespaço. Quem volta em até 7 dias vê uma abertura mais curta, e qualquer clique ou tecla pula. |
-| 00 · Início | O nome, a disponibilidade ("aberto a oportunidades em front-end"), uma frase sobre o que eu faço e os botões Ver projetos, Currículo e E-mail. Ao rolar, a câmera decola e o planeta fica para trás. |
-| 01 · Sobre | O texto fica preso na tela e acende palavra por palavra conforme a rolagem; ao lado, trabalho atual, formação, foco e ferramentas. |
-| 02 · Projetos | Em tela larga, a rolagem vertical atravessa uma trilha horizontal: Librahin, EcoPontos e este portfólio, cada um com o que eu fiz e as decisões principais. Setas, teclado (← →) e o trackpad também andam pela trilha. |
+| 00 · Início | O nome Cauanzera e o nome real no meio do céu, com a borda de um planeta embaixo. Ao rolar, a câmera decola e o planeta fica para trás. |
+| 01 · Sobre | O texto fica preso na tela e acende palavra por palavra conforme a rolagem. |
+| 02 · Projetos | Em tela larga, a rolagem vertical atravessa uma trilha horizontal: Librahin, EcoPontos e este portfólio, cada um em poucas linhas. Setas, teclado (← →) e o trackpad também andam pela trilha. |
 | 03 · Contato | E-mail (link e botão que copia o endereço), currículo em PDF, GitHub, LinkedIn e o caminho de volta ao início. |
 
 Sempre na tela:
@@ -67,7 +67,7 @@ Esse comando reescreve o `index.html`, que junta tudo num arquivo só, pronto pa
 
 O português é o padrão, em `cauabrito.com.br`. A versão em inglês fica em `cauabrito.com.br/en.html` e também aparece quando a pessoa escolhe `EN` no topo (ou `idioma en` no terminal), ou quando o navegador não tem português entre os idiomas preferidos. A escolha fica salva no navegador e o endereço acompanha a troca, para quem copiar o link ver o mesmo idioma. O currículo em PDF continua em português.
 
-O `en.html` é gerado pelo `build.js`: título, descrição, canonical e as tags de compartilhamento (`og:*`, com a imagem `assets/og-en.jpg`) já vêm em inglês, porque buscadores e prévias de link (LinkedIn, WhatsApp) não rodam JavaScript. O português desses campos fica em `data-pt` e `data-pt-*`, para o botão PT voltar.
+O `en.html` é gerado pelo `build.js`: título, descrição, canonical e as tags de compartilhamento (`og:*`) já vêm em inglês, porque buscadores e prévias de link (LinkedIn, WhatsApp) não rodam JavaScript. O português desses campos fica em `data-pt` e `data-pt-*`, para o botão PT voltar.
 
 O texto em inglês fica no próprio HTML, ao lado do português:
 
@@ -108,7 +108,7 @@ Na Zero Hour o "1" é o mesmo traço do "I": nos rótulos, o número ganha `<spa
 
 ## Domínio
 
-O arquivo `CNAME` aponta o GitHub Pages para `cauabrito.com.br`. As imagens de compartilhamento (`assets/og.jpg` e `assets/og-en.jpg`), o `sitemap.xml` (com as duas versões de idioma) e o `robots.txt` usam esse endereço.
+O arquivo `CNAME` aponta o GitHub Pages para `cauabrito.com.br`. A imagem de compartilhamento (`assets/og.jpg`), o `sitemap.xml` (com as duas versões de idioma) e o `robots.txt` usam esse endereço.
 
 ## Créditos
 
