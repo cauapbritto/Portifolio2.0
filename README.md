@@ -55,4 +55,4 @@ Esse comando reescreve o `index.html`.
 ## Créditos
 
 - Fonte Zero Hour, de Raymond Larabie, em domínio público (CC0).
-- Schibsted Grotesk e Martian Mono, do Google Fonts (SIL Open Font License).
+- Schibsted Grotesk e Martian Mono, do Google Fonts (SIL Open Font License).  
