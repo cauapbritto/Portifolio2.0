@@ -95,6 +95,8 @@
     root.classList.toggle('term--busy', busy.size > 0);
     if (status) status.textContent = busy.size ? Array.from(busy).join(' + ') : CZ.t('pronto', 'ready');
   }
+  if (status && !busy.size) status.textContent = CZ.t('pronto', 'ready');
+  CZ.on('idioma', () => { if (status && !busy.size) status.textContent = CZ.t('pronto', 'ready'); });
 
   /* ---------- matrix: chuva de glifos num canvas só sobre a tela ---------- */
 

@@ -24,9 +24,11 @@ window.CZ = (() => {
 
   /* ---------- preferências ---------- */
 
+  // Sem armazenamento (dados do site bloqueados), a escolha vale ao menos até recarregar a página.
+  const memoria = new Map();
   const store = {
-    get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
-    set(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* sem armazenamento: só não lembra */ } },
+    get(k) { try { return localStorage.getItem(k); } catch (e) { return memoria.has(k) ? memoria.get(k) : null; } },
+    set(k, v) { memoria.set(k, v); try { localStorage.setItem(k, v); } catch (e) { /* só não lembra depois */ } },
   };
   // Movimento: o sistema pode pedir menos movimento, e o visitante pode escolher "calmo" em Ajustes.
   let calmo = store.get('cz-movimento') === 'calmo';

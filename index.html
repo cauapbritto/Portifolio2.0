@@ -3161,7 +3161,7 @@ html:not(.js) .arco { display: none; }
     <div class="term__bar">
       <span class="term__dots" aria-hidden="true"><i></i><i></i><i></i></span>
       <h2 class="term__title" id="term-titulo">cauanzera ~ terminal</h2>
-      <span class="term__status" aria-hidden="true" data-en="ready">pronto</span>
+      <span class="term__status" aria-hidden="true">pronto</span>
       <button class="term__fechar" type="button" data-term-fechar aria-label="Fechar terminal" data-en-aria-label="Close terminal">
         <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M4 4l8 8M12 4l-8 8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
       </button>
@@ -3220,9 +3220,11 @@ window.CZ = (() => {
 
   /* ---------- preferências ---------- */
 
+  // Sem armazenamento (dados do site bloqueados), a escolha vale ao menos até recarregar a página.
+  const memoria = new Map();
   const store = {
-    get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
-    set(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* sem armazenamento: só não lembra */ } },
+    get(k) { try { return localStorage.getItem(k); } catch (e) { return memoria.has(k) ? memoria.get(k) : null; } },
+    set(k, v) { memoria.set(k, v); try { localStorage.setItem(k, v); } catch (e) { /* só não lembra depois */ } },
   };
   // Movimento: o sistema pode pedir menos movimento, e o visitante pode escolher "calmo" em Ajustes.
   let calmo = store.get('cz-movimento') === 'calmo';
@@ -4660,7 +4662,8 @@ window.CZ = (() => {
     const x = -p * dist;
     trilha.style.transform = `translate3d(${x.toFixed(1)}px, 0, 0)`;
     if (progresso) progresso.style.setProperty('--p', p.toFixed(3));
-    let melhor = 0, bd = Infinity;
+    // melhor: o projeto mais perto do centro (o contador); perto: qualquer slide, inclusive o do GitHub (as setas).
+    let melhor = 0, bd = Infinity, perto = 0, bp = Infinity;
     pecas.forEach((pc, i) => {
       const d = clamp((centros[i] + x - largura / 2) / largura, -1, 1);
       const ad = Math.abs(d);
@@ -4670,8 +4673,9 @@ window.CZ = (() => {
       }
       if (pc.midia) pc.midia.style.translate = `${(d * -40).toFixed(1)}px 0`;
       if (i < nProjetos && ad < bd) { bd = ad; melhor = i; }
+      if (ad < bp) { bp = ad; perto = i; }
     });
-    indice = melhor;
+    indice = perto;
     // aria-disabled (e não disabled): o botão focado não perde o foco quando chega na ponta.
     setas.forEach((b) => b.setAttribute('aria-disabled', String((b.dataset.dir === '-1' && p < 0.015) || (b.dataset.dir === '1' && p > 0.985))));
     const atual = String(melhor + 1).padStart(2, '0');
@@ -4698,8 +4702,7 @@ window.CZ = (() => {
   }
   setas.forEach((b) => b.addEventListener('click', () => {
     if (b.getAttribute('aria-disabled') === 'true') return;
-    // no último projeto, "próximo" leva ao fim da trilha (o card do GitHub)
-    irPara(indice + Number(b.dataset.dir) + (Number(b.dataset.dir) > 0 && indice >= nProjetos - 1 ? 1 : 0));
+    irPara(indice + Number(b.dataset.dir));
   }));
   const naTrilha = () => modo && scrollY >= topo - 2 && scrollY <= topo + dist + 2;
   addEventListener('keydown', (e) => {
@@ -5536,6 +5539,8 @@ window.CZ = (() => {
     root.classList.toggle('term--busy', busy.size > 0);
     if (status) status.textContent = busy.size ? Array.from(busy).join(' + ') : CZ.t('pronto', 'ready');
   }
+  if (status && !busy.size) status.textContent = CZ.t('pronto', 'ready');
+  CZ.on('idioma', () => { if (status && !busy.size) status.textContent = CZ.t('pronto', 'ready'); });
 
   /* ---------- matrix: chuva de glifos num canvas só sobre a tela ---------- */
 

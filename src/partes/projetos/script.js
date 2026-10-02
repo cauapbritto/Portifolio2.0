@@ -62,7 +62,8 @@
     const x = -p * dist;
     trilha.style.transform = `translate3d(${x.toFixed(1)}px, 0, 0)`;
     if (progresso) progresso.style.setProperty('--p', p.toFixed(3));
-    let melhor = 0, bd = Infinity;
+    // melhor: o projeto mais perto do centro (o contador); perto: qualquer slide, inclusive o do GitHub (as setas).
+    let melhor = 0, bd = Infinity, perto = 0, bp = Infinity;
     pecas.forEach((pc, i) => {
       const d = clamp((centros[i] + x - largura / 2) / largura, -1, 1);
       const ad = Math.abs(d);
@@ -72,8 +73,9 @@
       }
       if (pc.midia) pc.midia.style.translate = `${(d * -40).toFixed(1)}px 0`;
       if (i < nProjetos && ad < bd) { bd = ad; melhor = i; }
+      if (ad < bp) { bp = ad; perto = i; }
     });
-    indice = melhor;
+    indice = perto;
     // aria-disabled (e não disabled): o botão focado não perde o foco quando chega na ponta.
     setas.forEach((b) => b.setAttribute('aria-disabled', String((b.dataset.dir === '-1' && p < 0.015) || (b.dataset.dir === '1' && p > 0.985))));
     const atual = String(melhor + 1).padStart(2, '0');
@@ -100,8 +102,7 @@
   }
   setas.forEach((b) => b.addEventListener('click', () => {
     if (b.getAttribute('aria-disabled') === 'true') return;
-    // no último projeto, "próximo" leva ao fim da trilha (o card do GitHub)
-    irPara(indice + Number(b.dataset.dir) + (Number(b.dataset.dir) > 0 && indice >= nProjetos - 1 ? 1 : 0));
+    irPara(indice + Number(b.dataset.dir));
   }));
   const naTrilha = () => modo && scrollY >= topo - 2 && scrollY <= topo + dist + 2;
   addEventListener('keydown', (e) => {
