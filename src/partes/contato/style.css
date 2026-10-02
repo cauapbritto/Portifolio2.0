@@ -401,3 +401,12 @@ html:not(.js) .email__magnet { display: none; }
 /* "tudo": o e-mail e o texto também viram Zero Hour. Corpo mínimo menor para o e-mail caber numa linha em 390px. */
 :root[data-font="tudo"] .email__email { font-size: clamp(21px, 4.4vw, 52px); line-height: 1.15; letter-spacing: .01em; }
 :root[data-font="tudo"] .contato__texto { letter-spacing: .02em; line-height: 1.6; }
+
+/* Margem para o trilho de capítulos à direita. */
+@media (min-width: 761px) {
+  .contato__miolo, .rodape { padding-right: calc(var(--gutter) + 96px); max-width: 1276px; }
+}
+/* Tela muito estreita (zoom de 400%): o título quebra em vez de vazar. */
+@media (max-width: 360px) {
+  .contato__titulo { overflow-wrap: anywhere; }
+}

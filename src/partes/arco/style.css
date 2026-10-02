@@ -9,7 +9,7 @@
   flex-direction: column;
   align-items: center;
   width: min(380px, 94vw);
-  padding-bottom: calc(var(--hud) + 30px);
+  padding-bottom: calc(var(--hud) + 40px);
   transform: translateX(-50%);
   color: var(--text);
   pointer-events: none;
@@ -233,9 +233,7 @@
   transform: scale(.5);
   transition: opacity 180ms var(--ease-out), transform 420ms var(--ease-out);
 }
-.arco:not([data-mode]):not(.is-open) .arco__g--moon,
-.arco[data-mode="dark"]:not(.is-open) .arco__g--moon,
-.arco[data-mode="light"]:not(.is-open) .arco__g--sun,
+.arco:not(.is-open) .arco__g--menu,
 .arco.is-open .arco__g--x {
   opacity: 1;
   transform: none;
@@ -275,6 +273,23 @@
   .arco__label { font-size: 7.8px; letter-spacing: .02em; }
 }
 
+/* A palavra "Menu" embaixo do botão: deixa claro o que ele abre. Some com o menu aberto. */
+.arco__rotulo {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--hud) - 4px);
+  transform: translateX(-50%);
+  font-family: var(--font-label);
+  font-size: 10px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--text-2);
+  pointer-events: none;
+  transition: opacity var(--dur-2) var(--ease-out);
+}
+.arco.is-open .arco__rotulo { opacity: 0; }
+:root:is([data-font="titulos"], [data-font="tudo"]) .arco__rotulo { font-size: 11px; letter-spacing: .06em; }
+
 /* Sem JS o menu não abre nem navega: o trilho de capítulos (links comuns) faz esse papel. */
 html:not(.js) .arco { display: none; }
 
@@ -291,9 +306,7 @@ html:not(.js) .arco { display: none; }
   .arco.is-open .arco__glyphs { transform: none; }
   .arco__glyphs { transition: none; }
   .arco__g,
-  .arco:not([data-mode]):not(.is-open) .arco__g--moon,
-  .arco[data-mode="dark"]:not(.is-open) .arco__g--moon,
-  .arco[data-mode="light"]:not(.is-open) .arco__g--sun,
+  .arco:not(.is-open) .arco__g--menu,
   .arco.is-open .arco__g--x { transform: none; transition: opacity 120ms linear; }
   .arco__pointer { transition: opacity 120ms linear; }
   .arco__tema-icon { transition: none; }
@@ -328,3 +341,9 @@ html:not(.js) .arco { display: none; }
 :where(:root[data-font="titulos"], :root[data-font="tudo"]) .arco__label { fill: var(--text-2); }
 /* Retorno: um corpo abaixo, para não competir com as fatias; entrelinha ímpar centra as maiúsculas no quadrado. */
 :root:is([data-font="titulos"], [data-font="tudo"]) .arco__status { font-size: 11px; line-height: 21px; letter-spacing: .03em; }
+
+@media (max-height: 520px) {
+  .arco { padding-bottom: 30px; width: min(300px, 90vw); }
+  .arco__toggle { width: 44px; height: 44px; margin: -22px 0 0 -22px; }
+  .arco__rotulo { display: none; }
+}

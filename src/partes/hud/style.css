@@ -271,3 +271,11 @@ html:not(.js) .hud-base { display: none; }
 :root:is([data-font="titulos"], [data-font="tudo"]) .hud__marca { font-size: 14px; letter-spacing: .06em; }
 :root:is([data-font="titulos"], [data-font="tudo"]) .hud__btn { font-size: 12px; letter-spacing: .04em; }
 :root:is([data-font="titulos"], [data-font="tudo"]) .trilho__item { font-size: 11px; letter-spacing: .03em; }
+
+/* Tela baixa (ex.: zoom de 200% num notebook): o HUD encolhe para sobrar espaço ao conteúdo. */
+@media (max-height: 520px) {
+  .hud-base, .hud-cantos { display: none; }
+  .hud-veu i:first-child { height: calc(var(--hud) + 44px); }
+  .hud-veu i:last-child { height: calc(var(--hud) + 56px); }
+  .hud { padding-top: 10px; }
+}

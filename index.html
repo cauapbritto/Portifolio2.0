@@ -130,11 +130,11 @@
     --text: #16171A;
     --text-2: #3B3D42;
     --muted: #66645D;
-    --accent: #C2410C;
+    --accent: #B03A0A;
     --accent-ink: #FFFFFF;
     --ok: #15803D;
     --star: 22, 23, 26;
-    --glow: 194, 65, 12;
+    --glow: 176, 58, 10;
     --cool: 70, 90, 170;
     --glass: rgba(244, 242, 236, .72);
     --shadow: 0 1px 0 rgba(255,255,255,.6) inset, 0 18px 40px -26px rgba(40,30,10,.35);
@@ -152,10 +152,10 @@
   --text: #16171A;
   --text-2: #3B3D42;
   --muted: #66645D;
-  --accent: #C2410C;
+  --accent: #B03A0A;
   --accent-ink: #FFFFFF;
   --star: 22, 23, 26;
-  --glow: 194, 65, 12;
+  --glow: 176, 58, 10;
   --cool: 70, 90, 170;
   --glass: rgba(244, 242, 236, .72);
   --shadow: 0 1px 0 rgba(255,255,255,.6) inset, 0 18px 40px -26px rgba(40,30,10,.35);
@@ -181,6 +181,8 @@ html {
   scrollbar-gutter: stable;
   scrollbar-color: var(--line-2) transparent;
   scrollbar-width: thin;
+  overscroll-behavior-x: none;
+  scroll-padding: calc(var(--hud) + 64px) 0 calc(var(--hud) + 110px);
 }
 body {
   margin: 0;
@@ -748,12 +750,19 @@ html:not(.js) .hud-base { display: none; }
 :root:is([data-font="titulos"], [data-font="tudo"]) .hud__marca { font-size: 14px; letter-spacing: .06em; }
 :root:is([data-font="titulos"], [data-font="tudo"]) .hud__btn { font-size: 12px; letter-spacing: .04em; }
 :root:is([data-font="titulos"], [data-font="tudo"]) .trilho__item { font-size: 11px; letter-spacing: .03em; }
+
+/* Tela baixa (ex.: zoom de 200% num notebook): o HUD encolhe para sobrar espaço ao conteúdo. */
+@media (max-height: 520px) {
+  .hud-base, .hud-cantos { display: none; }
+  .hud-veu i:first-child { height: calc(var(--hud) + 44px); }
+  .hud-veu i:last-child { height: calc(var(--hud) + 56px); }
+  .hud { padding-top: 10px; }
+}
 </style>
 <style>/* cursor */
-/* Cursor: um ponto exato e um anel que segue com atraso. Só com mouse e com movimento liberado. */
+/* Cursor: a seta do sistema continua visível; um anel segue com atraso e mostra o que um clique faz.
+   Só com mouse e com movimento liberado. */
 .cursor { display: none; }
-.tem-cursor, .tem-cursor * { cursor: none !important; }
-.tem-cursor input, .tem-cursor textarea { cursor: text !important; }
 .tem-cursor .cursor {
   display: block;
   position: fixed;
@@ -772,6 +781,7 @@ html:not(.js) .hud-base { display: none; }
   will-change: transform;
 }
 .cursor__ponto {
+  display: none; /* a seta do sistema já marca o ponto exato */
   width: 6px;
   height: 6px;
   margin: -3px 0 0 -3px;
@@ -816,6 +826,9 @@ html:not(.js) .hud-base { display: none; }
 .cursor.is-rotulo.is-apertado .cursor__circulo { transform: scale(2); }
 
 :root:is([data-font="titulos"], [data-font="tudo"]) .cursor__texto { font-size: 10px; letter-spacing: .04em; }
+
+/* Alto contraste do sistema: só o cursor do sistema. */
+@media (forced-colors: active) { .tem-cursor .cursor { display: none; } }
 </style>
 <style>/* inicio */
 /* Início: o nome no meio do céu e a borda de um planeta embaixo. Ao rolar, a câmera decola. */
@@ -1044,8 +1057,8 @@ html:not(.js) .hud-base { display: none; }
   overflow: hidden;
 }
 /* Cena: o palco fica preso na tela enquanto a seção (mais alta) passa por baixo. */
-.sobre--cena { height: 280vh; }
-.sobre--cena .sobre__palco { position: sticky; top: 0; height: 100vh; height: 100svh; }
+.sobre--cena { height: 190vh; }
+.sobre--cena .sobre__palco { position: sticky; top: 0; height: 100vh; height: 100svh; padding-top: 96px; padding-bottom: 104px; }
 
 .sobre__miolo {
   position: relative;
@@ -1068,7 +1081,7 @@ html:not(.js) .hud-base { display: none; }
 }
 .sobre__manifesto em { font-style: normal; color: var(--accent); }
 .sobre__w {
-  opacity: clamp(.14, calc(var(--k, 99) - var(--i)), 1);
+  opacity: clamp(.32, calc(var(--k, 99) - var(--i)), 1);
   transition: opacity 120ms linear;
 }
 .sobre--cena .sobre__manifesto[data-revelar] { opacity: 1; transform: none; }
@@ -1088,9 +1101,10 @@ html:not(.js) .hud-base { display: none; }
 }
 .sobre__fato dd { margin: 0; font-size: 15px; line-height: 1.45; color: var(--text-2); text-wrap: pretty; }
 
-/* Na cena os fatos entram quando o texto termina de acender. */
-.sobre--cena .sobre__fato[data-revelar] { opacity: 0; transform: translateY(18px); }
-.sobre--cena.is-fatos .sobre__fato[data-revelar] { opacity: 1; transform: none; }
+/* Os fatos (o que o recrutador procura) ficam visíveis desde o começo; só o texto acende com a rolagem. */
+.sobre--cena .sobre__fato[data-revelar] { opacity: 1; transform: none; }
+/* Quem chega pelo menu, trilho ou terminal vê o texto já aceso. */
+.sobre.is-aceso .sobre__w { opacity: 1; }
 
 /* Número enorme vazado no fundo, que sobe devagar. */
 .sobre__numero {
@@ -1109,9 +1123,11 @@ html:not(.js) .hud-base { display: none; }
 
 /* Tela larga: o texto à esquerda e os fatos numa coluna à direita. */
 @media (min-width: 1100px) {
-  .sobre__miolo { grid-template-columns: minmax(0, 1fr) minmax(220px, 300px); grid-template-rows: auto 1fr; column-gap: clamp(40px, 6vw, 110px); align-items: end; }
+  .sobre__miolo { grid-template-columns: minmax(0, 1fr) minmax(260px, 360px); grid-template-rows: auto 1fr; column-gap: clamp(40px, 5vw, 96px); align-items: end; }
   .sobre__miolo > .capitulo { grid-column: 1 / -1; }
-  .sobre__fatos { grid-template-columns: minmax(0, 1fr); gap: 18px; align-self: end; }
+  .sobre__fatos { grid-template-columns: minmax(0, 1fr); gap: 12px; align-self: end; }
+  .sobre__fato { gap: 4px; padding-top: 10px; }
+  .sobre__fato dd { font-size: 14px; line-height: 1.4; }
   .sobre__manifesto { font-size: clamp(30px, 3.6vw, 60px); }
 }
 @media (max-width: 900px) {
@@ -1130,6 +1146,16 @@ html:not(.js) .hud-base { display: none; }
 /* Fonte antiga em tudo: o texto grande e os fatos também em Zero Hour, com mais ar entre as letras. */
 :root[data-font="tudo"] .sobre__manifesto { max-width: 26ch; font-size: clamp(22px, 2.9vw, 46px); letter-spacing: .01em; line-height: 1.2; }
 :root[data-font="tudo"] .sobre__fato dd { letter-spacing: .02em; line-height: 1.55; }
+
+/* Notebook com tela baixa (768–820px): texto um pouco menor para a cena caber. */
+@media (min-width: 1100px) and (max-height: 820px) {
+  .sobre__manifesto { font-size: clamp(28px, 3vw, 46px); }
+}
+
+/* Com o trilho de capítulos à direita, o conteúdo guarda uma margem para não passar por baixo dele. */
+@media (min-width: 761px) {
+  .sobre__miolo { padding-right: 96px; max-width: 1276px; }
+}
 </style>
 <style>/* projetos */
 /* Projetos: em tela larga, a rolagem vertical atravessa uma trilha horizontal de projetos.
@@ -1156,6 +1182,23 @@ html:not(.js) .hud-base { display: none; }
 }
 .projetos__atual { color: var(--text); }
 .projetos__progresso { display: none; }
+.projetos__nav { display: none; gap: 6px; }
+.projetos--trilha .projetos__nav { display: inline-flex; }
+.projetos__seta {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid var(--line-2);
+  border-radius: 50%;
+  background: var(--glass);
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color var(--dur-1) var(--ease-out), opacity var(--dur-1) var(--ease-out);
+}
+@media (hover: hover) { .projetos__seta:hover { border-color: var(--accent); } }
+.projetos__seta[aria-disabled="true"] { opacity: .35; cursor: default; }
 
 .projetos__trilha {
   display: grid;
@@ -1168,7 +1211,7 @@ html:not(.js) .hud-base { display: none; }
 
 /* ---------- Trilha horizontal ---------- */
 .projetos--trilha {
-  --slide: min(1080px, 72vw);
+  --slide: min(1080px, max(68vw, 900px));
   --vao: 8vw;
 }
 .projetos--trilha .projetos__palco {
@@ -1179,10 +1222,11 @@ html:not(.js) .hud-base { display: none; }
   flex-direction: column;
   justify-content: center;
   padding: 0;
-  overflow: hidden;
+  overflow: clip; /* clip, e não hidden: o foco do teclado não consegue rolar o palco por baixo da trilha */
 }
 .projetos--trilha .projetos__topo {
   position: absolute;
+  z-index: 2; /* acima da trilha, que é mais alta que o espaço livre e passaria por cima dos botões */
   top: calc(var(--hud) + 74px);
   left: var(--gutter);
   right: calc(var(--gutter) + 96px);
@@ -1218,7 +1262,7 @@ html:not(.js) .hud-base { display: none; }
   will-change: transform;
 }
 .projetos--trilha .projeto { flex: none; width: var(--slide); }
-.projetos--trilha .projeto--fim { width: min(520px, 46vw); }
+.projetos--trilha .projeto--fim { width: min(480px, 38vw); }
 .projetos--trilha .projeto[data-revelar] { opacity: 1; transform: none; transition: none; }
 /* Profundidade: o JS gira e apaga os projetos dos lados (transform e opacity do card). */
 .projetos--trilha .projeto__card,
@@ -1227,7 +1271,7 @@ html:not(.js) .hud-base { display: none; }
 /* ---------- Card ---------- */
 .projeto__card {
   display: grid;
-  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
   align-items: center;
   gap: clamp(28px, 4.4vw, 72px);
 }
@@ -1308,7 +1352,7 @@ html:not(.js) .hud-base { display: none; }
 .projeto__desc { max-width: 48ch; font-size: 15.5px; line-height: 1.62; color: var(--text-2); text-wrap: pretty; }
 /* Minha parte / Decisões: o que o recrutador procura, em duas linhas fáceis de achar. */
 .projeto__detalhes { display: grid; gap: 10px; margin: 2px 0 0; }
-.projeto__detalhes > div { display: grid; grid-template-columns: 7.5em minmax(0, 1fr); gap: 12px; align-items: baseline; }
+.projeto__detalhes > div { display: grid; gap: 2px; }
 .projeto__detalhes dt { font-size: 11px; color: var(--accent); }
 .projeto__detalhes dd { margin: 0; font-size: 14px; line-height: 1.55; color: var(--text-2); text-wrap: pretty; }
 .projeto__chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 0; }
@@ -1416,6 +1460,25 @@ html:not(.js) .hud-base { display: none; }
 /* Texto corrido em maiúsculas: um pouco mais de entrelinha e de ar entre as letras. */
 :root[data-font="tudo"] .projeto__desc { line-height: 1.65; letter-spacing: .02em; }
 :root[data-font="tudo"] .projeto__sub { letter-spacing: .02em; }
+
+/* Tela muito estreita (zoom de 400%): nomes longos quebram em vez de vazar. */
+@media (max-width: 360px) {
+  .projeto__nome { overflow-wrap: anywhere; font-size: clamp(28px, 9vw, 40px); }
+}
+
+/* Trilha em tela mais baixa (notebooks de 720–860px): tipografia um pouco mais compacta para cada
+   projeto caber inteiro na tela. */
+@media (max-height: 860px) {
+  :root .projetos--trilha .projeto__info { gap: 9px; }
+  :root .projetos--trilha .projeto__nome { font-size: clamp(30px, 3.4vw, 50px); }
+  :root:is([data-font="titulos"], [data-font="tudo"]) .projetos--trilha .projeto__nome { font-size: clamp(34px, 3.9vw, 58px); }
+  :root .projetos--trilha .projeto__sub { font-size: 16px; }
+  :root .projetos--trilha .projeto__desc { font-size: 14px; line-height: 1.5; }
+  :root .projetos--trilha .projeto__detalhes { gap: 7px; }
+  :root .projetos--trilha .projeto__detalhes dd { font-size: 13.5px; line-height: 1.45; }
+  :root .projetos--trilha .projeto__chips { margin-top: 0; }
+  :root .projetos--trilha .projeto__links { margin-top: 0; padding-top: 8px; }
+}
 </style>
 <style>/* contato */
 /* Contato: o último capítulo, com órbitas no fundo e o rodapé. */
@@ -1821,6 +1884,15 @@ html:not(.js) .email__magnet { display: none; }
 /* "tudo": o e-mail e o texto também viram Zero Hour. Corpo mínimo menor para o e-mail caber numa linha em 390px. */
 :root[data-font="tudo"] .email__email { font-size: clamp(21px, 4.4vw, 52px); line-height: 1.15; letter-spacing: .01em; }
 :root[data-font="tudo"] .contato__texto { letter-spacing: .02em; line-height: 1.6; }
+
+/* Margem para o trilho de capítulos à direita. */
+@media (min-width: 761px) {
+  .contato__miolo, .rodape { padding-right: calc(var(--gutter) + 96px); max-width: 1276px; }
+}
+/* Tela muito estreita (zoom de 400%): o título quebra em vez de vazar. */
+@media (max-width: 360px) {
+  .contato__titulo { overflow-wrap: anywhere; }
+}
 </style>
 <style>/* arco */
 /* Menu em meio-arco: fixo embaixo, no centro. Fechado, só o botão aparece; aberto, as fatias abrem em leque. */
@@ -1834,7 +1906,7 @@ html:not(.js) .email__magnet { display: none; }
   flex-direction: column;
   align-items: center;
   width: min(380px, 94vw);
-  padding-bottom: calc(var(--hud) + 30px);
+  padding-bottom: calc(var(--hud) + 40px);
   transform: translateX(-50%);
   color: var(--text);
   pointer-events: none;
@@ -2058,9 +2130,7 @@ html:not(.js) .email__magnet { display: none; }
   transform: scale(.5);
   transition: opacity 180ms var(--ease-out), transform 420ms var(--ease-out);
 }
-.arco:not([data-mode]):not(.is-open) .arco__g--moon,
-.arco[data-mode="dark"]:not(.is-open) .arco__g--moon,
-.arco[data-mode="light"]:not(.is-open) .arco__g--sun,
+.arco:not(.is-open) .arco__g--menu,
 .arco.is-open .arco__g--x {
   opacity: 1;
   transform: none;
@@ -2100,6 +2170,23 @@ html:not(.js) .email__magnet { display: none; }
   .arco__label { font-size: 7.8px; letter-spacing: .02em; }
 }
 
+/* A palavra "Menu" embaixo do botão: deixa claro o que ele abre. Some com o menu aberto. */
+.arco__rotulo {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--hud) - 4px);
+  transform: translateX(-50%);
+  font-family: var(--font-label);
+  font-size: 10px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--text-2);
+  pointer-events: none;
+  transition: opacity var(--dur-2) var(--ease-out);
+}
+.arco.is-open .arco__rotulo { opacity: 0; }
+:root:is([data-font="titulos"], [data-font="tudo"]) .arco__rotulo { font-size: 11px; letter-spacing: .06em; }
+
 /* Sem JS o menu não abre nem navega: o trilho de capítulos (links comuns) faz esse papel. */
 html:not(.js) .arco { display: none; }
 
@@ -2116,9 +2203,7 @@ html:not(.js) .arco { display: none; }
   .arco.is-open .arco__glyphs { transform: none; }
   .arco__glyphs { transition: none; }
   .arco__g,
-  .arco:not([data-mode]):not(.is-open) .arco__g--moon,
-  .arco[data-mode="dark"]:not(.is-open) .arco__g--moon,
-  .arco[data-mode="light"]:not(.is-open) .arco__g--sun,
+  .arco:not(.is-open) .arco__g--menu,
   .arco.is-open .arco__g--x { transform: none; transition: opacity 120ms linear; }
   .arco__pointer { transition: opacity 120ms linear; }
   .arco__tema-icon { transition: none; }
@@ -2153,6 +2238,12 @@ html:not(.js) .arco { display: none; }
 :where(:root[data-font="titulos"], :root[data-font="tudo"]) .arco__label { fill: var(--text-2); }
 /* Retorno: um corpo abaixo, para não competir com as fatias; entrelinha ímpar centra as maiúsculas no quadrado. */
 :root:is([data-font="titulos"], [data-font="tudo"]) .arco__status { font-size: 11px; line-height: 21px; letter-spacing: .03em; }
+
+@media (max-height: 520px) {
+  .arco { padding-bottom: 30px; width: min(300px, 90vw); }
+  .arco__toggle { width: 44px; height: 44px; margin: -22px 0 0 -22px; }
+  .arco__rotulo { display: none; }
+}
 </style>
 <style>/* terminal */
 /* Terminal: abre por cima de tudo (tecla /, botão do topo), como um console da nave. */
@@ -2539,7 +2630,7 @@ html:not(.js) .arco { display: none; }
 </style>
 </head>
 <body>
-<a class="pular" href="#sobre">Pular para o conteúdo</a>
+<a class="pular" href="#conteudo">Pular para o conteúdo</a>
 
 <div class="uni" aria-hidden="true">
   <div class="uni__nebulosa"></div>
@@ -2601,6 +2692,78 @@ html:not(.js) .arco { display: none; }
 </div>
 <div class="hud-cantos" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
 <div class="hud-veu" aria-hidden="true"><i></i><i></i></div>
+<nav class="arco" aria-label="Menu">
+  <span class="arco__veu" aria-hidden="true"></span>
+  <div class="arco__dial">
+    <button class="arco__toggle" type="button" aria-expanded="false" aria-controls="arco-menu" aria-label="Menu" data-cursor="menu">
+      <span class="arco__glyphs" aria-hidden="true">
+        <svg class="arco__g arco__g--menu" viewBox="0 0 24 24" width="22" height="22" focusable="false"><path d="M5 7.5h14M5 12h14M5 16.5h14"/></svg>
+        <svg class="arco__g arco__g--x" viewBox="0 0 24 24" width="22" height="22" focusable="false"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg>
+      </span>
+    </button>
+    <svg class="arco__svg" id="arco-menu" viewBox="-124 -124 248 124" role="group" aria-label="Menu principal">
+      <g class="arco__orbit" aria-hidden="true">
+        <path class="arco__track" d="M-36 0A36 36 0 0 1 36 0"/>
+        <g class="arco__pointer"><circle cx="-36" cy="0" r="2.6"/></g>
+      </g>
+
+      <g class="arco__slice" data-act="sobre" role="button" aria-label="Ir para Sobre" style="--i:0">
+        <path class="arco__shape" d="M-120 0A120 120 0 0 1 -97.96 -69.32L-42.93 -29.34A52 52 0 0 0 -52 0Z"/>
+        <path class="arco__tint" d="M-120 0A120 120 0 0 1 -97.96 -69.32L-42.93 -29.34A52 52 0 0 0 -52 0Z"/>
+        <path class="arco__ring" d="M-120 0A120 120 0 0 1 -97.96 -69.32L-42.93 -29.34A52 52 0 0 0 -52 0Z"/>
+        <g class="arco__icon" transform="translate(-81.79 -35.58) scale(.625) translate(-12 -12)">
+          <circle cx="12" cy="8" r="4"/><path d="M4.5 20c.6-3.9 3.7-6.5 7.5-6.5s6.9 2.6 7.5 6.5"/>
+        </g>
+        <text class="arco__label" x="-81.79" y="-16.6">SOBRE</text>
+      </g>
+
+      <g class="arco__slice" data-act="projetos" role="button" aria-label="Ir para Projetos" style="--i:1">
+        <path class="arco__shape" d="M-96.19 -71.74A120 120 0 0 1 -38.51 -113.65L-17.49 -48.97A52 52 0 0 0 -41.17 -31.77Z"/>
+        <path class="arco__tint" d="M-96.19 -71.74A120 120 0 0 1 -38.51 -113.65L-17.49 -48.97A52 52 0 0 0 -41.17 -31.77Z"/>
+        <path class="arco__ring" d="M-96.19 -71.74A120 120 0 0 1 -38.51 -113.65L-17.49 -48.97A52 52 0 0 0 -41.17 -31.77Z"/>
+        <g class="arco__icon" transform="translate(-55.25 -85.06) scale(.625) translate(-12 -12)">
+          <rect x="4" y="4" width="6.5" height="6.5" rx="1"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1"/>
+        </g>
+        <text class="arco__label" x="-55.25" y="-66.08">PROJETOS</text>
+      </g>
+
+      <g class="arco__slice" data-act="contato" role="button" aria-label="Ir para Contato" style="--i:2">
+        <path class="arco__shape" d="M-35.65 -114.58A120 120 0 0 1 35.65 -114.58L14.64 -49.9A52 52 0 0 0 -14.64 -49.9Z"/>
+        <path class="arco__tint" d="M-35.65 -114.58A120 120 0 0 1 35.65 -114.58L14.64 -49.9A52 52 0 0 0 -14.64 -49.9Z"/>
+        <path class="arco__ring" d="M-35.65 -114.58A120 120 0 0 1 35.65 -114.58L14.64 -49.9A52 52 0 0 0 -14.64 -49.9Z"/>
+        <g class="arco__icon" transform="translate(0 -108) scale(.625) translate(-12 -12)">
+          <rect x="3" y="5.5" width="18" height="13" rx="1.5"/><path d="M3.5 7l8.5 6.2L20.5 7"/>
+        </g>
+        <text class="arco__label" x="0" y="-89">CONTATO</text>
+      </g>
+
+      <g class="arco__slice" data-act="som" role="button" aria-label="Som" aria-pressed="false" style="--i:3">
+        <path class="arco__shape" d="M38.51 -113.65A120 120 0 0 1 96.19 -71.74L41.17 -31.77A52 52 0 0 0 17.49 -48.97Z"/>
+        <path class="arco__tint" d="M38.51 -113.65A120 120 0 0 1 96.19 -71.74L41.17 -31.77A52 52 0 0 0 17.49 -48.97Z"/>
+        <path class="arco__ring" d="M38.51 -113.65A120 120 0 0 1 96.19 -71.74L41.17 -31.77A52 52 0 0 0 17.49 -48.97Z"/>
+        <g class="arco__icon" transform="translate(55.25 -85.06) scale(.625) translate(-12 -12)">
+          <path d="M4 9.5v5h3.5l4.5 4v-13l-4.5 4H4z"/>
+          <g class="arco__som-on"><path d="M15.5 9.2a4 4 0 0 1 0 5.6"/><path d="M18.2 6.6a7.6 7.6 0 0 1 0 10.8"/></g>
+          <g class="arco__som-off"><path d="M15.5 9.5l5 5"/><path d="M20.5 9.5l-5 5"/></g>
+        </g>
+        <text class="arco__label" x="55.25" y="-66.08">SOM</text>
+      </g>
+
+      <g class="arco__slice" data-act="tema" role="button" aria-label="Alternar tema" style="--i:4">
+        <path class="arco__shape" d="M97.96 -69.32A120 120 0 0 1 120 0L52 0A52 52 0 0 0 42.93 -29.34Z"/>
+        <path class="arco__tint" d="M97.96 -69.32A120 120 0 0 1 120 0L52 0A52 52 0 0 0 42.93 -29.34Z"/>
+        <path class="arco__ring" d="M97.96 -69.32A120 120 0 0 1 120 0L52 0A52 52 0 0 0 42.93 -29.34Z"/>
+        <g class="arco__icon" transform="translate(81.79 -35.58) scale(.625) translate(-12 -12)">
+          <g class="arco__tema-icon"><circle cx="12" cy="12" r="8"/><path class="arco__tema-half" d="M12 4a8 8 0 0 1 0 16z"/></g>
+        </g>
+        <text class="arco__label" x="81.79" y="-16.6">TEMA</text>
+      </g>
+    </svg>
+
+  </div>
+  <p class="arco__status" role="status" aria-live="polite"><span class="arco__status-text"></span></p>
+  <span class="arco__rotulo" aria-hidden="true">Menu</span>
+</nav>
 
 <main id="conteudo">
 <section class="inicio" id="inicio" data-capitulo="00" data-nome="Início" aria-labelledby="inicio-t">
@@ -2650,6 +2813,10 @@ html:not(.js) .arco { display: none; }
       <h2 class="capitulo" id="projetos-t" data-foco><span class="capitulo__n">02</span>Projetos</h2>
       <div class="projetos__progresso" aria-hidden="true"><span></span></div>
       <p class="projetos__contador" aria-hidden="true"><span class="projetos__atual">01</span><span class="projetos__total"> / 03</span></p>
+      <div class="projetos__nav" role="group" aria-label="Navegar pelos projetos">
+        <button class="projetos__seta" type="button" data-dir="-1" aria-label="Projeto anterior"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M10 3.5 5.5 8l4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button class="projetos__seta" type="button" data-dir="1" aria-label="Próximo projeto"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M6 3.5 10.5 8 6 12.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
     </div>
 
     <ol class="projetos__trilha" role="list">
@@ -2867,78 +3034,6 @@ html:not(.js) .arco { display: none; }
 </section>
 </main>
 
-<nav class="arco" aria-label="Menu">
-  <span class="arco__veu" aria-hidden="true"></span>
-  <div class="arco__dial">
-    <button class="arco__toggle" type="button" aria-expanded="false" aria-controls="arco-menu" aria-label="Menu">
-      <span class="arco__glyphs" aria-hidden="true">
-        <svg class="arco__g arco__g--moon" viewBox="0 0 24 24" width="22" height="22" focusable="false"><path d="M19.5 14.6A7.8 7.8 0 0 1 9.4 4.5a7.8 7.8 0 1 0 10.1 10.1z"/></svg>
-        <svg class="arco__g arco__g--sun" viewBox="0 0 24 24" width="22" height="22" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></svg>
-        <svg class="arco__g arco__g--x" viewBox="0 0 24 24" width="22" height="22" focusable="false"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg>
-      </span>
-    </button>
-    <svg class="arco__svg" id="arco-menu" viewBox="-124 -124 248 124" role="group" aria-label="Menu principal">
-      <g class="arco__orbit" aria-hidden="true">
-        <path class="arco__track" d="M-36 0A36 36 0 0 1 36 0"/>
-        <g class="arco__pointer"><circle cx="-36" cy="0" r="2.6"/></g>
-      </g>
-
-      <g class="arco__slice" data-act="sobre" role="button" aria-label="Ir para Sobre" style="--i:0">
-        <path class="arco__shape" d="M-120 0A120 120 0 0 1 -97.96 -69.32L-42.93 -29.34A52 52 0 0 0 -52 0Z"/>
-        <path class="arco__tint" d="M-120 0A120 120 0 0 1 -97.96 -69.32L-42.93 -29.34A52 52 0 0 0 -52 0Z"/>
-        <path class="arco__ring" d="M-120 0A120 120 0 0 1 -97.96 -69.32L-42.93 -29.34A52 52 0 0 0 -52 0Z"/>
-        <g class="arco__icon" transform="translate(-81.79 -35.58) scale(.625) translate(-12 -12)">
-          <circle cx="12" cy="8" r="4"/><path d="M4.5 20c.6-3.9 3.7-6.5 7.5-6.5s6.9 2.6 7.5 6.5"/>
-        </g>
-        <text class="arco__label" x="-81.79" y="-16.6">SOBRE</text>
-      </g>
-
-      <g class="arco__slice" data-act="contato" role="button" aria-label="Ir para Contato" style="--i:1">
-        <path class="arco__shape" d="M-96.19 -71.74A120 120 0 0 1 -38.51 -113.65L-17.49 -48.97A52 52 0 0 0 -41.17 -31.77Z"/>
-        <path class="arco__tint" d="M-96.19 -71.74A120 120 0 0 1 -38.51 -113.65L-17.49 -48.97A52 52 0 0 0 -41.17 -31.77Z"/>
-        <path class="arco__ring" d="M-96.19 -71.74A120 120 0 0 1 -38.51 -113.65L-17.49 -48.97A52 52 0 0 0 -41.17 -31.77Z"/>
-        <g class="arco__icon" transform="translate(-55.25 -85.06) scale(.625) translate(-12 -12)">
-          <rect x="3" y="5.5" width="18" height="13" rx="1.5"/><path d="M3.5 7l8.5 6.2L20.5 7"/>
-        </g>
-        <text class="arco__label" x="-55.25" y="-66.08">CONTATO</text>
-      </g>
-
-      <g class="arco__slice" data-act="projetos" role="button" aria-label="Ir para Projetos" style="--i:2">
-        <path class="arco__shape" d="M-35.65 -114.58A120 120 0 0 1 35.65 -114.58L14.64 -49.9A52 52 0 0 0 -14.64 -49.9Z"/>
-        <path class="arco__tint" d="M-35.65 -114.58A120 120 0 0 1 35.65 -114.58L14.64 -49.9A52 52 0 0 0 -14.64 -49.9Z"/>
-        <path class="arco__ring" d="M-35.65 -114.58A120 120 0 0 1 35.65 -114.58L14.64 -49.9A52 52 0 0 0 -14.64 -49.9Z"/>
-        <g class="arco__icon" transform="translate(0 -108) scale(.625) translate(-12 -12)">
-          <rect x="4" y="4" width="6.5" height="6.5" rx="1"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1"/>
-        </g>
-        <text class="arco__label" x="0" y="-89">PROJETOS</text>
-      </g>
-
-      <g class="arco__slice" data-act="som" role="button" aria-label="Som" aria-pressed="false" style="--i:3">
-        <path class="arco__shape" d="M38.51 -113.65A120 120 0 0 1 96.19 -71.74L41.17 -31.77A52 52 0 0 0 17.49 -48.97Z"/>
-        <path class="arco__tint" d="M38.51 -113.65A120 120 0 0 1 96.19 -71.74L41.17 -31.77A52 52 0 0 0 17.49 -48.97Z"/>
-        <path class="arco__ring" d="M38.51 -113.65A120 120 0 0 1 96.19 -71.74L41.17 -31.77A52 52 0 0 0 17.49 -48.97Z"/>
-        <g class="arco__icon" transform="translate(55.25 -85.06) scale(.625) translate(-12 -12)">
-          <path d="M4 9.5v5h3.5l4.5 4v-13l-4.5 4H4z"/>
-          <g class="arco__som-on"><path d="M15.5 9.2a4 4 0 0 1 0 5.6"/><path d="M18.2 6.6a7.6 7.6 0 0 1 0 10.8"/></g>
-          <g class="arco__som-off"><path d="M15.5 9.5l5 5"/><path d="M20.5 9.5l-5 5"/></g>
-        </g>
-        <text class="arco__label" x="55.25" y="-66.08">SOM</text>
-      </g>
-
-      <g class="arco__slice" data-act="tema" role="button" aria-label="Alternar tema" style="--i:4">
-        <path class="arco__shape" d="M97.96 -69.32A120 120 0 0 1 120 0L52 0A52 52 0 0 0 42.93 -29.34Z"/>
-        <path class="arco__tint" d="M97.96 -69.32A120 120 0 0 1 120 0L52 0A52 52 0 0 0 42.93 -29.34Z"/>
-        <path class="arco__ring" d="M97.96 -69.32A120 120 0 0 1 120 0L52 0A52 52 0 0 0 42.93 -29.34Z"/>
-        <g class="arco__icon" transform="translate(81.79 -35.58) scale(.625) translate(-12 -12)">
-          <g class="arco__tema-icon"><circle cx="12" cy="12" r="8"/><path class="arco__tema-half" d="M12 4a8 8 0 0 1 0 16z"/></g>
-        </g>
-        <text class="arco__label" x="81.79" y="-16.6">TEMA</text>
-      </g>
-    </svg>
-
-  </div>
-  <p class="arco__status" role="status" aria-live="polite"><span class="arco__status-text"></span></p>
-</nav>
 <div class="term" id="terminal" hidden>
   <div class="term__fundo" data-term-fechar></div>
   <section class="term__win" role="dialog" aria-modal="true" aria-labelledby="term-titulo">
@@ -4045,16 +4140,21 @@ window.CZ = (() => {
   if (btnTerminal) btnTerminal.addEventListener('click', () => CZ.emit('terminal:abrir', btnTerminal));
 
   const digitando = (el) => el && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName));
+  // Atalhos: "/" abre o terminal (dá para desligar com "atalhos off" no terminal, por quem usa voz);
+  // Alt+0 a Alt+3 levam aos capítulos (com modificador, nunca disparam sem querer).
   addEventListener('keydown', (e) => {
-    if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.altKey || digitando(e.target)) return;
+    if (e.defaultPrevented || e.metaKey || e.ctrlKey || digitando(e.target)) return;
     if (document.documentElement.classList.contains('term-aberto')) return;
-    if (e.key === '/' || e.key === '`') {
-      e.preventDefault();
-      CZ.emit('terminal:abrir', btnTerminal);
+    if (e.altKey) {
+      const m = /^Digit([0-9])$/.exec(e.code || '');
+      const n = m ? Number(m[1]) : -1;
+      if (n >= 0 && n < CZ.capitulos.length) { e.preventDefault(); CZ.ir(CZ.capitulos[n].id); }
       return;
     }
-    const n = Number(e.key);
-    if (e.key.length === 1 && n >= 0 && n < CZ.capitulos.length) CZ.ir(CZ.capitulos[n].id);
+    if ((e.key === '/' || e.key === '`') && CZ.store.get('cz-atalhos') !== 'off') {
+      e.preventDefault();
+      CZ.emit('terminal:abrir', btnTerminal);
+    }
   });
 })();
 </script>
@@ -4221,13 +4321,13 @@ window.CZ = (() => {
   }
   const miolo = root.querySelector('.sobre__miolo');
   // A cena prende o texto na tela: só vale se ele couber inteiro (com folga para o HUD).
-  const cabe = () => !miolo || miolo.offsetHeight + 230 <= innerHeight;
+  const cabe = () => !miolo || miolo.offsetHeight + 200 <= innerHeight;
   function avaliar() {
     const quer = !CZ.reduzido() && mqAlta.matches && cabe();
     if (quer !== cena) {
       cena = quer;
       root.classList.toggle('sobre--cena', cena);
-      if (!cena) { manifesto.style.removeProperty('--k'); root.style.removeProperty('--p'); root.classList.remove('is-fatos'); }
+      if (!cena) { manifesto.style.removeProperty('--k'); root.style.removeProperty('--p'); }
     }
     medir();
     atualizar(scrollY);
@@ -4237,12 +4337,19 @@ window.CZ = (() => {
   function atualizar(y) {
     if (!cena) return;
     const p = Math.min(1, Math.max(0, (y - topo) / altura));
-    // O texto acende até 70% da cena; o resto é para ler com calma e ver os fatos.
-    const k = Math.round(((p / 0.7) * (total + 1)) * 100) / 100;
+    // O texto acende até 55% da cena; o resto é para ler com calma.
+    const k = Math.round(((p / 0.55) * (total + 1)) * 100) / 100;
     if (k !== ultimoK) { ultimoK = k; manifesto.style.setProperty('--k', String(k)); }
     root.style.setProperty('--p', p.toFixed(3));
-    root.classList.toggle('is-fatos', p > 0.66);
+    // Chegou pela navegação (texto aceso): volta ao efeito só quando a pessoa sobe acima da cena.
+    if (aceso && y < topo - innerHeight * 0.4) { aceso = false; root.classList.remove('is-aceso'); }
   }
+  let aceso = false;
+  CZ.on('ir', (id) => {
+    if (id !== 'sobre' || !cena) return;
+    aceso = true;
+    root.classList.add('is-aceso');
+  });
 
   CZ.on('rolagem', ({ y }) => atualizar(y));
   CZ.on('movimento', avaliar);
@@ -4264,7 +4371,10 @@ window.CZ = (() => {
   const atualEl = root.querySelector('.projetos__atual');
   const progresso = root.querySelector('.projetos__progresso');
   const nProjetos = slides.filter((s) => !s.classList.contains('projeto--fim')).length;
-  const mqLarga = matchMedia('(min-width: 900px) and (min-height: 560px)');
+  // Trilha só com mouse/trackpad em tela larga e alta; no toque e em tela baixa, os projetos ficam empilhados.
+  const mqLarga = matchMedia('(min-width: 900px) and (min-height: 600px) and (pointer: fine)');
+  const palco = root.querySelector('.projetos__palco');
+  const setas = Array.from(root.querySelectorAll('.projetos__seta'));
   const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
   const pecas = slides.map((s) => ({
     el: s,
@@ -4273,7 +4383,8 @@ window.CZ = (() => {
   }));
 
   /* ---------- trilha horizontal ---------- */
-  let modo = false, topo = 0, dist = 1, largura = 1, centros = [];
+  let modo = false, topo = 0, dist = 1, largura = 1, centros = [], indice = 0;
+  const alvoDe = (i) => topo + clamp((centros[i] - largura / 2) / dist, 0, 1) * dist;
 
   function limpar() {
     root.style.height = '';
@@ -4292,6 +4403,14 @@ window.CZ = (() => {
       if (!modo) limpar();
     }
     if (!modo) return;
+    // A trilha prende a tela: só vale se o texto de cada projeto couber inteiro (com folga para o HUD).
+    const alto = Math.max(...pecas.map((pc) => (pc.card ? pc.card.offsetHeight : 0)));
+    if (alto + 220 > innerHeight) {
+      modo = false;
+      root.classList.remove('projetos--trilha');
+      limpar();
+      return;
+    }
     trilha.style.transform = 'translate3d(0, 0, 0)';
     largura = document.documentElement.clientWidth;
     dist = Math.max(1, trilha.scrollWidth - largura);
@@ -4319,6 +4438,9 @@ window.CZ = (() => {
       if (pc.midia) pc.midia.style.translate = `${(d * -40).toFixed(1)}px 0`;
       if (i < nProjetos && ad < bd) { bd = ad; melhor = i; }
     });
+    indice = melhor;
+    // aria-disabled (e não disabled): o botão focado não perde o foco quando chega na ponta.
+    setas.forEach((b) => b.setAttribute('aria-disabled', String((b.dataset.dir === '-1' && p < 0.015) || (b.dataset.dir === '1' && p > 0.985))));
     const atual = String(melhor + 1).padStart(2, '0');
     if (atual !== ultimoAtual && atualEl) { ultimoAtual = atual; atualEl.textContent = atual; }
   }
@@ -4326,11 +4448,43 @@ window.CZ = (() => {
   // Foco do teclado num projeto fora da tela: a página rola até ele ficar no centro.
   root.addEventListener('focusin', (e) => {
     if (!modo) return;
+    if (palco) palco.scrollLeft = 0;
     const i = slides.findIndex((s) => s.contains(e.target));
     if (i < 0) return;
-    const alvo = topo + clamp((centros[i] - largura / 2) / dist, 0, 1) * dist;
+    const alvo = alvoDe(i);
     if (Math.abs(alvo - scrollY) > 4) CZ.rolarAte(alvo);
   });
+  // Segurança: o navegador nunca rola o palco na horizontal (só a trilha anda, pelo transform).
+  if (palco) palco.addEventListener('scroll', () => { if (palco.scrollLeft) palco.scrollLeft = 0; }, { passive: true });
+
+  // Anterior / próximo: botões, setas do teclado e gesto lateral do trackpad.
+  function irPara(i) {
+    if (!modo) return;
+    const n = clamp(i, 0, slides.length - 1);
+    CZ.rolarAte(alvoDe(n));
+  }
+  setas.forEach((b) => b.addEventListener('click', () => {
+    if (b.getAttribute('aria-disabled') === 'true') return;
+    // no último projeto, "próximo" leva ao fim da trilha (o card do GitHub)
+    irPara(indice + Number(b.dataset.dir) + (Number(b.dataset.dir) > 0 && indice >= nProjetos - 1 ? 1 : 0));
+  }));
+  const naTrilha = () => modo && scrollY >= topo - 2 && scrollY <= topo + dist + 2;
+  addEventListener('keydown', (e) => {
+    if (!naTrilha() || e.altKey || e.ctrlKey || e.metaKey || e.defaultPrevented) return;
+    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    const t = e.target;
+    if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
+    if (document.documentElement.classList.contains('term-aberto')) return;
+    if (t && t.closest && t.closest('.arco, .fonte')) return;
+    e.preventDefault();
+    irPara(indice + (e.key === 'ArrowRight' ? 1 : -1));
+  });
+  // Deslizar dois dedos para o lado no trackpad move a trilha (sem disparar o "voltar" do navegador).
+  root.addEventListener('wheel', (e) => {
+    if (!modo || Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+    e.preventDefault();
+    scrollBy(0, e.deltaX);
+  }, { passive: false });
 
   CZ.on('rolagem', ({ y }) => atualizar(y));
   CZ.on('movimento', layout);
@@ -5404,6 +5558,7 @@ window.CZ = (() => {
     { name: 'tema', aliases: ['theme'], desc: 'alterna claro e escuro', run: tema },
     { name: 'som', aliases: ['sound', 'audio', 'música'], desc: 'liga ou desliga o som', run: som },
     { name: 'fonte', aliases: ['font', 'fontes'], desc: 'troca a fonte: fonte titulos, tudo ou nova', run: fonte },
+    { name: 'atalhos', aliases: ['shortcuts', 'teclas'], desc: 'lista os atalhos; atalhos off desliga o /', run: atalhos },
     { name: 'limpar', aliases: ['clear', 'cls'], desc: 'limpa a tela', run: limpar },
     { name: 'sair', aliases: ['exit', 'quit', 'fechar', 'q'], desc: 'fecha o terminal', run: sair },
   ];
@@ -5506,6 +5661,17 @@ window.CZ = (() => {
     }
     CZ.definirFonte(pedido);
     print(`fonte: ${NOMES_FONTE[pedido]}.`, 'muted');
+  }
+  function atalhos(args) {
+    const pedido = normalize(args[0] || '');
+    if (pedido === 'off' || pedido === 'desligar') { CZ.store.set('cz-atalhos', 'off'); print('atalho / desligado. o terminal continua no botão do topo.', 'muted'); return; }
+    if (pedido === 'on' || pedido === 'ligar') { CZ.store.set('cz-atalhos', 'on'); print('atalho / ligado.', 'muted'); return; }
+    print('atalhos', 'strong');
+    row('/', `abre o terminal${CZ.store.get('cz-atalhos') === 'off' ? ' (desligado)' : ''}`, 'indent');
+    row('alt+0..3', 'vai para início, sobre, projetos e contato', 'indent');
+    row('← →', 'na trilha de projetos, anterior e próximo', 'indent');
+    row('esc', 'fecha o terminal e o menu', 'indent');
+    print(['para desligar o /: ', node('span', 'term__k', 'atalhos off')], 'muted gap');
   }
   function sair() {
     fechar();

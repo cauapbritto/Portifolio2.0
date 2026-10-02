@@ -6,6 +6,8 @@ html {
   scrollbar-gutter: stable;
   scrollbar-color: var(--line-2) transparent;
   scrollbar-width: thin;
+  overscroll-behavior-x: none;
+  scroll-padding: calc(var(--hud) + 64px) 0 calc(var(--hud) + 110px);
 }
 body {
   margin: 0;

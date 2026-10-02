@@ -356,6 +356,7 @@
     { name: 'tema', aliases: ['theme'], desc: 'alterna claro e escuro', run: tema },
     { name: 'som', aliases: ['sound', 'audio', 'música'], desc: 'liga ou desliga o som', run: som },
     { name: 'fonte', aliases: ['font', 'fontes'], desc: 'troca a fonte: fonte titulos, tudo ou nova', run: fonte },
+    { name: 'atalhos', aliases: ['shortcuts', 'teclas'], desc: 'lista os atalhos; atalhos off desliga o /', run: atalhos },
     { name: 'limpar', aliases: ['clear', 'cls'], desc: 'limpa a tela', run: limpar },
     { name: 'sair', aliases: ['exit', 'quit', 'fechar', 'q'], desc: 'fecha o terminal', run: sair },
   ];
@@ -458,6 +459,17 @@
     }
     CZ.definirFonte(pedido);
     print(`fonte: ${NOMES_FONTE[pedido]}.`, 'muted');
+  }
+  function atalhos(args) {
+    const pedido = normalize(args[0] || '');
+    if (pedido === 'off' || pedido === 'desligar') { CZ.store.set('cz-atalhos', 'off'); print('atalho / desligado. o terminal continua no botão do topo.', 'muted'); return; }
+    if (pedido === 'on' || pedido === 'ligar') { CZ.store.set('cz-atalhos', 'on'); print('atalho / ligado.', 'muted'); return; }
+    print('atalhos', 'strong');
+    row('/', `abre o terminal${CZ.store.get('cz-atalhos') === 'off' ? ' (desligado)' : ''}`, 'indent');
+    row('alt+0..3', 'vai para início, sobre, projetos e contato', 'indent');
+    row('← →', 'na trilha de projetos, anterior e próximo', 'indent');
+    row('esc', 'fecha o terminal e o menu', 'indent');
+    print(['para desligar o /: ', node('span', 'term__k', 'atalhos off')], 'muted gap');
   }
   function sair() {
     fechar();

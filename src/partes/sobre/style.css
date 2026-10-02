@@ -10,8 +10,8 @@
   overflow: hidden;
 }
 /* Cena: o palco fica preso na tela enquanto a seção (mais alta) passa por baixo. */
-.sobre--cena { height: 280vh; }
-.sobre--cena .sobre__palco { position: sticky; top: 0; height: 100vh; height: 100svh; }
+.sobre--cena { height: 190vh; }
+.sobre--cena .sobre__palco { position: sticky; top: 0; height: 100vh; height: 100svh; padding-top: 96px; padding-bottom: 104px; }
 
 .sobre__miolo {
   position: relative;
@@ -34,7 +34,7 @@
 }
 .sobre__manifesto em { font-style: normal; color: var(--accent); }
 .sobre__w {
-  opacity: clamp(.14, calc(var(--k, 99) - var(--i)), 1);
+  opacity: clamp(.32, calc(var(--k, 99) - var(--i)), 1);
   transition: opacity 120ms linear;
 }
 .sobre--cena .sobre__manifesto[data-revelar] { opacity: 1; transform: none; }
@@ -54,9 +54,10 @@
 }
 .sobre__fato dd { margin: 0; font-size: 15px; line-height: 1.45; color: var(--text-2); text-wrap: pretty; }
 
-/* Na cena os fatos entram quando o texto termina de acender. */
-.sobre--cena .sobre__fato[data-revelar] { opacity: 0; transform: translateY(18px); }
-.sobre--cena.is-fatos .sobre__fato[data-revelar] { opacity: 1; transform: none; }
+/* Os fatos (o que o recrutador procura) ficam visíveis desde o começo; só o texto acende com a rolagem. */
+.sobre--cena .sobre__fato[data-revelar] { opacity: 1; transform: none; }
+/* Quem chega pelo menu, trilho ou terminal vê o texto já aceso. */
+.sobre.is-aceso .sobre__w { opacity: 1; }
 
 /* Número enorme vazado no fundo, que sobe devagar. */
 .sobre__numero {
@@ -75,9 +76,11 @@
 
 /* Tela larga: o texto à esquerda e os fatos numa coluna à direita. */
 @media (min-width: 1100px) {
-  .sobre__miolo { grid-template-columns: minmax(0, 1fr) minmax(220px, 300px); grid-template-rows: auto 1fr; column-gap: clamp(40px, 6vw, 110px); align-items: end; }
+  .sobre__miolo { grid-template-columns: minmax(0, 1fr) minmax(260px, 360px); grid-template-rows: auto 1fr; column-gap: clamp(40px, 5vw, 96px); align-items: end; }
   .sobre__miolo > .capitulo { grid-column: 1 / -1; }
-  .sobre__fatos { grid-template-columns: minmax(0, 1fr); gap: 18px; align-self: end; }
+  .sobre__fatos { grid-template-columns: minmax(0, 1fr); gap: 12px; align-self: end; }
+  .sobre__fato { gap: 4px; padding-top: 10px; }
+  .sobre__fato dd { font-size: 14px; line-height: 1.4; }
   .sobre__manifesto { font-size: clamp(30px, 3.6vw, 60px); }
 }
 @media (max-width: 900px) {
@@ -96,3 +99,13 @@
 /* Fonte antiga em tudo: o texto grande e os fatos também em Zero Hour, com mais ar entre as letras. */
 :root[data-font="tudo"] .sobre__manifesto { max-width: 26ch; font-size: clamp(22px, 2.9vw, 46px); letter-spacing: .01em; line-height: 1.2; }
 :root[data-font="tudo"] .sobre__fato dd { letter-spacing: .02em; line-height: 1.55; }
+
+/* Notebook com tela baixa (768–820px): texto um pouco menor para a cena caber. */
+@media (min-width: 1100px) and (max-height: 820px) {
+  .sobre__manifesto { font-size: clamp(28px, 3vw, 46px); }
+}
+
+/* Com o trilho de capítulos à direita, o conteúdo guarda uma margem para não passar por baixo dele. */
+@media (min-width: 761px) {
+  .sobre__miolo { padding-right: 96px; max-width: 1276px; }
+}

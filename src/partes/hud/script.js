@@ -109,15 +109,20 @@
   if (btnTerminal) btnTerminal.addEventListener('click', () => CZ.emit('terminal:abrir', btnTerminal));
 
   const digitando = (el) => el && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName));
+  // Atalhos: "/" abre o terminal (dá para desligar com "atalhos off" no terminal, por quem usa voz);
+  // Alt+0 a Alt+3 levam aos capítulos (com modificador, nunca disparam sem querer).
   addEventListener('keydown', (e) => {
-    if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.altKey || digitando(e.target)) return;
+    if (e.defaultPrevented || e.metaKey || e.ctrlKey || digitando(e.target)) return;
     if (document.documentElement.classList.contains('term-aberto')) return;
-    if (e.key === '/' || e.key === '`') {
-      e.preventDefault();
-      CZ.emit('terminal:abrir', btnTerminal);
+    if (e.altKey) {
+      const m = /^Digit([0-9])$/.exec(e.code || '');
+      const n = m ? Number(m[1]) : -1;
+      if (n >= 0 && n < CZ.capitulos.length) { e.preventDefault(); CZ.ir(CZ.capitulos[n].id); }
       return;
     }
-    const n = Number(e.key);
-    if (e.key.length === 1 && n >= 0 && n < CZ.capitulos.length) CZ.ir(CZ.capitulos[n].id);
+    if ((e.key === '/' || e.key === '`') && CZ.store.get('cz-atalhos') !== 'off') {
+      e.preventDefault();
+      CZ.emit('terminal:abrir', btnTerminal);
+    }
   });
 })();
