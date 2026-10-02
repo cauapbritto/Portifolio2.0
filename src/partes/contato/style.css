@@ -20,7 +20,7 @@
 }
 .contato__titulo {
   font-family: var(--font-head);
-  font-size: clamp(40px, 7.6vw, 124px);
+  font-size: clamp(28px, 5.3vw, 87px);
   font-weight: 600;
   line-height: .95;
   letter-spacing: -.04em;
@@ -391,7 +391,7 @@ html:not(.js) .email__magnet { display: none; }
 /* ---------- Fonte antiga (Zero Hour), nos modos "titulos" e "tudo" ----------
    Título maior para compensar os 86% da Zero Hour UI; rótulo, botão e links com corpo menor e pouco espaço
    entre letras. Sem descendentes, a folga embaixo do link sobrava: a entrelinha fecha e o fio fica a uns 6px. */
-:root:is([data-font="titulos"], [data-font="tudo"]) .contato__titulo { font-size: clamp(35px, 8vw, 137px); font-weight: 400; letter-spacing: .005em; }
+:root:is([data-font="titulos"], [data-font="tudo"]) .contato__titulo { font-size: clamp(25px, 5.6vw, 78px); font-weight: 400; letter-spacing: .005em; }
 :root:is([data-font="titulos"], [data-font="tudo"]) .email__label { font-size: 13px; letter-spacing: .03em; word-spacing: .15em; }
 :root:is([data-font="titulos"], [data-font="tudo"]) .email__btn { font-size: 14px; font-weight: 400; letter-spacing: .03em; }
 :root:is([data-font="titulos"], [data-font="tudo"]) .email__link { font-size: 15px; font-weight: 400; letter-spacing: .03em; }

@@ -39,23 +39,6 @@
 }
 .sobre--cena .sobre__manifesto[data-revelar] { opacity: 1; transform: none; }
 
-.sobre__fatos {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0 clamp(16px, 2.4vw, 32px);
-  margin: 0;
-}
-.sobre__fato {
-  display: grid;
-  align-content: start;
-  gap: 8px;
-  padding-top: 16px;
-  border-top: 1px solid var(--line);
-}
-.sobre__fato dd { margin: 0; font-size: 15px; line-height: 1.45; color: var(--text-2); text-wrap: pretty; }
-
-/* Os fatos (o que o recrutador procura) ficam visíveis desde o começo; só o texto acende com a rolagem. */
-.sobre--cena .sobre__fato[data-revelar] { opacity: 1; transform: none; }
 /* Quem chega pelo menu, trilho ou terminal vê o texto já aceso. */
 .sobre.is-aceso .sobre__w { opacity: 1; }
 
@@ -74,31 +57,17 @@
   user-select: none;
 }
 
-/* Tela larga: o texto à esquerda e os fatos numa coluna à direita. */
+/* Tela larga: o texto um pouco maior. */
 @media (min-width: 1100px) {
-  .sobre__miolo { grid-template-columns: minmax(0, 1fr) minmax(260px, 360px); grid-template-rows: auto 1fr; column-gap: clamp(40px, 5vw, 96px); align-items: end; }
-  .sobre__miolo > .capitulo { grid-column: 1 / -1; }
-  .sobre__fatos { grid-template-columns: minmax(0, 1fr); gap: 12px; align-self: end; }
-  .sobre__fato { gap: 4px; padding-top: 10px; }
-  .sobre__fato dd { font-size: 14px; line-height: 1.4; }
   .sobre__manifesto { font-size: clamp(30px, 3.6vw, 60px); }
-}
-@media (max-width: 900px) {
-  .sobre__fatos { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 20px; }
-}
-@media (max-width: 480px) {
-  .sobre__fatos { grid-template-columns: minmax(0, 1fr); gap: 0; }
-  .sobre__fato { padding: 12px 0; grid-template-columns: 9.5em 1fr; align-items: baseline; }
-  .sobre__fato dd { font-size: 14px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .sobre__w { opacity: 1; transition: none; }
   .sobre__numero { transform: none; }
 }
 
-/* Fonte antiga em tudo: o texto grande e os fatos também em Zero Hour, com mais ar entre as letras. */
+/* Fonte antiga em tudo: o texto grande também em Zero Hour, com mais ar entre as letras. */
 :root[data-font="tudo"] .sobre__manifesto { max-width: 26ch; font-size: clamp(22px, 2.9vw, 46px); letter-spacing: .01em; line-height: 1.2; }
-:root[data-font="tudo"] .sobre__fato dd { letter-spacing: .02em; line-height: 1.55; }
 
 /* Notebook com tela baixa (768–820px): texto um pouco menor para a cena caber. */
 @media (min-width: 1100px) and (max-height: 820px) {

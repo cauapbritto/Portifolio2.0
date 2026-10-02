@@ -12,7 +12,6 @@
   --muted: #9C9A93;
   --accent: #FF7A45;
   --accent-ink: #0D0E10;      /* texto em cima do accent */
-  --ok: #4ADE80;              /* "disponível" */
   --star: 236, 234, 228;      /* rgb das estrelas do canvas, use rgba(var(--star), a) */
   --glow: 255, 122, 69;       /* rgb do brilho, use rgba(var(--glow), a) */
   --cool: 120, 150, 255;      /* rgb da nebulosa fria */
@@ -60,7 +59,6 @@
     --muted: #66645D;
     --accent: #B03A0A;
     --accent-ink: #FFFFFF;
-    --ok: #15803D;
     --star: 22, 23, 26;
     --glow: 176, 58, 10;
     --cool: 70, 90, 170;
@@ -70,7 +68,6 @@
 }
 :root[data-theme="light"] {
   color-scheme: light;
-  --ok: #15803D;
   --bg: #F4F2EC;
   --bg-2: #EEEBE3;
   --surface: #FFFFFF;

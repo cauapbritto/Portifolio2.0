@@ -21,37 +21,11 @@
   opacity: calc(1 - var(--sai) * 1.4);
 }
 
-.inicio__rotulo { max-width: 100%; color: var(--text-2); text-wrap: balance; }
-/* Ponto verde de "disponível", pulsando devagar. Fica na linha do texto, colado na primeira palavra, mesmo quando o rótulo quebra. */
-.inicio__status {
-  position: relative;
-  display: inline-block;
-  vertical-align: .08em;
-  margin-right: 10px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--ok);
-}
-.inicio__status::after {
-  content: "";
-  position: absolute;
-  inset: -4px;
-  border-radius: 50%;
-  border: 1px solid var(--ok);
-  opacity: 0;
-  animation: inicio-status 2.4s var(--ease-out) infinite;
-}
-@keyframes inicio-status {
-  0% { transform: scale(.5); opacity: .8; }
-  100% { transform: scale(1.6); opacity: 0; }
-}
-
 .inicio__marca {
   font-family: var(--font-display);
   font-weight: 400;
-  /* Zero Hour mede ~9,2em em "Cauanzera": 9,4vw ocupa ~86% da largura. */
-  font-size: clamp(30px, 9.4vw, 176px);
+  /* Zero Hour mede ~9,2em em "Cauanzera": 6,6vw ocupa ~60% da largura. */
+  font-size: clamp(21px, 6.6vw, 123px);
   line-height: .95;
   letter-spacing: 0;
   white-space: nowrap;
@@ -61,29 +35,16 @@
 .inicio__palavra { display: inline-block; }
 .inicio__char { display: inline-block; }
 
-.inicio__frase {
-  max-width: 42ch;
-  font-size: clamp(16px, 1.45vw, 20px);
-  line-height: 1.55;
-  color: var(--text-2);
-  text-wrap: balance;
-}
 /* O nome real, legível em qualquer modo de fonte (o "Cauanzera" acima é a marca). */
 .inicio__nome {
   margin-top: calc(clamp(16px, 2.2vw, 26px) * -.55);
   font-family: var(--font-nome);
-  font-size: clamp(22px, 2.3vw, 34px);
+  /* No celular, um pouco menor que a marca, para o Cauanzera continuar mandando. */
+  font-size: clamp(18px, 2.3vw, 34px);
   font-weight: 600;
   line-height: 1.15;
   letter-spacing: -.01em;
   color: var(--text);
-}
-.inicio__acoes {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 4px;
 }
 
 .inicio__descer {
@@ -182,11 +143,8 @@
 }
 
 /* Antes da abertura terminar, o conteúdo espera escondido. */
-.abrindo .inicio__rotulo,
 .abrindo .inicio__char,
 .abrindo .inicio__nome,
-.abrindo .inicio__acoes,
-.abrindo .inicio__frase,
 .abrindo .inicio__descer,
 .abrindo .inicio__dica,
 .abrindo .inicio__planeta { opacity: 0; }
@@ -196,13 +154,12 @@
   .inicio__planeta { top: calc(100% - 15vh); width: 420vw; }
   .inicio__dica { display: none; }
 }
-/* Tela baixa: o nome-marca encolhe para caber tudo acima do planeta. */
+/* Tela baixa: a marca um pouco menor, na mesma proporção da tela alta. */
 @media (max-height: 760px) and (min-width: 641px) {
-  .inicio__marca { font-size: clamp(30px, 7.4vw, 120px); }
+  .inicio__marca { font-size: clamp(21px, 5.2vw, 84px); }
   .inicio { padding-top: 88px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .inicio__status::after { animation: none; }
   .inicio__trilha span { animation: none; transform: translateY(11px); }
   .inicio__conteudo { transform: none; opacity: 1; }
   .inicio__planeta { transform: translateX(-50%); }
@@ -211,7 +168,6 @@
 /* Fonte antiga */
 :root:is([data-font="titulos"], [data-font="tudo"]) .inicio__descer,
 :root:is([data-font="titulos"], [data-font="tudo"]) .inicio__dica { font-size: 12px; letter-spacing: .06em; word-spacing: .15em; }
-:root[data-font="tudo"] .inicio__frase { letter-spacing: .02em; line-height: 1.6; }
 
 .calmo .inicio__conteudo { transform: none; opacity: 1; }
 .calmo .inicio__planeta { transform: translateX(-50%); }
