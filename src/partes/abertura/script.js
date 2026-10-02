@@ -7,7 +7,7 @@
   const num = el.querySelector('.abertura__num');
   const barra = el.querySelector('.abertura__barra');
   const fase = el.querySelector('.abertura__fase');
-  const FASES = [[0, 'ligando o céu'], [0.45, 'abrindo caminho']];
+  const FASES = [[0, CZ.t('ligando o céu', 'lighting up the sky')], [0.45, CZ.t('abrindo caminho', 'clearing the way')]];
 
   // Quem voltou em até 7 dias vê a abertura curta.
   const SEMANA = 7 * 24 * 3600 * 1000;

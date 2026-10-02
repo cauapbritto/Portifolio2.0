@@ -3,13 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Cauã Pedrozo Brito · Desenvolvedor Front-end</title>
-<meta name="description" content="Portfólio de Cauã Pedrozo Brito, desenvolvedor front-end em formação em Cuiabá, MT. Projetos, currículo e contato.">
+<title data-en="Cauã Pedrozo Brito · Front-end Developer">Cauã Pedrozo Brito · Desenvolvedor Front-end</title>
+<meta name="description" content="Portfólio de Cauã Pedrozo Brito, desenvolvedor front-end em formação em Cuiabá, MT. Projetos, currículo e contato." data-en-content="Portfolio of Cauã Pedrozo Brito, a front-end developer in training based in Cuiabá, Brazil. Projects, résumé and contact.">
 <meta name="theme-color" content="#0D0E10">
-<link rel="canonical" href="https://cauabrito.com.br/">
+<link rel="canonical" href="https://cauabrito.com.br/" data-en-href="https://cauabrito.com.br/?lang=en">
+<link rel="alternate" hreflang="pt-BR" href="https://cauabrito.com.br/">
+<link rel="alternate" hreflang="en" href="https://cauabrito.com.br/?lang=en">
+<link rel="alternate" hreflang="x-default" href="https://cauabrito.com.br/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Cauanzera">
 <meta property="og:locale" content="pt_BR">
+<meta property="og:locale:alternate" content="en_US">
 <meta property="og:url" content="https://cauabrito.com.br/">
 <meta property="og:title" content="Cauã Pedrozo Brito · Desenvolvedor Front-end">
 <meta property="og:description" content="Desenvolvedor front-end em formação em Cuiabá, MT. Aberto a oportunidades, também remoto.">
@@ -40,11 +44,14 @@
 }
 </script>
 <script>
-  // Antes de pintar: marca que há JS e aplica o tema e a fonte salvos, para a página não piscar.
+  // Antes de pintar: marca que há JS e aplica o tema, a fonte e o idioma salvos, para a página não piscar.
   // Fonte: "titulos" (antiga nos títulos) por padrão, "tudo" ou "nova" (sem data-font).
+  // Idioma: ?lang=en|pt no endereço, senão a escolha salva, senão inglês só para quem não tem
+  // português entre os idiomas do navegador (robôs de busca ficam no português).
   (function () {
     var d = document.documentElement;
     var f = 'titulos';
+    var l = (/[?&]lang=(en|pt)(&|$)/.exec(location.search) || [])[1];
     d.classList.add('js');
     try {
       var t = localStorage.getItem('cz-tema');
@@ -52,9 +59,21 @@
       if (localStorage.getItem('cz-movimento') === 'calmo') d.classList.add('calmo');
       var v = localStorage.getItem('cz-fonte') || localStorage.getItem('g-font');
       if (v === 'titulos' || v === 'tudo' || v === 'nova') f = v;
+      if (!l) l = localStorage.getItem('cz-idioma');
     } catch (e) {}
     if (f === 'nova') d.removeAttribute('data-font');
     else d.setAttribute('data-font', f);
+    if (l !== 'en' && l !== 'pt') {
+      var ls = navigator.languages || [navigator.language || ''];
+      l = /bot|crawl|spider|slurp|lighthouse/i.test(navigator.userAgent) ? 'pt' : 'en';
+      for (var i = 0; i < ls.length; i++) if (/^pt/i.test(ls[i])) l = 'pt';
+    }
+    // Em inglês o texto troca no fim do carregamento; até lá a página espera escondida (no máximo 1,5 s).
+    if (l === 'en') {
+      d.lang = 'en';
+      d.classList.add('traduzindo');
+      setTimeout(function () { d.classList.remove('traduzindo'); }, 1500);
+    }
   })();
 </script>
 <link rel="preload" href="assets/fontes/ZeroHour.woff2" as="font" type="font/woff2" crossorigin>
@@ -75,7 +94,7 @@
 <!-- @css -->
 </head>
 <body>
-<a class="pular" href="#conteudo">Pular para o conteúdo</a>
+<a class="pular" href="#conteudo" data-en="Skip to content">Pular para o conteúdo</a>
 
 <!-- @universo -->
 <!-- @abertura -->

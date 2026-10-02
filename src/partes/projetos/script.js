@@ -125,6 +125,7 @@
   CZ.on('movimento', layout);
   CZ.ouvir(mqLarga, layout);
   CZ.on('fonte', layout);
+  CZ.on('idioma', layout);
   CZ.on('fonte:pronta', layout);
   addEventListener('resize', layout, { passive: true });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);

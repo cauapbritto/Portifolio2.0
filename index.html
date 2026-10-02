@@ -3,13 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Cauã Pedrozo Brito · Desenvolvedor Front-end</title>
-<meta name="description" content="Portfólio de Cauã Pedrozo Brito, desenvolvedor front-end em formação em Cuiabá, MT. Projetos, currículo e contato.">
+<title data-en="Cauã Pedrozo Brito · Front-end Developer">Cauã Pedrozo Brito · Desenvolvedor Front-end</title>
+<meta name="description" content="Portfólio de Cauã Pedrozo Brito, desenvolvedor front-end em formação em Cuiabá, MT. Projetos, currículo e contato." data-en-content="Portfolio of Cauã Pedrozo Brito, a front-end developer in training based in Cuiabá, Brazil. Projects, résumé and contact.">
 <meta name="theme-color" content="#0D0E10">
-<link rel="canonical" href="https://cauabrito.com.br/">
+<link rel="canonical" href="https://cauabrito.com.br/" data-en-href="https://cauabrito.com.br/?lang=en">
+<link rel="alternate" hreflang="pt-BR" href="https://cauabrito.com.br/">
+<link rel="alternate" hreflang="en" href="https://cauabrito.com.br/?lang=en">
+<link rel="alternate" hreflang="x-default" href="https://cauabrito.com.br/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Cauanzera">
 <meta property="og:locale" content="pt_BR">
+<meta property="og:locale:alternate" content="en_US">
 <meta property="og:url" content="https://cauabrito.com.br/">
 <meta property="og:title" content="Cauã Pedrozo Brito · Desenvolvedor Front-end">
 <meta property="og:description" content="Desenvolvedor front-end em formação em Cuiabá, MT. Aberto a oportunidades, também remoto.">
@@ -40,11 +44,14 @@
 }
 </script>
 <script>
-  // Antes de pintar: marca que há JS e aplica o tema e a fonte salvos, para a página não piscar.
+  // Antes de pintar: marca que há JS e aplica o tema, a fonte e o idioma salvos, para a página não piscar.
   // Fonte: "titulos" (antiga nos títulos) por padrão, "tudo" ou "nova" (sem data-font).
+  // Idioma: ?lang=en|pt no endereço, senão a escolha salva, senão inglês só para quem não tem
+  // português entre os idiomas do navegador (robôs de busca ficam no português).
   (function () {
     var d = document.documentElement;
     var f = 'titulos';
+    var l = (/[?&]lang=(en|pt)(&|$)/.exec(location.search) || [])[1];
     d.classList.add('js');
     try {
       var t = localStorage.getItem('cz-tema');
@@ -52,9 +59,21 @@
       if (localStorage.getItem('cz-movimento') === 'calmo') d.classList.add('calmo');
       var v = localStorage.getItem('cz-fonte') || localStorage.getItem('g-font');
       if (v === 'titulos' || v === 'tudo' || v === 'nova') f = v;
+      if (!l) l = localStorage.getItem('cz-idioma');
     } catch (e) {}
     if (f === 'nova') d.removeAttribute('data-font');
     else d.setAttribute('data-font', f);
+    if (l !== 'en' && l !== 'pt') {
+      var ls = navigator.languages || [navigator.language || ''];
+      l = /bot|crawl|spider|slurp|lighthouse/i.test(navigator.userAgent) ? 'pt' : 'en';
+      for (var i = 0; i < ls.length; i++) if (/^pt/i.test(ls[i])) l = 'pt';
+    }
+    // Em inglês o texto troca no fim do carregamento; até lá a página espera escondida (no máximo 1,5 s).
+    if (l === 'en') {
+      d.lang = 'en';
+      d.classList.add('traduzindo');
+      setTimeout(function () { d.classList.remove('traduzindo'); }, 1500);
+    }
   })();
 </script>
 <link rel="preload" href="assets/fontes/ZeroHour.woff2" as="font" type="font/woff2" crossorigin>
@@ -198,6 +217,8 @@ body {
   -webkit-font-smoothing: antialiased;
   overflow-x: clip;
 }
+/* Em inglês, o português não aparece nem por um instante antes da troca (o núcleo tira a classe). */
+.traduzindo body { visibility: hidden; }
 img, svg, canvas { display: block; }
 i { font-style: normal; } /* os <i> do site são só enfeite; sem isso o navegador inventaria um itálico */
 a { color: inherit; }
@@ -318,6 +339,45 @@ main { position: relative; z-index: 2; }
 }
 .calmo .abertura { display: none !important; }
 .calmo [data-revelar], .calmo [data-revelar="mascara"] > span { opacity: 1; transform: none; transition: none; }
+
+/* ---------- Impressão / Salvar como PDF ----------
+   Sem céu, HUD, menu e efeitos: os capítulos empilhados, em fundo branco, com os links por extenso. */
+@media print {
+  :root, :root[data-theme] {
+    --bg: #fff; --bg-2: #fff; --surface: #fff; --surface-2: #f2f2f2; --glass: #fff;
+    --line: #d4d4d4; --line-2: #bdbdbd; --text: #111; --text-2: #333; --muted: #555;
+    --accent: #B03A0A; --star: 17, 17, 17; --glow: 176, 58, 10;
+    color-scheme: light;
+  }
+  @page { margin: 14mm 16mm; }
+  html, body { background: #fff !important; color: #111 !important; }
+  .uni, .abertura, .hud, .trilho, .hud-base, .hud-cantos, .hud-veu, .arco, .cursor, .term, .pular,
+  .inicio__planeta, .inicio__descer, .inicio__dica, .contato__orbitas, .email__magnet,
+  .projetos__nav, .projetos__progresso, .projetos__contador, .sobre__numero, .rodape__topo { display: none !important; }
+  [data-revelar], [data-revelar="mascara"] > span, .sobre__w { opacity: 1 !important; transform: none !important; }
+  .inicio, .sobre__palco, .contato, .contato__miolo, .projetos__palco { min-height: 0 !important; height: auto !important; padding: 18px 0 !important; }
+  .inicio, .inicio__conteudo, .inicio__rotulo { display: block !important; justify-items: start !important; text-align: left !important; }
+  .inicio__conteudo { transform: none !important; opacity: 1 !important; }
+  .inicio__conteudo > * + * { margin-top: 8px !important; }
+  .inicio__marca { font-size: 44px !important; text-shadow: none; }
+  .inicio__acoes { display: none !important; }
+  .sobre, .projetos { height: auto !important; }
+  .sobre__palco, .projetos__palco { position: static !important; overflow: visible !important; }
+  .projetos__topo { position: static !important; margin: 0 0 16px !important; }
+  .projetos__trilha { display: grid !important; gap: 28px !important; width: auto !important; padding: 0 !important; transform: none !important; }
+  .projeto { width: auto !important; break-inside: avoid; }
+  .projeto--fim { display: none !important; }
+  .projeto__card { transform: none !important; opacity: 1 !important; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr) !important; }
+  .projeto__midia { translate: none !important; box-shadow: none !important; }
+  .projeto__img, .projeto__quadro svg { translate: none !important; scale: none !important; }
+  .contato__titulo { font-size: 36px !important; text-shadow: none; }
+  .email__email { font-size: 22px !important; }
+  .rodape { padding: 12px 0 0 !important; }
+  .botao, .projeto__chips li { background: #fff !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+  a[href^="http"]::after { content: " (" attr(href) ")"; font-family: var(--font-code); font-size: 9px; letter-spacing: 0; text-transform: none; color: #555; word-break: break-all; }
+  a.email__email::after, .email__link[download]::after { content: none; }
+  h2, h3 { break-after: avoid; }
+}
 </style>
 <style>/* universo */
 /* Universo: o céu fixo atrás da página inteira. A página rola por cima e a câmera avança pelas estrelas. */
@@ -573,6 +633,9 @@ main { position: relative; z-index: 2; }
 
 .hud__acoes { display: flex; align-items: center; gap: 10px; }
 .hud__cv { padding-right: 14px; text-decoration: none; }
+/* Idioma: a sigla do outro idioma (EN no português, PT no inglês). Sem JS ela não teria efeito, então some. */
+.hud__idioma { justify-content: center; min-width: 40px; padding: 0 12px; text-decoration: none; color: var(--text); }
+html:not(.js) .hud__idioma { display: none; }
 
 /* Troca de fonte: um botão "Aa" que abre as três opções, cada uma escrita na própria fonte. */
 .fonte { position: relative; }
@@ -763,9 +826,19 @@ html:not(.js) .hud-base { display: none; }
   .hud-base__tempo, .hud-base__pct { display: none; }
 }
 @media (max-width: 560px) {
-  .hud__btn:not(.fonte__btn) span { display: none; }
+  .hud__btn:not(.fonte__btn):not(.hud__idioma) span { display: none; }
   .hud__btn { padding: 0 12px; }
   .hud__acoes { gap: 8px; }
+}
+/* Celular estreito: botões um pouco mais justos para os quatro caberem ao lado da marca. */
+@media (max-width: 400px) {
+  .hud__btn { padding: 0 10px; }
+  .hud__acoes { gap: 6px; }
+}
+/* 320 px (celular pequeno ou zoom de 400%): a marca fica só no quadrado; o nome já está grande no início. */
+@media (max-width: 340px) {
+  .hud__marca { justify-content: center; min-width: 40px; }
+  .hud__marca span:not(.quadrado) { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .trilho__nome, .trilho__n::after, .hud__marca .quadrado { transition: none; }
@@ -880,11 +953,13 @@ html:not(.js) .hud-base { display: none; }
   opacity: calc(1 - var(--sai) * 1.4);
 }
 
-.inicio__rotulo { display: inline-flex; align-items: center; justify-content: center; gap: 10px; max-width: 100%; color: var(--text-2); text-wrap: balance; }
-/* Ponto verde de "disponível", pulsando devagar. */
+.inicio__rotulo { max-width: 100%; color: var(--text-2); text-wrap: balance; }
+/* Ponto verde de "disponível", pulsando devagar. Fica na linha do texto, colado na primeira palavra, mesmo quando o rótulo quebra. */
 .inicio__status {
   position: relative;
-  flex: none;
+  display: inline-block;
+  vertical-align: .08em;
+  margin-right: 10px;
   width: 8px;
   height: 8px;
   border-radius: 50%;
@@ -1235,6 +1310,8 @@ html:not(.js) .hud-base { display: none; }
 
 .projetos__trilha {
   display: grid;
+  /* minmax(0, 1fr): uma palavra comprida não alarga a coluna além da tela. */
+  grid-template-columns: minmax(0, 1fr);
   gap: clamp(88px, 12vw, 140px);
   max-width: 1180px;
   margin: 0 auto;
@@ -1485,7 +1562,7 @@ html:not(.js) .hud-base { display: none; }
 /* ---------- Fonte antiga (Zero Hour) ----------
    Nomes sem negrito sintético nem tracking negativo, e um corpo maior para compensar os 86% da Zero Hour UI. */
 :root:is([data-font="titulos"], [data-font="tudo"]) .projeto__nome { font-size: clamp(40px, 4.9vw, 74px); font-weight: 400; line-height: 1; letter-spacing: .01em; }
-:root:is([data-font="titulos"], [data-font="tudo"]) .projeto__fim-titulo { font-size: clamp(32px, 3.7vw, 53px); font-weight: 400; letter-spacing: .01em; }
+:root:is([data-font="titulos"], [data-font="tudo"]) .projeto__fim-titulo { font-size: clamp(24px, 3.7vw, 53px); font-weight: 400; letter-spacing: .01em; }
 :root:is([data-font="titulos"], [data-font="tudo"]) .projeto__meta,
 :root:is([data-font="titulos"], [data-font="tudo"]) .projeto__link,
 :root:is([data-font="titulos"], [data-font="tudo"]) .projeto__github { font-size: 13px; letter-spacing: .03em; word-spacing: .15em; }
@@ -1499,9 +1576,9 @@ html:not(.js) .hud-base { display: none; }
   .projeto__nome { overflow-wrap: anywhere; font-size: clamp(28px, 9vw, 40px); }
 }
 
-/* Trilha em tela mais baixa (notebooks de 720–860px): tipografia um pouco mais compacta para cada
+/* Trilha em tela mais baixa (notebooks de 720–880px): tipografia um pouco mais compacta para cada
    projeto caber inteiro na tela. */
-@media (max-height: 860px) {
+@media (max-height: 880px) {
   :root .projetos--trilha .projeto__info { gap: 9px; }
   :root .projetos--trilha .projeto__nome { font-size: clamp(30px, 3.4vw, 50px); }
   :root:is([data-font="titulos"], [data-font="tudo"]) .projetos--trilha .projeto__nome { font-size: clamp(34px, 3.9vw, 58px); }
@@ -2663,7 +2740,7 @@ html:not(.js) .arco { display: none; }
 </style>
 </head>
 <body>
-<a class="pular" href="#conteudo">Pular para o conteúdo</a>
+<a class="pular" href="#conteudo" data-en="Skip to content">Pular para o conteúdo</a>
 
 <div class="uni" aria-hidden="true">
   <div class="uni__nebulosa"></div>
@@ -2679,34 +2756,37 @@ html:not(.js) .arco { display: none; }
     <p class="abertura__topo"><span class="quadrado"></span>Cauanzera</p>
     <p class="abertura__num">000</p>
     <span class="abertura__linha"><span class="abertura__barra"></span></span>
-    <p class="abertura__fase">ligando o céu</p>
+    <p class="abertura__fase" data-en="lighting up the sky">ligando o céu</p>
   </div>
-  <p class="abertura__pular"><span class="abertura__pular-mouse">Clique ou aperte uma tecla para pular</span><span class="abertura__pular-toque">Toque para pular</span></p>
+  <p class="abertura__pular"><span class="abertura__pular-mouse" data-en="Click or press any key to skip">Clique ou aperte uma tecla para pular</span><span class="abertura__pular-toque" data-en="Tap to skip">Toque para pular</span></p>
 </div>
 <header class="hud">
-  <a class="hud__marca" href="#inicio" data-ir="inicio" aria-label="Cauanzera, voltar ao início"><span class="quadrado" aria-hidden="true"></span><span aria-hidden="true">Cauanzera</span></a>
+  <a class="hud__marca" href="#inicio" data-ir="inicio" aria-label="Cauanzera, voltar ao início" data-en-aria-label="Cauanzera, back to the top"><span class="quadrado" aria-hidden="true"></span><span aria-hidden="true">Cauanzera</span></a>
   <div class="hud__acoes">
-    <a class="hud__btn hud__cv" href="assets/Curriculo_Caua_Pedrozo_Brito.pdf" download aria-label="Currículo em PDF" data-cursor="baixar">
+    <a class="hud__btn hud__idioma" href="?lang=en" hreflang="en" lang="en" title="English version" data-en-href="?lang=pt" data-en-hreflang="pt-BR" data-en-lang="pt-BR" data-en-title="Versão em português" data-idioma>
+      <span class="hud__idioma-sigla" data-en="PT">EN</span><span class="sr" data-en=", versão em português">, English version</span>
+    </a>
+    <a class="hud__btn hud__cv" href="assets/Curriculo_Caua_Pedrozo_Brito.pdf" download aria-label="Currículo em PDF" data-en-aria-label="Résumé in PDF (in Portuguese)" data-cursor="baixar">
       <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M8 2.5v7.5M4.75 7 8 10.25 11.25 7M3 13.25h10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <span>Currículo</span>
+      <span data-en="Résumé">Currículo</span>
     </a>
     <div class="fonte">
-      <button class="hud__btn fonte__btn" type="button" aria-expanded="false" aria-controls="fonte-painel" aria-label="Ajustes: fonte e movimento" data-cursor="ajustes">
+      <button class="hud__btn fonte__btn" type="button" aria-expanded="false" aria-controls="fonte-painel" aria-label="Ajustes: fonte e movimento" data-en-aria-label="Settings: font and motion" data-cursor="ajustes">
         <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true" focusable="false"><path d="M2.5 4.5h6M11.5 4.5h2M2.5 11.5h2M7.5 11.5h6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="4.5" r="1.6" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="6" cy="11.5" r="1.6" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
       </button>
-      <div class="fonte__painel" id="fonte-painel" role="group" aria-label="Ajustes" hidden>
-        <p class="fonte__titulo" id="fonte-titulo">Fonte</p>
+      <div class="fonte__painel" id="fonte-painel" role="group" aria-label="Ajustes" data-en-aria-label="Settings" hidden>
+        <p class="fonte__titulo" id="fonte-titulo" data-en="Font">Fonte</p>
         <div class="fonte__grupo" role="group" aria-labelledby="fonte-titulo">
-          <button class="fonte__opcao fonte__opcao--zh" type="button" data-fonte="titulos" aria-pressed="false">Antiga nos títulos</button>
-          <button class="fonte__opcao fonte__opcao--zh" type="button" data-fonte="tudo" aria-pressed="false">Antiga em tudo</button>
-          <button class="fonte__opcao fonte__opcao--nova" type="button" data-fonte="nova" aria-pressed="false">Nova</button>
+          <button class="fonte__opcao fonte__opcao--zh" type="button" data-fonte="titulos" aria-pressed="false" data-en="Classic in headings">Antiga nos títulos</button>
+          <button class="fonte__opcao fonte__opcao--zh" type="button" data-fonte="tudo" aria-pressed="false" data-en="Classic everywhere">Antiga em tudo</button>
+          <button class="fonte__opcao fonte__opcao--nova" type="button" data-fonte="nova" aria-pressed="false" data-en="New">Nova</button>
         </div>
-        <p class="fonte__titulo" id="movimento-titulo">Movimento</p>
+        <p class="fonte__titulo" id="movimento-titulo" data-en="Motion">Movimento</p>
         <div class="fonte__grupo" role="group" aria-labelledby="movimento-titulo">
-          <button class="fonte__opcao fonte__opcao--nova" type="button" data-movimento="normal" aria-pressed="false">Céu em movimento</button>
-          <button class="fonte__opcao fonte__opcao--nova" type="button" data-movimento="calmo" aria-pressed="false">Calmo, sem animações</button>
+          <button class="fonte__opcao fonte__opcao--nova" type="button" data-movimento="normal" aria-pressed="false" data-en="Moving sky">Céu em movimento</button>
+          <button class="fonte__opcao fonte__opcao--nova" type="button" data-movimento="calmo" aria-pressed="false" data-en="Calm, no animations">Calmo, sem animações</button>
         </div>
-        <p class="fonte__nota" hidden>Seu sistema pede menos movimento, então o site fica calmo.</p>
+        <p class="fonte__nota" hidden data-en="Your system asks for less motion, so the site stays calm.">Seu sistema pede menos movimento, então o site fica calmo.</p>
       </div>
     </div>
     <button class="hud__btn" type="button" data-terminal aria-haspopup="dialog" aria-controls="terminal" aria-label="Terminal">
@@ -2717,12 +2797,12 @@ html:not(.js) .arco { display: none; }
   </div>
 </header>
 
-<nav class="trilho" aria-label="Capítulos">
+<nav class="trilho" aria-label="Capítulos" data-en-aria-label="Chapters">
   <ol role="list">
-    <li><a class="trilho__item" href="#inicio" data-ir="inicio"><span class="trilho__nome">Início</span><span class="trilho__n"><span>00</span></span></a></li>
-    <li><a class="trilho__item" href="#sobre" data-ir="sobre"><span class="trilho__nome">Sobre</span><span class="trilho__n"><span>0<span class="um">1</span></span></span></a></li>
-    <li><a class="trilho__item" href="#projetos" data-ir="projetos"><span class="trilho__nome">Projetos</span><span class="trilho__n"><span>02</span></span></a></li>
-    <li><a class="trilho__item" href="#contato" data-ir="contato"><span class="trilho__nome">Contato</span><span class="trilho__n"><span>03</span></span></a></li>
+    <li><a class="trilho__item" href="#inicio" data-ir="inicio"><span class="trilho__nome" data-en="Home">Início</span><span class="trilho__n"><span>00</span></span></a></li>
+    <li><a class="trilho__item" href="#sobre" data-ir="sobre"><span class="trilho__nome" data-en="About">Sobre</span><span class="trilho__n"><span>0<span class="um">1</span></span></span></a></li>
+    <li><a class="trilho__item" href="#projetos" data-ir="projetos"><span class="trilho__nome" data-en="Projects">Projetos</span><span class="trilho__n"><span>02</span></span></a></li>
+    <li><a class="trilho__item" href="#contato" data-ir="contato"><span class="trilho__nome" data-en="Contact">Contato</span><span class="trilho__n"><span>03</span></span></a></li>
   </ol>
   <span class="trilho__fio" aria-hidden="true"><span class="trilho__cheio"></span></span>
 </nav>
@@ -2742,43 +2822,43 @@ html:not(.js) .arco { display: none; }
         <svg class="arco__g arco__g--x" viewBox="0 0 24 24" width="22" height="22" focusable="false"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg>
       </span>
     </button>
-    <svg class="arco__svg" id="arco-menu" viewBox="-124 -124 248 124" role="group" aria-label="Menu principal">
+    <svg class="arco__svg" id="arco-menu" viewBox="-124 -124 248 124" role="group" aria-label="Menu principal" data-en-aria-label="Main menu">
       <g class="arco__orbit" aria-hidden="true">
         <path class="arco__track" d="M-36 0A36 36 0 0 1 36 0"/>
         <g class="arco__pointer"><circle cx="-36" cy="0" r="2.6"/></g>
       </g>
 
-      <g class="arco__slice" data-act="sobre" role="button" aria-label="Ir para Sobre" style="--i:0">
+      <g class="arco__slice" data-act="sobre" role="button" aria-label="Ir para Sobre" data-en-aria-label="Go to About" style="--i:0">
         <path class="arco__shape" d="M-120 0A120 120 0 0 1 -97.96 -69.32L-42.93 -29.34A52 52 0 0 0 -52 0Z"/>
         <path class="arco__tint" d="M-120 0A120 120 0 0 1 -97.96 -69.32L-42.93 -29.34A52 52 0 0 0 -52 0Z"/>
         <path class="arco__ring" d="M-120 0A120 120 0 0 1 -97.96 -69.32L-42.93 -29.34A52 52 0 0 0 -52 0Z"/>
         <g class="arco__icon" transform="translate(-81.79 -35.58) scale(.625) translate(-12 -12)">
           <circle cx="12" cy="8" r="4"/><path d="M4.5 20c.6-3.9 3.7-6.5 7.5-6.5s6.9 2.6 7.5 6.5"/>
         </g>
-        <text class="arco__label" x="-81.79" y="-16.6">SOBRE</text>
+        <text class="arco__label" x="-81.79" y="-16.6" data-en="ABOUT">SOBRE</text>
       </g>
 
-      <g class="arco__slice" data-act="projetos" role="button" aria-label="Ir para Projetos" style="--i:1">
+      <g class="arco__slice" data-act="projetos" role="button" aria-label="Ir para Projetos" data-en-aria-label="Go to Projects" style="--i:1">
         <path class="arco__shape" d="M-96.19 -71.74A120 120 0 0 1 -38.51 -113.65L-17.49 -48.97A52 52 0 0 0 -41.17 -31.77Z"/>
         <path class="arco__tint" d="M-96.19 -71.74A120 120 0 0 1 -38.51 -113.65L-17.49 -48.97A52 52 0 0 0 -41.17 -31.77Z"/>
         <path class="arco__ring" d="M-96.19 -71.74A120 120 0 0 1 -38.51 -113.65L-17.49 -48.97A52 52 0 0 0 -41.17 -31.77Z"/>
         <g class="arco__icon" transform="translate(-55.25 -85.06) scale(.625) translate(-12 -12)">
           <rect x="4" y="4" width="6.5" height="6.5" rx="1"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1"/>
         </g>
-        <text class="arco__label" x="-55.25" y="-66.08">PROJETOS</text>
+        <text class="arco__label" x="-55.25" y="-66.08" data-en="PROJECTS">PROJETOS</text>
       </g>
 
-      <g class="arco__slice" data-act="contato" role="button" aria-label="Ir para Contato" style="--i:2">
+      <g class="arco__slice" data-act="contato" role="button" aria-label="Ir para Contato" data-en-aria-label="Go to Contact" style="--i:2">
         <path class="arco__shape" d="M-35.65 -114.58A120 120 0 0 1 35.65 -114.58L14.64 -49.9A52 52 0 0 0 -14.64 -49.9Z"/>
         <path class="arco__tint" d="M-35.65 -114.58A120 120 0 0 1 35.65 -114.58L14.64 -49.9A52 52 0 0 0 -14.64 -49.9Z"/>
         <path class="arco__ring" d="M-35.65 -114.58A120 120 0 0 1 35.65 -114.58L14.64 -49.9A52 52 0 0 0 -14.64 -49.9Z"/>
         <g class="arco__icon" transform="translate(0 -108) scale(.625) translate(-12 -12)">
           <rect x="3" y="5.5" width="18" height="13" rx="1.5"/><path d="M3.5 7l8.5 6.2L20.5 7"/>
         </g>
-        <text class="arco__label" x="0" y="-89">CONTATO</text>
+        <text class="arco__label" x="0" y="-89" data-en="CONTACT">CONTATO</text>
       </g>
 
-      <g class="arco__slice" data-act="som" role="button" aria-label="Som" aria-pressed="false" style="--i:3">
+      <g class="arco__slice" data-act="som" role="button" aria-label="Som" data-en-aria-label="Sound" aria-pressed="false" style="--i:3">
         <path class="arco__shape" d="M38.51 -113.65A120 120 0 0 1 96.19 -71.74L41.17 -31.77A52 52 0 0 0 17.49 -48.97Z"/>
         <path class="arco__tint" d="M38.51 -113.65A120 120 0 0 1 96.19 -71.74L41.17 -31.77A52 52 0 0 0 17.49 -48.97Z"/>
         <path class="arco__ring" d="M38.51 -113.65A120 120 0 0 1 96.19 -71.74L41.17 -31.77A52 52 0 0 0 17.49 -48.97Z"/>
@@ -2787,17 +2867,17 @@ html:not(.js) .arco { display: none; }
           <g class="arco__som-on"><path d="M15.5 9.2a4 4 0 0 1 0 5.6"/><path d="M18.2 6.6a7.6 7.6 0 0 1 0 10.8"/></g>
           <g class="arco__som-off"><path d="M15.5 9.5l5 5"/><path d="M20.5 9.5l-5 5"/></g>
         </g>
-        <text class="arco__label" x="55.25" y="-66.08">SOM</text>
+        <text class="arco__label" x="55.25" y="-66.08" data-en="SOUND">SOM</text>
       </g>
 
-      <g class="arco__slice" data-act="tema" role="button" aria-label="Alternar tema" style="--i:4">
+      <g class="arco__slice" data-act="tema" role="button" aria-label="Alternar tema" data-en-aria-label="Toggle theme" style="--i:4">
         <path class="arco__shape" d="M97.96 -69.32A120 120 0 0 1 120 0L52 0A52 52 0 0 0 42.93 -29.34Z"/>
         <path class="arco__tint" d="M97.96 -69.32A120 120 0 0 1 120 0L52 0A52 52 0 0 0 42.93 -29.34Z"/>
         <path class="arco__ring" d="M97.96 -69.32A120 120 0 0 1 120 0L52 0A52 52 0 0 0 42.93 -29.34Z"/>
         <g class="arco__icon" transform="translate(81.79 -35.58) scale(.625) translate(-12 -12)">
           <g class="arco__tema-icon"><circle cx="12" cy="12" r="8"/><path class="arco__tema-half" d="M12 4a8 8 0 0 1 0 16z"/></g>
         </g>
-        <text class="arco__label" x="81.79" y="-16.6">TEMA</text>
+        <text class="arco__label" x="81.79" y="-16.6" data-en="THEME">TEMA</text>
       </g>
     </svg>
 
@@ -2807,56 +2887,56 @@ html:not(.js) .arco { display: none; }
 </nav>
 
 <main id="conteudo">
-<section class="inicio" id="inicio" data-capitulo="00" data-nome="Início" aria-labelledby="inicio-t">
+<section class="inicio" id="inicio" data-capitulo="00" data-nome="Início" data-en-nome="Home" aria-labelledby="inicio-t">
   <div class="inicio__planeta" aria-hidden="true">
     <div class="inicio__atmosfera"></div>
     <div class="inicio__disco"><span class="inicio__brilho"></span></div>
   </div>
 
   <div class="inicio__conteudo">
-    <p class="inicio__rotulo rotulo"><span class="inicio__status" aria-hidden="true"></span><span>Aberto a oportunidades em <span class="nobr">front-end</span> · Cuiabá, MT · remoto</span></p>
+    <p class="inicio__rotulo rotulo"><span class="inicio__status" aria-hidden="true"></span><span data-en='Open to <span class="nobr">front-end</span> roles · Cuiabá, Brazil · remote'>Aberto a oportunidades em <span class="nobr">front-end</span> · Cuiabá, MT · remoto</span></p>
     <p class="inicio__marca" aria-hidden="true"><span class="inicio__palavra">Cauanzera</span></p>
     <h1 class="inicio__nome" id="inicio-t" data-foco>Cauã Pedrozo Brito</h1>
-    <p class="inicio__frase">Desenvolvedor <span class="nobr">front-end</span> em formação. Crio interfaces interativas e acessíveis com HTML, CSS e JavaScript, sem framework.</p>
+    <p class="inicio__frase" data-en='<span class="nobr">Front-end</span> developer in training. I build interactive, accessible interfaces with HTML, CSS and JavaScript, no framework.'>Desenvolvedor <span class="nobr">front-end</span> em formação. Crio interfaces interativas e acessíveis com HTML, CSS e JavaScript, sem framework.</p>
     <div class="inicio__acoes">
-      <a class="botao botao--forte" href="#projetos" data-ir="projetos" data-cursor="ver">Ver projetos</a>
-      <a class="botao" href="assets/Curriculo_Caua_Pedrozo_Brito.pdf" download data-cursor="baixar">Currículo <span class="botao__extra">PDF</span></a>
-      <a class="botao" href="mailto:caua.pbritto@gmail.com?subject=Contato%20pelo%20portf%C3%B3lio" data-cursor="escrever">E-mail</a>
+      <a class="botao botao--forte" href="#projetos" data-ir="projetos" data-cursor="ver" data-en="See projects">Ver projetos</a>
+      <a class="botao" href="assets/Curriculo_Caua_Pedrozo_Brito.pdf" download data-cursor="baixar" data-en='Résumé <span class="botao__extra">PDF · PT</span>'>Currículo <span class="botao__extra">PDF</span></a>
+      <a class="botao" href="mailto:caua.pbritto@gmail.com?subject=Contato%20pelo%20portf%C3%B3lio" data-en-href="mailto:caua.pbritto@gmail.com?subject=Hello%20from%20your%20portfolio" data-cursor="escrever" data-en="Email">E-mail</a>
     </div>
     <a class="inicio__descer" href="#sobre" data-ir="sobre" data-cursor="descer">
       <span class="inicio__trilha" aria-hidden="true"><span></span></span>
-      <span>Role para explorar</span>
+      <span data-en="Scroll to explore">Role para explorar</span>
     </a>
   </div>
 
-  <p class="inicio__dica" aria-hidden="true"><span class="inicio__dica-mouse">Passe o cursor pelo céu</span><span class="inicio__dica-toque">Toque no céu</span></p>
+  <p class="inicio__dica" aria-hidden="true"><span class="inicio__dica-mouse" data-en="Move the cursor across the sky">Passe o cursor pelo céu</span><span class="inicio__dica-toque" data-en="Tap the sky">Toque no céu</span></p>
 </section>
-<section class="sobre" id="sobre" data-capitulo="01" data-nome="Sobre" aria-labelledby="sobre-t">
+<section class="sobre" id="sobre" data-capitulo="01" data-nome="Sobre" data-en-nome="About" aria-labelledby="sobre-t">
   <div class="sobre__palco">
     <span class="sobre__numero" aria-hidden="true">01</span>
     <div class="sobre__miolo">
-      <h2 class="capitulo" id="sobre-t" data-foco><span class="capitulo__n">0<span class="um">1</span></span>Sobre</h2>
-      <p class="sobre__manifesto" data-revelar>Sou o Cauã. Trabalho com TI em Cuiabá, estudo Análise e Desenvolvimento de Sistemas e gosto de transformar código em <em>lugares para explorar</em>: interfaces que respondem a quem passa por elas, rápidas, acessíveis e cuidadas nos detalhes.</p>
+      <h2 class="capitulo" id="sobre-t" data-foco data-en='<span class="capitulo__n">0<span class="um">1</span></span>About'><span class="capitulo__n">0<span class="um">1</span></span>Sobre</h2>
+      <p class="sobre__manifesto" data-revelar data-en='I’m Cauã. I work in IT in Cuiabá, study Systems Analysis and Development, and I like turning code into <em>places to explore</em>: interfaces that respond to whoever passes through them, fast, accessible and carefully detailed.'>Sou o Cauã. Trabalho com TI em Cuiabá, estudo Análise e Desenvolvimento de Sistemas e gosto de transformar código em <em>lugares para explorar</em>: interfaces que respondem a quem passa por elas, rápidas, acessíveis e cuidadas nos detalhes.</p>
       <dl class="sobre__fatos">
-        <div class="sobre__fato" data-revelar style="--i:0"><dt class="rotulo">Hoje</dt><dd>Analista de TI na Casa Civil do Governo de Mato Grosso</dd></div>
-        <div class="sobre__fato" data-revelar style="--i:1"><dt class="rotulo">Formação</dt><dd>Análise e Desenvolvimento de Sistemas · FASIPE · 3º semestre, conclusão prevista em dez/2027</dd></div>
-        <div class="sobre__fato" data-revelar style="--i:2"><dt class="rotulo">Foco</dt><dd><span class="nobr">Front-end</span>, interfaces interativas e acessibilidade</dd></div>
-        <div class="sobre__fato" data-revelar style="--i:3"><dt class="rotulo"><span class="nobr">Front-end</span></dt><dd>HTML, CSS, JavaScript, Canvas 2D e Web Audio</dd></div>
-        <div class="sobre__fato" data-revelar style="--i:4"><dt class="rotulo">Também</dt><dd>Python (OpenCV, MediaPipe, scikit-learn), Git e GitHub</dd></div>
-        <div class="sobre__fato" data-revelar style="--i:5"><dt class="rotulo">Base</dt><dd>Cuiabá, MT · aberto a remoto</dd></div>
+        <div class="sobre__fato" data-revelar style="--i:0"><dt class="rotulo" data-en="Now">Hoje</dt><dd data-en="IT Analyst at the Casa Civil (Chief of Staff’s Office) of the Mato Grosso State Government">Analista de TI na Casa Civil do Governo de Mato Grosso</dd></div>
+        <div class="sobre__fato" data-revelar style="--i:1"><dt class="rotulo" data-en="Education">Formação</dt><dd data-en="Systems Analysis and Development · FASIPE · 3rd semester, expected to graduate in Dec 2027">Análise e Desenvolvimento de Sistemas · FASIPE · 3º semestre, conclusão prevista em dez/2027</dd></div>
+        <div class="sobre__fato" data-revelar style="--i:2"><dt class="rotulo" data-en="Focus">Foco</dt><dd data-en='<span class="nobr">Front-end</span>, interactive interfaces and accessibility'><span class="nobr">Front-end</span>, interfaces interativas e acessibilidade</dd></div>
+        <div class="sobre__fato" data-revelar style="--i:3"><dt class="rotulo"><span class="nobr">Front-end</span></dt><dd data-en="HTML, CSS, JavaScript, Canvas 2D and Web Audio">HTML, CSS, JavaScript, Canvas 2D e Web Audio</dd></div>
+        <div class="sobre__fato" data-revelar style="--i:4"><dt class="rotulo" data-en="Also">Também</dt><dd data-en="Python (OpenCV, MediaPipe, scikit-learn), Git and GitHub">Python (OpenCV, MediaPipe, scikit-learn), Git e GitHub</dd></div>
+        <div class="sobre__fato" data-revelar style="--i:5"><dt class="rotulo" data-en="Based in">Base</dt><dd data-en="Cuiabá, MT, Brazil · open to remote">Cuiabá, MT · aberto a remoto</dd></div>
       </dl>
     </div>
   </div>
 </section>
-<section class="projetos" id="projetos" data-capitulo="02" data-nome="Projetos" aria-labelledby="projetos-t">
+<section class="projetos" id="projetos" data-capitulo="02" data-nome="Projetos" data-en-nome="Projects" aria-labelledby="projetos-t">
   <div class="projetos__palco">
     <div class="projetos__topo">
-      <h2 class="capitulo" id="projetos-t" data-foco><span class="capitulo__n">02</span>Projetos</h2>
+      <h2 class="capitulo" id="projetos-t" data-foco data-en='<span class="capitulo__n">02</span>Projects'><span class="capitulo__n">02</span>Projetos</h2>
       <div class="projetos__progresso" aria-hidden="true"><span></span></div>
       <p class="projetos__contador" aria-hidden="true"><span class="projetos__atual">01</span><span class="projetos__total"> / 03</span></p>
-      <div class="projetos__nav" role="group" aria-label="Navegar pelos projetos">
-        <button class="projetos__seta" type="button" data-dir="-1" aria-label="Projeto anterior"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M10 3.5 5.5 8l4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-        <button class="projetos__seta" type="button" data-dir="1" aria-label="Próximo projeto"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M6 3.5 10.5 8 6 12.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="projetos__nav" role="group" aria-label="Navegar pelos projetos" data-en-aria-label="Browse projects">
+        <button class="projetos__seta" type="button" data-dir="-1" aria-label="Projeto anterior" data-en-aria-label="Previous project"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M10 3.5 5.5 8l4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button class="projetos__seta" type="button" data-dir="1" aria-label="Próximo projeto" data-en-aria-label="Next project"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M6 3.5 10.5 8 6 12.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       </div>
     </div>
 
@@ -2866,7 +2946,7 @@ html:not(.js) .arco { display: none; }
           <div class="projeto__midia" data-tilt>
             <span class="projeto__luz" aria-hidden="true"></span>
             <div class="projeto__quadro projeto__quadro--lib">
-              <svg class="lib" viewBox="0 0 320 200" role="img" aria-label="Ilustração: os 21 pontos de uma mão ligados como uma constelação, ao lado da sequência de sinais MEU, NOME, C-A-U-A e da frase Meu nome é Caua">
+              <svg class="lib" viewBox="0 0 320 200" role="img" aria-label="Ilustração: os 21 pontos de uma mão ligados como uma constelação, ao lado da sequência de sinais MEU, NOME, C-A-U-A e da frase Meu nome é Caua" data-en-aria-label="Illustration: the 21 points of a hand linked like a constellation, next to the sign sequence MEU, NOME, C-A-U-A and the sentence Meu nome é Caua (My name is Caua)">
                 <defs>
                   <pattern id="lib-grade" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" class="lib__grade"/></pattern>
                 </defs>
@@ -2875,8 +2955,8 @@ html:not(.js) .arco { display: none; }
                 <g class="lib__mira">
                   <path d="M52 40h-10v10M188 40h10v10M52 182h-10v-10M188 182h10v-10"/>
                 </g>
-                <text class="lib__txt" x="14" y="20"><tspan class="lib__rec">●</tspan> CÂMERA</text>
-                <text class="lib__txt lib__txt--fim" x="306" y="20">21 PONTOS</text>
+                <text class="lib__txt" x="14" y="20" data-en='<tspan class="lib__rec">●</tspan> CAMERA'><tspan class="lib__rec">●</tspan> CÂMERA</text>
+                <text class="lib__txt lib__txt--fim" x="306" y="20" data-en="21 POINTS">21 PONTOS</text>
                 <g class="lib__mao">
                 <line class="lib__osso" x1="126.0" y1="172.24" x2="103.64" y2="158.48"/>
         <line class="lib__osso" x1="103.64" y1="158.48" x2="88.16" y2="143.0"/>
@@ -2921,13 +3001,13 @@ html:not(.js) .arco { display: none; }
         <circle class="lib__ponto" cx="169.0" cy="91.4" r="1.9"/>
         <circle class="lib__ponta" cx="174.16" cy="79.36" r="2.6"/>
                 </g>
-                <text class="lib__txt" x="212" y="56">SINAIS</text>
+                <text class="lib__txt" x="212" y="56" data-en="SIGNS">SINAIS</text>
                 <g class="lib__sinais">
                   <g class="lib__sinal" data-i="0"><rect x="212" y="64" width="44" height="18" rx="3"/><text x="234" y="76.5">MEU</text></g>
                   <g class="lib__sinal" data-i="1"><rect x="212" y="88" width="52" height="18" rx="3"/><text x="238" y="100.5">NOME</text></g>
                   <g class="lib__sinal" data-i="2"><rect x="212" y="112" width="70" height="18" rx="3"/><text x="247" y="124.5">C-A-U-A</text></g>
                 </g>
-                <text class="lib__txt" x="212" y="150">CONFIANÇA</text>
+                <text class="lib__txt" x="212" y="150" data-en="CONFIDENCE">CONFIANÇA</text>
                 <rect class="lib__barra" x="212" y="156" width="92" height="4" rx="2"/>
                 <rect class="lib__nivel" x="212" y="156" width="84" height="4" rx="2"/>
                 <line class="lib__limite" x1="281" y1="153" x2="281" y2="163"/>
@@ -2936,19 +3016,19 @@ html:not(.js) .arco { display: none; }
             </div>
           </div>
           <div class="projeto__info">
-            <p class="projeto__meta"><span class="projeto__n">0<span class="um">1</span></span><span>2026 · Acadêmico · Grupo de 4</span></p>
+            <p class="projeto__meta"><span class="projeto__n">0<span class="um">1</span></span><span data-en="2026 · Academic · Team of 4">2026 · Acadêmico · Grupo de 4</span></p>
             <h3 class="projeto__nome" id="projeto-librahin">Librahin</h3>
-            <p class="projeto__sub">Tradução de Libras para texto e voz</p>
-            <p class="projeto__desc">Reconhece sinais de Libras pela webcam, em tempo real, monta a frase e fala em português. Roda inteiro no computador, sem internet.</p>
+            <p class="projeto__sub" data-en="Brazilian Sign Language (Libras) to text and speech">Tradução de Libras para texto e voz</p>
+            <p class="projeto__desc" data-en="Recognizes Libras signs through the webcam in real time, builds the sentence and speaks it in Portuguese. Runs entirely on the computer, no internet needed.">Reconhece sinais de Libras pela webcam, em tempo real, monta a frase e fala em português. Roda inteiro no computador, sem internet.</p>
             <dl class="projeto__detalhes">
-              <div><dt class="rotulo">Minha parte</dt><dd>Fiz praticamente todo o projeto, principalmente o desenvolvimento. Trabalho do curso de ADS com Adryel Rocha, Alber Cabral e João Malaquias, orientado pelo professor Éder Lemes.</dd></div>
-              <div><dt class="rotulo">Decisões</dt><dd>Guarda só os pontos da mão e do corpo (MediaPipe), não as imagens; lê janelas de 1,5 s, porque vários sinais têm movimento; compara Random Forest, SVM e MLP; aceita um sinal só acima de 75% de confiança.</dd></div>
+              <div><dt class="rotulo" data-en="My role">Minha parte</dt><dd data-en="I built most of the project, especially the development. A Systems Analysis and Development course project with Adryel Rocha, Alber Cabral and João Malaquias, supervised by Prof. Éder Lemes.">Fiz praticamente todo o projeto, principalmente o desenvolvimento. Trabalho do curso de ADS com Adryel Rocha, Alber Cabral e João Malaquias, orientado pelo professor Éder Lemes.</dd></div>
+              <div><dt class="rotulo" data-en="Decisions">Decisões</dt><dd data-en="Stores only hand and body landmarks (MediaPipe), never the images; reads 1.5 s windows, because many signs involve movement; compares Random Forest, SVM and MLP; accepts a sign only above 75% confidence.">Guarda só os pontos da mão e do corpo (MediaPipe), não as imagens; lê janelas de 1,5 s, porque vários sinais têm movimento; compara Random Forest, SVM e MLP; aceita um sinal só acima de 75% de confiança.</dd></div>
             </dl>
-            <ul class="projeto__chips" role="list" aria-label="Tecnologias">
+            <ul class="projeto__chips" role="list" aria-label="Tecnologias" data-en-aria-label="Technologies">
               <li>Python</li><li>OpenCV</li><li>MediaPipe</li><li>scikit-learn</li><li>CustomTkinter</li>
             </ul>
             <div class="projeto__links">
-              <a class="projeto__link" href="https://github.com/cauapbritto/Vis-oLibras" target="_blank" rel="noopener noreferrer" data-cursor="abrir">Código<span class="sr"> do Librahin (abre em nova aba)</span><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M5 11 11 5M6 5h5v5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+              <a class="projeto__link" href="https://github.com/cauapbritto/Vis-oLibras" target="_blank" rel="noopener noreferrer" data-cursor="abrir"><span data-en="Code">Código</span><span class="sr" data-en=" for Librahin (opens in a new tab)"> do Librahin (abre em nova aba)</span><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M5 11 11 5M6 5h5v5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
             </div>
           </div>
         </article>
@@ -2959,24 +3039,24 @@ html:not(.js) .arco { display: none; }
           <div class="projeto__midia" data-tilt>
             <span class="projeto__luz" aria-hidden="true"></span>
             <div class="projeto__quadro">
-              <img class="projeto__img" src="assets/ecopontos.webp" width="1600" height="1000" alt="Página inicial do EcoPontos, com o título Descarte seu Lixo Eletrônico Corretamente" loading="lazy" decoding="async">
+              <img class="projeto__img" src="assets/ecopontos.webp" width="1600" height="1000" alt="Página inicial do EcoPontos, com o título Descarte seu Lixo Eletrônico Corretamente" data-en-alt="EcoPontos home page, with the headline Descarte seu Lixo Eletrônico Corretamente (Dispose of your e-waste properly)" loading="eager" decoding="async">
             </div>
           </div>
           <div class="projeto__info">
-            <p class="projeto__meta"><span class="projeto__n">02</span><span>2026 · Projeto solo · Cuiabá, MT</span></p>
+            <p class="projeto__meta"><span class="projeto__n">02</span><span data-en="2026 · Solo project · Cuiabá, Brazil">2026 · Projeto solo · Cuiabá, MT</span></p>
             <h3 class="projeto__nome" id="projeto-ecopontos">EcoPontos</h3>
-            <p class="projeto__sub">Onde descartar lixo eletrônico</p>
-            <p class="projeto__desc">Site que ajuda a encontrar pontos de coleta de lixo eletrônico em Cuiabá: ecopontos públicos, lojas, supermercados e cooperativas.</p>
+            <p class="projeto__sub" data-en="Where to drop off e-waste">Onde descartar lixo eletrônico</p>
+            <p class="projeto__desc" data-en="A site that helps people find e-waste collection points in Cuiabá: public drop-off points, stores, supermarkets and cooperatives.">Site que ajuda a encontrar pontos de coleta de lixo eletrônico em Cuiabá: ecopontos públicos, lojas, supermercados e cooperativas.</p>
             <dl class="projeto__detalhes">
-              <div><dt class="rotulo">Minha parte</dt><dd>Fiz sozinho, do zero, sem framework.</dd></div>
-              <div><dt class="rotulo">Destaques</dt><dd>Busca por nome e filtro por tipo de local; tema claro e escuro que lembra a escolha; compartilhar um ponto pela Web Share API; leitor de tela, movimento reduzido e alto contraste.</dd></div>
+              <div><dt class="rotulo" data-en="My role">Minha parte</dt><dd data-en="I built it on my own, from scratch, no framework.">Fiz sozinho, do zero, sem framework.</dd></div>
+              <div><dt class="rotulo" data-en="Highlights">Destaques</dt><dd data-en="Search by name and filter by type of place; light and dark themes that remember your choice; share a location with the Web Share API; works with screen readers, reduced motion and high contrast.">Busca por nome e filtro por tipo de local; tema claro e escuro que lembra a escolha; compartilhar um ponto pela Web Share API; leitor de tela, movimento reduzido e alto contraste.</dd></div>
             </dl>
-            <ul class="projeto__chips" role="list" aria-label="Tecnologias">
+            <ul class="projeto__chips" role="list" aria-label="Tecnologias" data-en-aria-label="Technologies">
               <li>HTML</li><li>CSS</li><li>JavaScript</li>
             </ul>
             <div class="projeto__links">
-              <a class="projeto__link" href="https://cauapbritto.github.io/lixo-eletronico/" target="_blank" rel="noopener noreferrer" data-cursor="visitar">Ver site<span class="sr"> do EcoPontos (abre em nova aba)</span><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M5 11 11 5M6 5h5v5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-              <a class="projeto__link" href="https://github.com/cauapbritto/lixo-eletronico" target="_blank" rel="noopener noreferrer" data-cursor="abrir">Código<span class="sr"> do EcoPontos (abre em nova aba)</span><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M5 11 11 5M6 5h5v5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+              <a class="projeto__link" href="https://cauapbritto.github.io/lixo-eletronico/" target="_blank" rel="noopener noreferrer" data-cursor="visitar"><span data-en="Visit site">Ver site</span><span class="sr" data-en=" for EcoPontos (opens in a new tab)"> do EcoPontos (abre em nova aba)</span><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M5 11 11 5M6 5h5v5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+              <a class="projeto__link" href="https://github.com/cauapbritto/lixo-eletronico" target="_blank" rel="noopener noreferrer" data-cursor="abrir"><span data-en="Code">Código</span><span class="sr" data-en=" for EcoPontos (opens in a new tab)"> do EcoPontos (abre em nova aba)</span><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M5 11 11 5M6 5h5v5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
             </div>
           </div>
         </article>
@@ -2987,23 +3067,23 @@ html:not(.js) .arco { display: none; }
           <div class="projeto__midia" data-tilt>
             <span class="projeto__luz" aria-hidden="true"></span>
             <div class="projeto__quadro">
-              <img class="projeto__img" src="assets/portfolio2.webp" width="1600" height="1000" alt="Primeira tela deste portfólio: o nome Cauanzera sobre um céu de estrelas, com a borda de um planeta embaixo" loading="lazy" decoding="async">
+              <img class="projeto__img" src="assets/portfolio2.webp" width="1600" height="1000" alt="Primeira tela deste portfólio: o nome Cauanzera sobre um céu de estrelas, com a borda de um planeta embaixo" data-en-alt="This portfolio’s first screen: the name Cauanzera over a starry sky, with the edge of a planet below" loading="eager" decoding="async">
             </div>
           </div>
           <div class="projeto__info">
-            <p class="projeto__meta"><span class="projeto__n">03</span><span>2026 · Projeto pessoal</span></p>
-            <h3 class="projeto__nome" id="projeto-portfolio">Portfólio 2.0</h3>
-            <p class="projeto__sub">Este site</p>
-            <p class="projeto__desc">Uma página só, em tela cheia: um céu de estrelas em 3D que a rolagem atravessa, com terminal, menu em meio-arco, tema claro e escuro e versão em inglês. Evolução do Portfólio <span class="projeto__versao-inline">v1</span>.</p>
+            <p class="projeto__meta"><span class="projeto__n">03</span><span data-en="2026 · Personal project">2026 · Projeto pessoal</span></p>
+            <h3 class="projeto__nome" id="projeto-portfolio" data-en="Portfolio 2.0">Portfólio 2.0</h3>
+            <p class="projeto__sub" data-en="This site">Este site</p>
+            <p class="projeto__desc" data-en='A single full-screen page: a 3D starfield you travel through as you scroll, with a terminal, a half-arc menu, light and dark themes and an English version. The next step after Portfolio <span class="projeto__versao-inline">v1</span>.'>Uma página só, em tela cheia: um céu de estrelas em 3D que a rolagem atravessa, com terminal, menu em meio-arco, tema claro e escuro e versão em inglês. Evolução do Portfólio <span class="projeto__versao-inline">v1</span>.</p>
             <dl class="projeto__detalhes">
-              <div><dt class="rotulo">Destaques</dt><dd>Funciona pelo teclado, sem JavaScript e com “reduzir movimento”; o céu pausa com a aba escondida e economiza bateria com a página parada; um build em Node gera um único HTML.</dd></div>
+              <div><dt class="rotulo" data-en="Highlights">Destaques</dt><dd data-en="Works with the keyboard, without JavaScript and with “reduce motion”; the sky pauses when the tab is hidden and saves battery while the page is idle; a Node build outputs a single HTML file.">Funciona pelo teclado, sem JavaScript e com “reduzir movimento”; o céu pausa com a aba escondida e economiza bateria com a página parada; um build em Node gera um único HTML.</dd></div>
             </dl>
-            <ul class="projeto__chips" role="list" aria-label="Tecnologias">
+            <ul class="projeto__chips" role="list" aria-label="Tecnologias" data-en-aria-label="Technologies">
               <li>HTML</li><li>CSS</li><li>JavaScript</li><li>Canvas 2D</li><li>Web Audio</li>
             </ul>
             <div class="projeto__links">
-              <a class="projeto__link" href="https://github.com/cauapbritto/Portifolio2.0" target="_blank" rel="noopener noreferrer" data-cursor="abrir">Código<span class="sr"> do Portfólio 2.0 (abre em nova aba)</span><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M5 11 11 5M6 5h5v5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-              <a class="projeto__link" href="https://cauapbritto.github.io/portif-lio/" target="_blank" rel="noopener noreferrer" data-cursor="visitar">Ver o <span class="projeto__versao-inline">v1</span><span class="sr">, a primeira versão do portfólio (abre em nova aba)</span><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M5 11 11 5M6 5h5v5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+              <a class="projeto__link" href="https://github.com/cauapbritto/Portifolio2.0" target="_blank" rel="noopener noreferrer" data-cursor="abrir"><span data-en="Code">Código</span><span class="sr" data-en=" for Portfolio 2.0 (opens in a new tab)"> do Portfólio 2.0 (abre em nova aba)</span><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M5 11 11 5M6 5h5v5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+              <a class="projeto__link" href="https://cauapbritto.github.io/portif-lio/" target="_blank" rel="noopener noreferrer" data-cursor="visitar"><span data-en='See <span class="projeto__versao-inline">v1</span>'>Ver o <span class="projeto__versao-inline">v1</span></span><span class="sr" data-en=", the first version of the portfolio (opens in a new tab)">, a primeira versão do portfólio (abre em nova aba)</span><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M5 11 11 5M6 5h5v5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
             </div>
           </div>
         </article>
@@ -3011,55 +3091,55 @@ html:not(.js) .arco { display: none; }
 
       <li class="projeto projeto--fim" data-revelar>
         <div class="projeto__fim">
-          <p class="rotulo">Outros repositórios</p>
-          <p class="projeto__fim-titulo">Estudos e experimentos no GitHub.</p>
-          <a class="projeto__github" href="https://github.com/cauapbritto" target="_blank" rel="noopener noreferrer" data-cursor="abrir">Ver tudo no GitHub<span class="sr"> (abre em nova aba)</span><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M5 11 11 5M6 5h5v5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          <p class="rotulo" data-en="Other repositories">Outros repositórios</p>
+          <p class="projeto__fim-titulo" data-en="Studies and experiments on GitHub.">Estudos e experimentos no GitHub.</p>
+          <a class="projeto__github" href="https://github.com/cauapbritto" target="_blank" rel="noopener noreferrer" data-cursor="abrir"><span data-en="See everything on GitHub">Ver tudo no GitHub</span><span class="sr" data-en=" (opens in a new tab)"> (abre em nova aba)</span><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M5 11 11 5M6 5h5v5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         </div>
       </li>
     </ol>
 
   </div>
 </section>
-<section class="contato" id="contato" data-capitulo="03" data-nome="Contato" aria-labelledby="contato-t">
+<section class="contato" id="contato" data-capitulo="03" data-nome="Contato" data-en-nome="Contact" aria-labelledby="contato-t">
   <div class="contato__orbitas" aria-hidden="true">
     <span class="contato__orbita contato__orbita--1"><i></i></span>
     <span class="contato__orbita contato__orbita--2"><i></i></span>
   </div>
 
   <div class="contato__miolo">
-    <h2 class="capitulo" id="contato-t" data-foco><span class="capitulo__n">03</span>Contato</h2>
-    <p class="contato__titulo" data-revelar="mascara"><span>Vamos conversar?</span></p>
-    <p class="contato__texto" data-revelar style="--i:1">Estou aberto a oportunidades em <span class="nobr">front-end</span>, em Cuiabá ou remoto. O jeito mais rápido de falar comigo é por <span class="nobr">e-mail</span>; o currículo está logo abaixo.</p>
+    <h2 class="capitulo" id="contato-t" data-foco data-en='<span class="capitulo__n">03</span>Contact'><span class="capitulo__n">03</span>Contato</h2>
+    <p class="contato__titulo" data-revelar="mascara"><span data-en="Let’s talk">Vamos conversar?</span></p>
+    <p class="contato__texto" data-revelar style="--i:1" data-en='I’m open to <span class="nobr">front-end</span> roles, in Cuiabá or remote. The fastest way to reach me is by email; my résumé (in Portuguese) is right below.'>Estou aberto a oportunidades em <span class="nobr">front-end</span>, em Cuiabá ou remoto. O jeito mais rápido de falar comigo é por <span class="nobr">e-mail</span>; o currículo está logo abaixo.</p>
     <div class="email" data-revelar style="--i:2">
       <p class="email__label rotulo">
-        <span class="email__label-text">E-mail</span>
+        <span class="email__label-text" data-en="Email">E-mail</span>
         <span class="email__hint" aria-hidden="true"></span>
       </p>
-      <p class="email__linha"><a class="email__email" href="mailto:caua.pbritto@gmail.com?subject=Contato%20pelo%20portf%C3%B3lio" data-cursor="escrever"><span class="email__user">caua.pbritto</span><wbr><span class="email__domain">@gmail.com</span></a></p>
+      <p class="email__linha"><a class="email__email" href="mailto:caua.pbritto@gmail.com?subject=Contato%20pelo%20portf%C3%B3lio" data-en-href="mailto:caua.pbritto@gmail.com?subject=Hello%20from%20your%20portfolio" data-cursor="escrever"><span class="email__user">caua.pbritto</span><wbr><span class="email__domain">@gmail.com</span></a></p>
       <div class="email__bar">
         <span class="email__magnet">
           <button class="email__btn" type="button" data-cursor="copiar">
             <span class="email__face">
               <span class="email__state email__state--idle">
                 <svg class="email__icon email__copy" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><rect x="5.25" y="5.25" width="8.5" height="8.5" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10.25 2.75v-.25a.5.5 0 0 0-.5-.5H3a1 1 0 0 0-1 1v6.75a.5.5 0 0 0 .5.5h.25" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-                <span>Copiar e-mail</span>
+                <span data-en="Copy email">Copiar e-mail</span>
               </span>
               <span class="email__state email__state--done" aria-hidden="true">
                 <svg class="email__icon email__check" viewBox="0 0 16 16" width="16" height="16" focusable="false"><path d="M2.75 8.5 6.25 12 13.25 4.25" pathLength="1" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                <span>Copiado</span>
+                <span data-en="Copied">Copiado</span>
               </span>
             </span>
           </button>
         </span>
         <ul class="email__links" role="list">
           <li>
-            <a class="email__link" href="assets/Curriculo_Caua_Pedrozo_Brito.pdf" download data-cursor="baixar"><span class="email__link-text">Currículo <span class="email__extra">PDF</span></span><svg class="email__arrow email__arrow--baixo" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path d="M8 3v8.5M4.5 8 8 11.5 11.5 8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            <a class="email__link" href="assets/Curriculo_Caua_Pedrozo_Brito.pdf" download data-cursor="baixar"><span class="email__link-text" data-en='Résumé <span class="email__extra">PDF · PT</span>'>Currículo <span class="email__extra">PDF</span></span><svg class="email__arrow email__arrow--baixo" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path d="M8 3v8.5M4.5 8 8 11.5 11.5 8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
           </li>
           <li>
-            <a class="email__link" href="https://github.com/cauapbritto" target="_blank" rel="noopener noreferrer"><span class="email__link-text">GitHub</span><svg class="email__arrow" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path d="M4.5 11.5 11.5 4.5M5.5 4.5h6v6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="sr"> (abre em nova aba)</span></a>
+            <a class="email__link" href="https://github.com/cauapbritto" target="_blank" rel="noopener noreferrer"><span class="email__link-text">GitHub</span><svg class="email__arrow" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path d="M4.5 11.5 11.5 4.5M5.5 4.5h6v6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="sr" data-en=" (opens in a new tab)"> (abre em nova aba)</span></a>
           </li>
           <li>
-            <a class="email__link" href="https://www.linkedin.com/in/cau%C3%A3-pedrozo-brito-8a685b358" target="_blank" rel="noopener noreferrer"><span class="email__link-text">LinkedIn</span><svg class="email__arrow" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path d="M4.5 11.5 11.5 4.5M5.5 4.5h6v6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="sr"> (abre em nova aba)</span></a>
+            <a class="email__link" href="https://www.linkedin.com/in/cau%C3%A3-pedrozo-brito-8a685b358" target="_blank" rel="noopener noreferrer"><span class="email__link-text">LinkedIn</span><svg class="email__arrow" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path d="M4.5 11.5 11.5 4.5M5.5 4.5h6v6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="sr" data-en=" (opens in a new tab)"> (abre em nova aba)</span></a>
           </li>
         </ul>
       </div>
@@ -3069,8 +3149,8 @@ html:not(.js) .arco { display: none; }
 
   <footer class="rodape">
     <p>© 2026 Cauã Pedrozo Brito</p>
-    <p class="rodape__feito">HTML, CSS e JavaScript, sem framework.</p>
-    <a class="rodape__topo" href="#inicio" data-ir="inicio" data-cursor="decolar">Voltar ao início<svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M8 13V3M4 7l4-4 4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    <p class="rodape__feito" data-en="HTML, CSS and JavaScript, no framework.">HTML, CSS e JavaScript, sem framework.</p>
+    <a class="rodape__topo" href="#inicio" data-ir="inicio" data-cursor="decolar"><span data-en="Back to the top">Voltar ao início</span><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M8 13V3M4 7l4-4 4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
   </footer>
 </section>
 </main>
@@ -3081,29 +3161,29 @@ html:not(.js) .arco { display: none; }
     <div class="term__bar">
       <span class="term__dots" aria-hidden="true"><i></i><i></i><i></i></span>
       <h2 class="term__title" id="term-titulo">cauanzera ~ terminal</h2>
-      <span class="term__status" aria-hidden="true">pronto</span>
-      <button class="term__fechar" type="button" data-term-fechar aria-label="Fechar terminal">
+      <span class="term__status" aria-hidden="true" data-en="ready">pronto</span>
+      <button class="term__fechar" type="button" data-term-fechar aria-label="Fechar terminal" data-en-aria-label="Close terminal">
         <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M4 4l8 8M12 4l-8 8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
       </button>
     </div>
     <div class="term__screen">
-      <div class="term__out" id="term-out" role="log" aria-live="polite" aria-label="Saída do terminal" tabindex="0">
-        <div class="term__line">Olá. Este é o portfólio do Cauã, em linha de comando.</div>
-        <div class="term__line term__line--muted">Digite <span class="term__k">help</span> para ver os comandos. <span class="term__k">esc</span> fecha o terminal.</div>
+      <div class="term__out" id="term-out" role="log" aria-live="polite" aria-label="Saída do terminal" data-en-aria-label="Terminal output" tabindex="0">
+        <div class="term__line" data-en="Hi. This is Cauã’s portfolio, on the command line.">Olá. Este é o portfólio do Cauã, em linha de comando.</div>
+        <div class="term__line term__line--muted" data-en='Type <span class="term__k">help</span> to see the commands. <span class="term__k">esc</span> closes the terminal.'>Digite <span class="term__k">help</span> para ver os comandos. <span class="term__k">esc</span> fecha o terminal.</div>
       </div>
       <canvas class="term__rain" width="0" height="0" aria-hidden="true"></canvas>
       <div class="term__scan" aria-hidden="true"></div>
     </div>
     <form class="term__form" action="#" autocomplete="off">
-      <label class="sr" for="term-input">Comando</label>
+      <label class="sr" for="term-input" data-en="Command">Comando</label>
       <span class="term__prompt" aria-hidden="true">›</span>
-      <input class="term__input" id="term-input" name="cmd" type="text" placeholder="digite help" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go" aria-controls="term-out">
+      <input class="term__input" id="term-input" name="cmd" type="text" placeholder="digite help" data-en-placeholder="type help" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go" aria-controls="term-out">
     </form>
-    <div class="term__chips" role="group" aria-label="Atalhos">
-      <span class="term__chips-label" aria-hidden="true">Atalhos</span>
+    <div class="term__chips" role="group" aria-label="Atalhos" data-en-aria-label="Shortcuts">
+      <span class="term__chips-label" aria-hidden="true" data-en="Shortcuts">Atalhos</span>
       <button class="term__chip" type="button" data-cmd="help">help</button>
-      <button class="term__chip" type="button" data-cmd="projetos">projetos</button>
-      <button class="term__chip" type="button" data-cmd="ir contato">ir contato</button>
+      <button class="term__chip" type="button" data-cmd="projetos" data-en-data-cmd="projects" data-en="projects">projetos</button>
+      <button class="term__chip" type="button" data-cmd="ir contato" data-en-data-cmd="go contact" data-en="go contact">ir contato</button>
       <button class="term__chip" type="button" data-cmd="warp">warp</button>
     </div>
   </section>
@@ -3226,13 +3306,61 @@ window.CZ = (() => {
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { medir(); agendar(); emit('fonte:pronta', f); });
   }
 
+  /* ---------- idioma ---------- */
+
+  // "pt" (padrão) ou "en". O script do <head> já escolheu: ?lang= no endereço, a escolha salva ou os idiomas do navegador.
+  // O inglês fica no próprio HTML, ao lado do português: data-en troca o conteúdo do elemento e
+  // data-en-aria-label, data-en-alt etc. trocam o atributo. Textos montados por script usam CZ.t('pt', 'en').
+  const ATRIBUTOS = ['aria-label', 'alt', 'title', 'placeholder', 'content', 'href', 'hreflang', 'lang', 'data-cmd'];
+  const SELETOR_EN = ['[data-en]'].concat(ATRIBUTOS.map((a) => `[data-en-${a}]`)).join(',');
+  let idioma = html.lang === 'en' ? 'en' : 'pt';
+  const t = (pt, en) => (idioma === 'en' ? en : pt);
+  // O português original de cada elemento, guardado antes de qualquer parte mexer nele.
+  const originais = new Map();
+  document.querySelectorAll(SELETOR_EN).forEach((el) => {
+    const o = { html: el.hasAttribute('data-en') ? el.innerHTML : null, attrs: {} };
+    ATRIBUTOS.forEach((a) => { if (el.hasAttribute(`data-en-${a}`)) o.attrs[a] = el.getAttribute(a); });
+    originais.set(el, o);
+  });
+  function traduzir() {
+    const en = idioma === 'en';
+    originais.forEach((o, el) => {
+      if (o.html !== null) el.innerHTML = en ? el.getAttribute('data-en') : o.html;
+      Object.keys(o.attrs).forEach((a) => {
+        const v = en ? el.getAttribute(`data-en-${a}`) : o.attrs[a];
+        if (v == null) el.removeAttribute(a);
+        else el.setAttribute(a, v);
+      });
+    });
+  }
+  function definirIdioma(l) {
+    if ((l !== 'pt' && l !== 'en') || l === idioma) return;
+    idioma = l;
+    html.lang = t('pt-BR', 'en');
+    store.set('cz-idioma', l);
+    traduzir();
+    // O endereço acompanha (?lang=en), para quem copiar o link ver o mesmo idioma.
+    if (history.replaceState) {
+      const q = new URLSearchParams(location.search);
+      if (l === 'en') q.set('lang', 'en');
+      else q.delete('lang');
+      const s = q.toString();
+      history.replaceState(null, '', location.pathname + (s ? `?${s}` : '') + location.hash);
+    }
+    emit('idioma', l);
+    medir();
+    agendar();
+  }
+  if (idioma === 'en') traduzir();
+  html.classList.remove('traduzindo');
+
   /* ---------- capítulos e rolagem ---------- */
 
   const capitulos = Array.from(document.querySelectorAll('[data-capitulo]'), (el) => ({
     el,
     id: el.id,
     n: el.dataset.capitulo,
-    nome: el.dataset.nome,
+    get nome() { return (idioma === 'en' && el.dataset.enNome) || el.dataset.nome; },
     topo: 0,
     fim: 0,
   }));
@@ -3361,6 +3489,7 @@ window.CZ = (() => {
     on, emit, store, reduzido, mouse, ouvir,
     tema, definirTema, alternarTema,
     fonte, definirFonte, movimento, definirMovimento,
+    get idioma() { return idioma; }, definirIdioma, t,
     get sistemaReduz() { return mqReduce.matches; },
     capitulos, ir, rolarAte, medir, revelar, pronto,
     get atual() { return atual; },
@@ -4044,7 +4173,7 @@ window.CZ = (() => {
   const num = el.querySelector('.abertura__num');
   const barra = el.querySelector('.abertura__barra');
   const fase = el.querySelector('.abertura__fase');
-  const FASES = [[0, 'ligando o céu'], [0.45, 'abrindo caminho']];
+  const FASES = [[0, CZ.t('ligando o céu', 'lighting up the sky')], [0.45, CZ.t('abrindo caminho', 'clearing the way')]];
 
   // Quem voltou em até 7 dias vê a abertura curta.
   const SEMANA = 7 * 24 * 3600 * 1000;
@@ -4145,6 +4274,7 @@ window.CZ = (() => {
     embaralhando = requestAnimationFrame(passo);
   }
 
+  CZ.on('idioma', () => { if (CZ.atual) escrever(`${CZ.atual.n} · ${CZ.atual.nome}`); });
   CZ.on('capitulo', (c) => {
     escrever(`${c.n} · ${c.nome}`);
     itens.forEach((a) => {
@@ -4225,6 +4355,14 @@ window.CZ = (() => {
   /* ---------- terminal e atalhos ---------- */
   if (btnTerminal) btnTerminal.addEventListener('click', () => CZ.emit('terminal:abrir', btnTerminal));
 
+  /* ---------- idioma: o link leva a ?lang=; com JS a troca é na hora, sem recarregar ---------- */
+  const btnIdioma = document.querySelector('[data-idioma]');
+  if (btnIdioma) btnIdioma.addEventListener('click', (e) => {
+    if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    e.preventDefault();
+    CZ.definirIdioma(CZ.idioma === 'en' ? 'pt' : 'en');
+  });
+
   const digitando = (el) => el && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName));
   // Atalhos: "/" abre o terminal (dá para desligar com "atalhos off" no terminal, por quem usa voz);
   // Alt+0 a Alt+3 levam aos capítulos (com modificador, nunca disparam sem querer).
@@ -4253,6 +4391,8 @@ window.CZ = (() => {
   const anel = el.querySelector('.cursor__anel');
   const texto = el.querySelector('.cursor__texto');
   const ALVOS = 'a, button, [role="button"], [data-cursor], summary, label';
+  // O rótulo vem do data-cursor (em português); em inglês, a palavra equivalente.
+  const EN = { ver: 'view', baixar: 'save', escrever: 'write', abrir: 'open', visitar: 'visit', copiar: 'copy', decolar: 'liftoff', descer: 'scroll', menu: 'menu', ajustes: 'settings' };
 
   let ativo = false;
   let x = -100, y = -100, ax = -100, ay = -100;
@@ -4286,7 +4426,8 @@ window.CZ = (() => {
     el.classList.toggle('is-input', !!input);
     const alvo = t && !input ? t.closest(ALVOS) : null;
     const rotulo = alvo && alvo.closest('[data-cursor]');
-    const txt = rotulo ? rotulo.dataset.cursor : '';
+    const pt = rotulo ? rotulo.dataset.cursor : '';
+    const txt = CZ.t(pt, EN[pt] || pt);
     if (texto.textContent !== txt) texto.textContent = txt;
     el.classList.toggle('is-rotulo', !!txt);
     el.classList.toggle('is-alvo', !!alvo && !txt);
@@ -4375,28 +4516,33 @@ window.CZ = (() => {
   const mqAlta = matchMedia('(min-height: 600px)');
 
   // Separa o texto em palavras (o texto inteiro fica num .sr para leitores de tela).
-  const original = manifesto.textContent.replace(/\s+/g, ' ').trim();
-  const visual = document.createElement('span');
-  visual.setAttribute('aria-hidden', 'true');
-  let n = 0;
-  manifesto.childNodes.forEach((no) => {
-    const destaque = no.nodeType === 1 && no.tagName === 'EM';
-    no.textContent.split(/(\s+)/).forEach((parte) => {
-      if (!parte) return;
-      if (/^\s+$/.test(parte)) { visual.appendChild(document.createTextNode(' ')); return; }
-      const w = document.createElement(destaque ? 'em' : 'span');
-      w.className = 'sobre__w';
-      w.style.setProperty('--i', String(n++));
-      w.textContent = parte;
-      visual.appendChild(w);
+  // Roda de novo quando o idioma troca, porque o núcleo devolve o texto inteiro ao parágrafo.
+  let total = 0;
+  function dividir() {
+    const original = manifesto.textContent.replace(/\s+/g, ' ').trim();
+    const visual = document.createElement('span');
+    visual.setAttribute('aria-hidden', 'true');
+    let n = 0;
+    manifesto.childNodes.forEach((no) => {
+      const destaque = no.nodeType === 1 && no.tagName === 'EM';
+      no.textContent.split(/(\s+)/).forEach((parte) => {
+        if (!parte) return;
+        if (/^\s+$/.test(parte)) { visual.appendChild(document.createTextNode(' ')); return; }
+        const w = document.createElement(destaque ? 'em' : 'span');
+        w.className = 'sobre__w';
+        w.style.setProperty('--i', String(n++));
+        w.textContent = parte;
+        visual.appendChild(w);
+      });
     });
-  });
-  const sr = document.createElement('span');
-  sr.className = 'sr';
-  sr.textContent = original;
-  manifesto.textContent = '';
-  manifesto.append(sr, visual);
-  const total = n;
+    const sr = document.createElement('span');
+    sr.className = 'sr';
+    sr.textContent = original;
+    manifesto.textContent = '';
+    manifesto.append(sr, visual);
+    total = n;
+  }
+  dividir();
 
   let cena = false;
   let topo = 0, altura = 1;
@@ -4439,6 +4585,7 @@ window.CZ = (() => {
 
   CZ.on('rolagem', ({ y }) => atualizar(y));
   CZ.on('movimento', avaliar);
+  CZ.on('idioma', () => { dividir(); ultimoK = -1; avaliar(); });
   CZ.on('fonte', avaliar);
   CZ.on('fonte:pronta', avaliar);
   if (document.fonts && document.fonts.addEventListener) document.fonts.addEventListener('loadingdone', avaliar);
@@ -4576,6 +4723,7 @@ window.CZ = (() => {
   CZ.on('movimento', layout);
   CZ.ouvir(mqLarga, layout);
   CZ.on('fonte', layout);
+  CZ.on('idioma', layout);
   CZ.on('fonte:pronta', layout);
   addEventListener('resize', layout, { passive: true });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
@@ -4840,7 +4988,7 @@ window.CZ = (() => {
       root.classList.remove('is-back');
       root.classList.add('is-copied');
     }
-    announce('E-mail copiado.');
+    announce(CZ.t('E-mail copiado.', 'Email copied.'));
     clearTimeout(copiedTimer);
     copiedTimer = setTimeout(() => {
       root.classList.remove('is-copied');
@@ -4855,9 +5003,10 @@ window.CZ = (() => {
       root.classList.add('is-back');
     }
     // Em tela de toque não há atalho de teclado para sugerir.
+    const atalho = apple ? 'Cmd+C' : 'Ctrl+C';
     const msg = mqTouch.matches
-      ? 'Selecionei o e-mail, é só copiar'
-      : `Selecionei o e-mail, use ${apple ? 'Cmd+C' : 'Ctrl+C'}`;
+      ? CZ.t('Selecionei o e-mail, é só copiar', 'Email selected, just copy it')
+      : CZ.t(`Selecionei o e-mail, use ${atalho}`, `Email selected, press ${atalho}`);
     if (hint) hint.textContent = msg;
     root.classList.add('is-hint');
     selectEmail();
@@ -5039,7 +5188,7 @@ window.CZ = (() => {
   const statusText = root.querySelector('.arco__status-text');
   if (!toggle || !svg || !slices.length || !status || !statusText) return;
 
-  const NAMES = { sobre: 'Sobre', contato: 'Contato', projetos: 'Projetos' };
+  const NAMES = { sobre: ['Sobre', 'About'], contato: ['Contato', 'Contact'], projetos: ['Projetos', 'Projects'] };
 
   let open = false;
   let current = 0; // fatia com tabindex 0 (roving tabindex)
@@ -5143,7 +5292,7 @@ window.CZ = (() => {
       // O foco vai para o título do capítulo; o menu fecha sem devolver o foco ao botão.
       closeMenu(false);
       CZ.ir(act);
-      say(`Indo para ${NAMES[act]}`);
+      say(CZ.t(`Indo para ${NAMES[act][0]}`, `Going to ${NAMES[act][1]}`));
     } else if (act === 'som') {
       CZ.emit('som:alternar');
     } else if (act === 'tema') {
@@ -5156,12 +5305,12 @@ window.CZ = (() => {
   let somAnunciado = false;
   CZ.on('som:estado', (on) => {
     if (somSlice) somSlice.setAttribute('aria-pressed', String(on));
-    if (somAnunciado) say(on ? 'Som ligado' : 'Som desligado');
+    if (somAnunciado) say(on ? CZ.t('Som ligado', 'Sound on') : CZ.t('Som desligado', 'Sound off'));
     somAnunciado = true;
   });
   CZ.on('tema', (t) => {
     syncMode();
-    if (open) say(t === 'light' ? 'Tema claro' : 'Tema escuro');
+    if (open) say(t === 'light' ? CZ.t('Tema claro', 'Light theme') : CZ.t('Tema escuro', 'Dark theme'));
   });
 
   svg.addEventListener('click', (e) => {
@@ -5385,7 +5534,7 @@ window.CZ = (() => {
   function setBusy(name, on) {
     if (on) busy.add(name); else busy.delete(name);
     root.classList.toggle('term--busy', busy.size > 0);
-    if (status) status.textContent = busy.size ? Array.from(busy).join(' + ') : 'pronto';
+    if (status) status.textContent = busy.size ? Array.from(busy).join(' + ') : CZ.t('pronto', 'ready');
   }
 
   /* ---------- matrix: chuva de glifos num canvas só sobre a tela ---------- */
@@ -5546,7 +5695,7 @@ window.CZ = (() => {
     setBusy('matrix', false);
     if (!announce) return;
     batchIndex = 0;
-    print('de volta ao terminal.', 'muted');
+    print(CZ.t('de volta ao terminal.', 'back to the terminal.'), 'muted');
     trim();
     scrollEnd();
   }
@@ -5578,10 +5727,10 @@ window.CZ = (() => {
       root.classList.remove('term--scanning');
       setBusy('scan', false);
       batchIndex = 0;
-      print('varredura concluída', 'strong');
-      row('linhas', String(lines.length), 'indent');
+      print(CZ.t('varredura concluída', 'scan complete'), 'strong');
+      row(CZ.t('linhas', 'lines'), String(lines.length), 'indent');
       row('links', String(linkCount), 'indent');
-      row('animação', 'só transform e opacity', 'indent');
+      row(CZ.t('animação', 'animation'), CZ.t('só transform e opacity', 'transform and opacity only'), 'indent');
       trim();
       scrollEnd();
     };
@@ -5637,22 +5786,25 @@ window.CZ = (() => {
 
   /* ---------- comandos ---------- */
 
-  const SECOES = { inicio: 'inicio', home: 'inicio', topo: 'inicio', '~': 'inicio', '..': 'inicio', sobre: 'sobre', about: 'sobre', projetos: 'projetos', projects: 'projetos', contato: 'contato', contact: 'contato' };
+  const SECOES = { inicio: 'inicio', home: 'inicio', topo: 'inicio', top: 'inicio', '~': 'inicio', '..': 'inicio', sobre: 'sobre', about: 'sobre', projetos: 'projetos', projects: 'projetos', contato: 'contato', contact: 'contato' };
+  // name: o comando em português; en: como ele aparece em inglês (os dois sempre funcionam).
   const COMMANDS = [
-    { name: 'help', aliases: ['ajuda', '?', 'comandos'], desc: 'lista os comandos', run: help },
-    { name: 'sobre', aliases: ['about', 'whoami'], desc: 'quem sou', run: sobre },
-    { name: 'projetos', aliases: ['projects', 'ls'], desc: 'o que já construí', run: projetos },
-    { name: 'contato', aliases: ['contact', 'email', 'e-mail'], desc: 'e-mail e links', run: contato },
-    { name: 'cv', aliases: ['curriculo', 'resume', 'curriculum'], desc: 'baixa o currículo em PDF', run: cv },
-    { name: 'ir', aliases: ['cd', 'go', 'voar'], desc: 'voa até um capítulo: ir projetos', run: ir },
-    { name: 'tema', aliases: ['theme'], desc: 'alterna claro e escuro', run: tema },
-    { name: 'som', aliases: ['sound', 'audio', 'música'], desc: 'liga ou desliga o som', run: som },
-    { name: 'fonte', aliases: ['font', 'fontes'], desc: 'troca a fonte: fonte titulos, tudo ou nova', run: fonte },
-    { name: 'movimento', aliases: ['motion', 'calmo', 'animacoes'], desc: 'movimento calmo ou normal', run: movimentoCmd },
-    { name: 'atalhos', aliases: ['shortcuts', 'teclas'], desc: 'lista os atalhos; atalhos off desliga o /', run: atalhos },
-    { name: 'limpar', aliases: ['clear', 'cls'], desc: 'limpa a tela', run: limpar },
-    { name: 'sair', aliases: ['exit', 'quit', 'fechar', 'q'], desc: 'fecha o terminal', run: sair },
+    { name: 'help', aliases: ['ajuda', '?', 'comandos'], desc: ['lista os comandos', 'lists the commands'], run: help },
+    { name: 'sobre', en: 'about', aliases: ['about', 'whoami'], desc: ['quem sou', 'who I am'], run: sobre },
+    { name: 'projetos', en: 'projects', aliases: ['projects', 'ls'], desc: ['o que já construí', 'what I’ve built'], run: projetos },
+    { name: 'contato', en: 'contact', aliases: ['contact', 'email', 'e-mail'], desc: ['e-mail e links', 'email and links'], run: contato },
+    { name: 'cv', aliases: ['curriculo', 'resume', 'curriculum'], desc: ['baixa o currículo em PDF', 'downloads my résumé (PDF, in Portuguese)'], run: cv },
+    { name: 'ir', en: 'go', aliases: ['cd', 'go', 'voar'], desc: ['voa até um capítulo: ir projetos', 'flies to a chapter: go projects'], run: ir },
+    { name: 'tema', en: 'theme', aliases: ['theme'], desc: ['alterna claro e escuro', 'toggles light and dark'], run: tema },
+    { name: 'som', en: 'sound', aliases: ['sound', 'audio', 'música'], desc: ['liga ou desliga o som', 'turns the sound on or off'], run: som },
+    { name: 'fonte', en: 'font', aliases: ['font', 'fontes'], desc: ['troca a fonte: fonte titulos, tudo ou nova', 'changes the font: font headings, all or new'], run: fonte },
+    { name: 'movimento', en: 'motion', aliases: ['motion', 'calmo', 'animacoes'], desc: ['movimento calmo ou normal', 'calm or normal motion'], run: movimentoCmd },
+    { name: 'idioma', en: 'lang', aliases: ['lang', 'language', 'lingua'], desc: ['troca o idioma: idioma en ou pt', 'switches the language: lang pt or en'], run: idiomaCmd },
+    { name: 'atalhos', en: 'shortcuts', aliases: ['shortcuts', 'teclas'], desc: ['lista os atalhos; atalhos off desliga o /', 'lists the shortcuts; shortcuts off disables /'], run: atalhos },
+    { name: 'limpar', en: 'clear', aliases: ['clear', 'cls'], desc: ['limpa a tela', 'clears the screen'], run: limpar },
+    { name: 'sair', en: 'exit', aliases: ['exit', 'quit', 'fechar', 'q'], desc: ['fecha o terminal', 'closes the terminal'], run: sair },
   ];
+  const nomeDe = (c) => CZ.t(c.name, c.en || c.name);
   const SECRETS = [
     { name: 'matrix', aliases: ['hack'], run: matrix },
     { name: 'scan', aliases: ['scanner'], run: scan },
@@ -5661,7 +5813,8 @@ window.CZ = (() => {
     { name: 'rose', aliases: ['rosa'], hidden: true, run: rose },
   ];
   const ALL = COMMANDS.concat(SECRETS);
-  const COMPLETABLE = COMMANDS.map((c) => c.name).concat(['ajuda', 'clear'], SECRETS.filter((s) => !s.hidden).map((s) => s.name));
+  // O que o Tab completa e as sugestões: os nomes do idioma atual (e uns sinônimos comuns).
+  const completaveis = () => COMMANDS.map(nomeDe).concat(CZ.t(['ajuda', 'clear'], []), SECRETS.filter((x) => !x.hidden).map((x) => x.name));
 
   // Botão que leva a um capítulo (fecha o terminal e voa até lá).
   function botaoIr(texto, id) {
@@ -5672,44 +5825,46 @@ window.CZ = (() => {
   }
 
   function help() {
-    print('comandos', 'strong');
-    COMMANDS.forEach((c) => row(c.name, c.desc, 'indent'));
-    print(['segredos: ', node('span', 'term__k', 'matrix'), ', ', node('span', 'term__k', 'scan'), ', ', node('span', 'term__k', 'warp'), ', ', node('span', 'term__k', 'cauanzera')], 'muted gap');
+    print(CZ.t('comandos', 'commands'), 'strong');
+    COMMANDS.forEach((c) => row(nomeDe(c), CZ.t(c.desc[0], c.desc[1]), 'indent'));
+    print([CZ.t('segredos: ', 'secrets: '), node('span', 'term__k', 'matrix'), ', ', node('span', 'term__k', 'scan'), ', ', node('span', 'term__k', 'warp'), ', ', node('span', 'term__k', 'cauanzera')], 'muted gap');
   }
+  const NOVA_ABA = () => CZ.t(' (abre em nova aba)', ' (opens in a new tab)');
+  const CODIGO = () => CZ.t('código ↗', 'code ↗');
   function projetos() {
     print('Librahin', 'strong');
-    print('Traduz Libras para texto e voz com visão computacional, tudo offline.', 'indent');
+    print(CZ.t('Traduz Libras para texto e voz com visão computacional, tudo offline.', 'Translates Brazilian Sign Language (Libras) into text and speech with computer vision, fully offline.'), 'indent');
     print('Python, OpenCV, MediaPipe, scikit-learn', 'muted indent');
     print(fill(node('span', 'term__links'), [
-      link('código ↗', LINKS.libCode, 'Librahin: código no GitHub (abre em nova aba)'),
+      link(CODIGO(), LINKS.libCode, CZ.t('Librahin: código no GitHub', 'Librahin: code on GitHub') + NOVA_ABA()),
     ]), 'indent');
     print('EcoPontos', 'strong gap');
-    print('Encontra pontos de coleta de lixo eletrônico em Cuiabá.', 'indent');
+    print(CZ.t('Encontra pontos de coleta de lixo eletrônico em Cuiabá.', 'Finds e-waste collection points in Cuiabá.'), 'indent');
     print('HTML, CSS, JavaScript', 'muted indent');
     print(fill(node('span', 'term__links'), [
-      link('site ↗', LINKS.ecoSite, 'EcoPontos: site (abre em nova aba)'),
-      link('código ↗', LINKS.ecoCode, 'EcoPontos: código no GitHub (abre em nova aba)'),
+      link('site ↗', LINKS.ecoSite, 'EcoPontos: site' + NOVA_ABA()),
+      link(CODIGO(), LINKS.ecoCode, CZ.t('EcoPontos: código no GitHub', 'EcoPontos: code on GitHub') + NOVA_ABA()),
     ]), 'indent');
-    print('Portfólio 2.0', 'strong gap');
-    print('Este site: um céu 3D que a rolagem atravessa, sem framework. Evolução do v1.', 'indent');
+    print(CZ.t('Portfólio 2.0', 'Portfolio 2.0'), 'strong gap');
+    print(CZ.t('Este site: um céu 3D que a rolagem atravessa, sem framework. Evolução do v1.', 'This site: a 3D sky you travel through as you scroll, no framework. The next step after v1.'), 'indent');
     print('HTML, CSS, JavaScript, Canvas 2D, Web Audio', 'muted indent');
     print(fill(node('span', 'term__links'), [
-      link('código ↗', LINKS.v2Code, 'Portfólio 2.0: código no GitHub (abre em nova aba)'),
-      link('código do v1 ↗', LINKS.v1Code, 'Portfólio v1: código no GitHub (abre em nova aba)'),
+      link(CODIGO(), LINKS.v2Code, CZ.t('Portfólio 2.0: código no GitHub', 'Portfolio 2.0: code on GitHub') + NOVA_ABA()),
+      link(CZ.t('código do v1 ↗', 'v1 code ↗'), LINKS.v1Code, CZ.t('Portfólio v1: código no GitHub', 'Portfolio v1: code on GitHub') + NOVA_ABA()),
     ]), 'indent');
-    print([botaoIr('ver os projetos ↘', 'projetos')], 'gap');
+    print([botaoIr(CZ.t('ver os projetos ↘', 'see the projects ↘'), 'projetos')], 'gap');
   }
   function sobre() {
     print('Cauã Pedrozo Brito', 'strong');
-    print('Desenvolvedor front-end em formação. Aberto a oportunidades em front-end, em Cuiabá, MT, ou remoto.');
-    print('Analista de TI na Casa Civil do Governo de Mato Grosso. Estuda Análise e Desenvolvimento de Sistemas na FASIPE.', 'muted');
-    print([botaoIr('ler o capítulo sobre ↘', 'sobre')], 'gap');
+    print(CZ.t('Desenvolvedor front-end em formação. Aberto a oportunidades em front-end, em Cuiabá, MT, ou remoto.', 'Front-end developer in training. Open to front-end roles, in Cuiabá, Brazil, or remote.'));
+    print(CZ.t('Analista de TI na Casa Civil do Governo de Mato Grosso. Estuda Análise e Desenvolvimento de Sistemas na FASIPE.', 'IT Analyst at the Casa Civil of the Mato Grosso State Government. Studies Systems Analysis and Development at FASIPE.'), 'muted');
+    print([botaoIr(CZ.t('ler o capítulo sobre ↘', 'read the about chapter ↘'), 'sobre')], 'gap');
   }
   function contato() {
-    row('e-mail', link('caua.pbritto@gmail.com', LINKS.email, 'Enviar e-mail para caua.pbritto@gmail.com'));
-    row('github', link('cauapbritto ↗', LINKS.github, 'GitHub: cauapbritto (abre em nova aba)'));
-    row('linkedin', link('cauã-pedrozo-brito ↗', LINKS.linkedin, 'LinkedIn de Cauã Pedrozo Brito (abre em nova aba)'));
-    row('currículo', baixar('PDF ↓', LINKS.cv, 'Baixar o currículo em PDF'));
+    row(CZ.t('e-mail', 'email'), link('caua.pbritto@gmail.com', LINKS.email, CZ.t('Enviar e-mail para caua.pbritto@gmail.com', 'Send an email to caua.pbritto@gmail.com')));
+    row('github', link('cauapbritto ↗', LINKS.github, 'GitHub: cauapbritto' + NOVA_ABA()));
+    row('linkedin', link('cauã-pedrozo-brito ↗', LINKS.linkedin, CZ.t('LinkedIn de Cauã Pedrozo Brito', 'Cauã Pedrozo Brito on LinkedIn') + NOVA_ABA()));
+    row(CZ.t('currículo', 'résumé'), baixar(CZ.t('PDF ↓', 'PDF, in Portuguese ↓'), LINKS.cv, CZ.t('Baixar o currículo em PDF', 'Download the résumé in PDF (in Portuguese)')));
   }
   function baixar(text, href, label) {
     const a = node('a', '', text);
@@ -5719,70 +5874,87 @@ window.CZ = (() => {
     return a;
   }
   function cv() {
-    print(['currículo de Cauã Pedrozo Brito: ', baixar('baixar PDF ↓', LINKS.cv, 'Baixar o currículo em PDF')]);
+    print([CZ.t('currículo de Cauã Pedrozo Brito: ', 'Cauã Pedrozo Brito’s résumé (in Portuguese): '), baixar(CZ.t('baixar PDF ↓', 'download PDF ↓'), LINKS.cv, CZ.t('Baixar o currículo em PDF', 'Download the résumé in PDF (in Portuguese)'))]);
   }
   function ir(args) {
     const alvo = SECOES[normalize(args[0] || '')];
     if (!alvo) {
-      print(['para onde? ', node('span', 'term__k', 'ir inicio'), ', ', node('span', 'term__k', 'ir sobre'), ', ', node('span', 'term__k', 'ir projetos'), ' ou ', node('span', 'term__k', 'ir contato')], 'muted');
+      const k = (pt, en) => node('span', 'term__k', CZ.t(pt, en));
+      print([CZ.t('para onde? ', 'where to? '), k('ir inicio', 'go home'), ', ', k('ir sobre', 'go about'), ', ', k('ir projetos', 'go projects'), CZ.t(' ou ', ' or '), k('ir contato', 'go contact')], 'muted');
       return;
     }
-    print(`voando até ${alvo === 'inicio' ? 'o início' : alvo}...`, 'muted');
+    const DESTINOS = { inicio: ['o início', 'the top'], sobre: ['sobre', 'about'], projetos: ['projetos', 'projects'], contato: ['contato', 'contact'] };
+    print(CZ.t(`voando até ${DESTINOS[alvo][0]}...`, `flying to ${DESTINOS[alvo][1]}...`), 'muted');
     fecharE(() => CZ.ir(alvo));
   }
   function tema() {
     const next = (CZ.tema() === 'light') ? 'dark' : 'light';
     CZ.definirTema(next);
-    print(next === 'light' ? 'tema claro ativado.' : 'tema escuro ativado.', 'muted');
+    print(next === 'light' ? CZ.t('tema claro ativado.', 'light theme on.') : CZ.t('tema escuro ativado.', 'dark theme on.'), 'muted');
   }
   let somLigado = false;
   CZ.on('som:estado', (on) => { somLigado = on; });
   function som() {
     CZ.emit('som:alternar');
-    print(somLigado ? 'som ligado. use fones para a melhor viagem.' : 'som desligado.', 'muted');
+    print(somLigado ? CZ.t('som ligado. use fones para a melhor viagem.', 'sound on. headphones make the best trip.') : CZ.t('som desligado.', 'sound off.'), 'muted');
   }
-  const FONTES = { titulos: 'titulos', titulo: 'titulos', antiga: 'titulos', tudo: 'tudo', nova: 'nova', new: 'nova' };
-  const NOMES_FONTE = { titulos: 'antiga nos títulos', tudo: 'antiga em tudo', nova: 'nova' };
+  const FONTES = { titulos: 'titulos', titulo: 'titulos', antiga: 'titulos', headings: 'titulos', classic: 'titulos', tudo: 'tudo', all: 'tudo', nova: 'nova', new: 'nova' };
+  const NOMES_FONTE = { titulos: ['antiga nos títulos', 'classic in headings'], tudo: ['antiga em tudo', 'classic everywhere'], nova: ['nova', 'new'] };
+  const nomeFonte = (f) => CZ.t(NOMES_FONTE[f][0], NOMES_FONTE[f][1]);
   function fonte(args) {
     const pedido = FONTES[normalize(args[0] || '')];
     if (!pedido) {
-      print(`fonte atual: ${NOMES_FONTE[CZ.fonte()]}.`, 'muted');
-      print(['opções: ', node('span', 'term__k', 'fonte titulos'), ', ', node('span', 'term__k', 'fonte tudo'), ' ou ', node('span', 'term__k', 'fonte nova')], 'muted');
+      const k = (pt, en) => node('span', 'term__k', CZ.t(pt, en));
+      print(CZ.t(`fonte atual: ${nomeFonte(CZ.fonte())}.`, `current font: ${nomeFonte(CZ.fonte())}.`), 'muted');
+      print([CZ.t('opções: ', 'options: '), k('fonte titulos', 'font headings'), ', ', k('fonte tudo', 'font all'), CZ.t(' ou ', ' or '), k('fonte nova', 'font new')], 'muted');
       return;
     }
     CZ.definirFonte(pedido);
-    print(`fonte: ${NOMES_FONTE[pedido]}.`, 'muted');
+    print(CZ.t(`fonte: ${nomeFonte(pedido)}.`, `font: ${nomeFonte(pedido)}.`), 'muted');
   }
   function movimentoCmd(args, palavra) {
     let pedido = normalize(args[0] || '');
     if (palavra === 'calmo' && !pedido) pedido = 'calmo';
-    if (pedido === 'calmo' || pedido === 'off' || pedido === 'parar') CZ.definirMovimento('calmo');
+    if (pedido === 'calmo' || pedido === 'calm' || pedido === 'off' || pedido === 'parar') CZ.definirMovimento('calmo');
     else if (pedido === 'normal' || pedido === 'on' || pedido === 'ligar') CZ.definirMovimento('normal');
     else {
-      print(`movimento: ${CZ.movimento()}.`, 'muted');
-      print(['opções: ', node('span', 'term__k', 'movimento calmo'), ' ou ', node('span', 'term__k', 'movimento normal')], 'muted');
+      const calmo = CZ.movimento() === 'calmo';
+      const k = (pt, en) => node('span', 'term__k', CZ.t(pt, en));
+      print(CZ.t(`movimento: ${CZ.movimento()}.`, `motion: ${calmo ? 'calm' : 'normal'}.`), 'muted');
+      print([CZ.t('opções: ', 'options: '), k('movimento calmo', 'motion calm'), CZ.t(' ou ', ' or '), k('movimento normal', 'motion normal')], 'muted');
       return;
     }
-    if (CZ.sistemaReduz && pedido !== 'calmo') print('o sistema pede menos movimento, então o site continua calmo.', 'muted');
-    else print(CZ.movimento() === 'calmo' ? 'movimento calmo: nada se mexe sozinho.' : 'céu em movimento de novo.', 'muted');
+    if (CZ.sistemaReduz && pedido !== 'calmo' && pedido !== 'calm') print(CZ.t('o sistema pede menos movimento, então o site continua calmo.', 'your system asks for less motion, so the site stays calm.'), 'muted');
+    else print(CZ.movimento() === 'calmo' ? CZ.t('movimento calmo: nada se mexe sozinho.', 'calm motion: nothing moves on its own.') : CZ.t('céu em movimento de novo.', 'the sky is moving again.'), 'muted');
+  }
+  const IDIOMAS = { en: 'en', english: 'en', ingles: 'en', pt: 'pt', 'pt-br': 'pt', portugues: 'pt', portuguese: 'pt' };
+  function idiomaCmd(args) {
+    const pedido = IDIOMAS[normalize(args[0] || '')] || (args[0] ? '' : (CZ.idioma === 'en' ? 'pt' : 'en'));
+    if (!pedido) {
+      print([CZ.t('opções: ', 'options: '), node('span', 'term__k', CZ.t('idioma pt', 'lang pt')), CZ.t(' ou ', ' or '), node('span', 'term__k', CZ.t('idioma en', 'lang en'))], 'muted');
+      return;
+    }
+    CZ.definirIdioma(pedido);
+    print(pedido === 'en' ? 'language: English. the résumé stays in Portuguese.' : 'idioma: português.', 'muted');
   }
   function atalhos(args) {
     const pedido = normalize(args[0] || '');
-    if (pedido === 'off' || pedido === 'desligar') { CZ.store.set('cz-atalhos', 'off'); print('atalho / desligado. o terminal continua no botão do topo.', 'muted'); return; }
-    if (pedido === 'on' || pedido === 'ligar') { CZ.store.set('cz-atalhos', 'on'); print('atalho / ligado.', 'muted'); return; }
-    print('atalhos', 'strong');
-    row('/', `abre o terminal${CZ.store.get('cz-atalhos') === 'off' ? ' (desligado)' : ''}`, 'indent');
-    row('alt+0..3', 'vai para início, sobre, projetos e contato', 'indent');
-    row('← →', 'na trilha de projetos, anterior e próximo', 'indent');
-    row('esc', 'fecha o terminal e o menu', 'indent');
-    print(['para desligar o /: ', node('span', 'term__k', 'atalhos off')], 'muted gap');
+    if (pedido === 'off' || pedido === 'desligar') { CZ.store.set('cz-atalhos', 'off'); print(CZ.t('atalho / desligado. o terminal continua no botão do topo.', 'shortcut / disabled. the terminal is still in the button at the top.'), 'muted'); return; }
+    if (pedido === 'on' || pedido === 'ligar') { CZ.store.set('cz-atalhos', 'on'); print(CZ.t('atalho / ligado.', 'shortcut / enabled.'), 'muted'); return; }
+    const off = CZ.store.get('cz-atalhos') === 'off';
+    print(CZ.t('atalhos', 'shortcuts'), 'strong');
+    row('/', CZ.t(`abre o terminal${off ? ' (desligado)' : ''}`, `opens the terminal${off ? ' (disabled)' : ''}`), 'indent');
+    row('alt+0..3', CZ.t('vai para início, sobre, projetos e contato', 'goes to home, about, projects and contact'), 'indent');
+    row('← →', CZ.t('na trilha de projetos, anterior e próximo', 'on the projects track, previous and next'), 'indent');
+    row('esc', CZ.t('fecha o terminal e o menu', 'closes the terminal and the menu'), 'indent');
+    print([CZ.t('para desligar o /: ', 'to disable /: '), node('span', 'term__k', CZ.t('atalhos off', 'shortcuts off'))], 'muted gap');
   }
   function sair() {
     fechar();
   }
   function warp() {
-    print('segure firme...', 'muted');
-    if (CZ.reduzido()) { print('o movimento reduzido está ligado no sistema; a viagem fica para outra hora.', 'muted'); return; }
+    print(CZ.t('segure firme...', 'hold on tight...'), 'muted');
+    if (CZ.reduzido()) { print(CZ.t('o movimento reduzido está ligado; a viagem fica para outra hora.', 'reduced motion is on; the trip will have to wait.'), 'muted'); return; }
     fecharE(() => CZ.emit('warp'));
   }
   function limpar() {
@@ -5799,19 +5971,19 @@ window.CZ = (() => {
     setTimeout(done, 150);
   }
   function matrix() {
-    print('entrando na matrix...', 'muted');
-    if (!startRain()) print('este navegador não desenha em canvas.', 'muted');
+    print(CZ.t('entrando na matrix...', 'entering the matrix...'), 'muted');
+    if (!startRain()) print(CZ.t('este navegador não desenha em canvas.', 'this browser can’t draw on canvas.'), 'muted');
   }
   function scan() {
-    print('escaneando...', 'muted');
+    print(CZ.t('escaneando...', 'scanning...'), 'muted');
     startScan();
   }
   function cauanzera() {
     print(nameNode());
-    print('Cauã Pedrozo Brito, front-end em formação.', 'muted');
+    print(CZ.t('Cauã Pedrozo Brito, front-end em formação.', 'Cauã Pedrozo Brito, front-end developer in training.'), 'muted');
   }
   function rose() {
-    print('rose ficou no site antigo. as pétalas pesavam demais.', 'muted');
+    print(CZ.t('rose ficou no site antigo. as pétalas pesavam demais.', 'rose stayed on the old site. the petals were too heavy.'), 'muted');
   }
 
   const normalize = (v) => v.trim().replace(/^\//, '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -5832,7 +6004,7 @@ window.CZ = (() => {
   function suggest(word) {
     let best = null;
     let bestD = 3;
-    COMPLETABLE.forEach((n) => {
+    completaveis().forEach((n) => {
       const dd = distance(word, n);
       if (dd < bestD) { bestD = dd; best = n; }
     });
@@ -5851,9 +6023,9 @@ window.CZ = (() => {
       cmd.run(parts.slice(1), word);
     } else {
       const s = suggest(word);
-      print(`comando não encontrado: ${text.slice(0, 40)}`);
-      if (s) print(['você quis dizer ', node('span', 'term__k', s), '?'], 'muted');
-      else print(['digite ', node('span', 'term__k', 'help'), ' para ver a lista.'], 'muted');
+      print(CZ.t(`comando não encontrado: ${text.slice(0, 40)}`, `command not found: ${text.slice(0, 40)}`));
+      if (s) print([CZ.t('você quis dizer ', 'did you mean '), node('span', 'term__k', s), '?'], 'muted');
+      else print([CZ.t('digite ', 'type '), node('span', 'term__k', 'help'), CZ.t(' para ver a lista.', ' to see the list.')], 'muted');
     }
     trim();
     if (cmd && cmd.name === 'limpar') return;
@@ -5891,7 +6063,7 @@ window.CZ = (() => {
   function complete() {
     const v = normalize(input.value);
     if (!v || /\s/.test(v)) return false;
-    const matches = COMPLETABLE.filter((n) => n.startsWith(v));
+    const matches = completaveis().filter((n) => n.startsWith(v));
     if (!matches.length) return false;
     if (matches.length === 1) {
       if (matches[0] === input.value) return false; // já completo: o Tab segue para o próximo elemento
@@ -5939,7 +6111,7 @@ window.CZ = (() => {
       e.preventDefault();
       echo(`${input.value}^C`);
       input.value = '';
-      if (busy.has('scan')) { cancelScan(); print('varredura interrompida.', 'muted'); }
+      if (busy.has('scan')) { cancelScan(); print(CZ.t('varredura interrompida.', 'scan interrupted.'), 'muted'); }
       if (rain.running) stopRain(false);
       trim();
       scrollEnd();

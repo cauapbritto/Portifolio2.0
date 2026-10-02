@@ -110,13 +110,61 @@ window.CZ = (() => {
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { medir(); agendar(); emit('fonte:pronta', f); });
   }
 
+  /* ---------- idioma ---------- */
+
+  // "pt" (padrão) ou "en". O script do <head> já escolheu: ?lang= no endereço, a escolha salva ou os idiomas do navegador.
+  // O inglês fica no próprio HTML, ao lado do português: data-en troca o conteúdo do elemento e
+  // data-en-aria-label, data-en-alt etc. trocam o atributo. Textos montados por script usam CZ.t('pt', 'en').
+  const ATRIBUTOS = ['aria-label', 'alt', 'title', 'placeholder', 'content', 'href', 'hreflang', 'lang', 'data-cmd'];
+  const SELETOR_EN = ['[data-en]'].concat(ATRIBUTOS.map((a) => `[data-en-${a}]`)).join(',');
+  let idioma = html.lang === 'en' ? 'en' : 'pt';
+  const t = (pt, en) => (idioma === 'en' ? en : pt);
+  // O português original de cada elemento, guardado antes de qualquer parte mexer nele.
+  const originais = new Map();
+  document.querySelectorAll(SELETOR_EN).forEach((el) => {
+    const o = { html: el.hasAttribute('data-en') ? el.innerHTML : null, attrs: {} };
+    ATRIBUTOS.forEach((a) => { if (el.hasAttribute(`data-en-${a}`)) o.attrs[a] = el.getAttribute(a); });
+    originais.set(el, o);
+  });
+  function traduzir() {
+    const en = idioma === 'en';
+    originais.forEach((o, el) => {
+      if (o.html !== null) el.innerHTML = en ? el.getAttribute('data-en') : o.html;
+      Object.keys(o.attrs).forEach((a) => {
+        const v = en ? el.getAttribute(`data-en-${a}`) : o.attrs[a];
+        if (v == null) el.removeAttribute(a);
+        else el.setAttribute(a, v);
+      });
+    });
+  }
+  function definirIdioma(l) {
+    if ((l !== 'pt' && l !== 'en') || l === idioma) return;
+    idioma = l;
+    html.lang = t('pt-BR', 'en');
+    store.set('cz-idioma', l);
+    traduzir();
+    // O endereço acompanha (?lang=en), para quem copiar o link ver o mesmo idioma.
+    if (history.replaceState) {
+      const q = new URLSearchParams(location.search);
+      if (l === 'en') q.set('lang', 'en');
+      else q.delete('lang');
+      const s = q.toString();
+      history.replaceState(null, '', location.pathname + (s ? `?${s}` : '') + location.hash);
+    }
+    emit('idioma', l);
+    medir();
+    agendar();
+  }
+  if (idioma === 'en') traduzir();
+  html.classList.remove('traduzindo');
+
   /* ---------- capítulos e rolagem ---------- */
 
   const capitulos = Array.from(document.querySelectorAll('[data-capitulo]'), (el) => ({
     el,
     id: el.id,
     n: el.dataset.capitulo,
-    nome: el.dataset.nome,
+    get nome() { return (idioma === 'en' && el.dataset.enNome) || el.dataset.nome; },
     topo: 0,
     fim: 0,
   }));
@@ -245,6 +293,7 @@ window.CZ = (() => {
     on, emit, store, reduzido, mouse, ouvir,
     tema, definirTema, alternarTema,
     fonte, definirFonte, movimento, definirMovimento,
+    get idioma() { return idioma; }, definirIdioma, t,
     get sistemaReduz() { return mqReduce.matches; },
     capitulos, ir, rolarAte, medir, revelar, pronto,
     get atual() { return atual; },

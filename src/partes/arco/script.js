@@ -8,7 +8,7 @@
   const statusText = root.querySelector('.arco__status-text');
   if (!toggle || !svg || !slices.length || !status || !statusText) return;
 
-  const NAMES = { sobre: 'Sobre', contato: 'Contato', projetos: 'Projetos' };
+  const NAMES = { sobre: ['Sobre', 'About'], contato: ['Contato', 'Contact'], projetos: ['Projetos', 'Projects'] };
 
   let open = false;
   let current = 0; // fatia com tabindex 0 (roving tabindex)
@@ -112,7 +112,7 @@
       // O foco vai para o título do capítulo; o menu fecha sem devolver o foco ao botão.
       closeMenu(false);
       CZ.ir(act);
-      say(`Indo para ${NAMES[act]}`);
+      say(CZ.t(`Indo para ${NAMES[act][0]}`, `Going to ${NAMES[act][1]}`));
     } else if (act === 'som') {
       CZ.emit('som:alternar');
     } else if (act === 'tema') {
@@ -125,12 +125,12 @@
   let somAnunciado = false;
   CZ.on('som:estado', (on) => {
     if (somSlice) somSlice.setAttribute('aria-pressed', String(on));
-    if (somAnunciado) say(on ? 'Som ligado' : 'Som desligado');
+    if (somAnunciado) say(on ? CZ.t('Som ligado', 'Sound on') : CZ.t('Som desligado', 'Sound off'));
     somAnunciado = true;
   });
   CZ.on('tema', (t) => {
     syncMode();
-    if (open) say(t === 'light' ? 'Tema claro' : 'Tema escuro');
+    if (open) say(t === 'light' ? CZ.t('Tema claro', 'Light theme') : CZ.t('Tema escuro', 'Dark theme'));
   });
 
   svg.addEventListener('click', (e) => {

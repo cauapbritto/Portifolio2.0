@@ -20,6 +20,8 @@ body {
   -webkit-font-smoothing: antialiased;
   overflow-x: clip;
 }
+/* Em inglês, o português não aparece nem por um instante antes da troca (o núcleo tira a classe). */
+.traduzindo body { visibility: hidden; }
 img, svg, canvas { display: block; }
 i { font-style: normal; } /* os <i> do site são só enfeite; sem isso o navegador inventaria um itálico */
 a { color: inherit; }
@@ -140,3 +142,42 @@ main { position: relative; z-index: 2; }
 }
 .calmo .abertura { display: none !important; }
 .calmo [data-revelar], .calmo [data-revelar="mascara"] > span { opacity: 1; transform: none; transition: none; }
+
+/* ---------- Impressão / Salvar como PDF ----------
+   Sem céu, HUD, menu e efeitos: os capítulos empilhados, em fundo branco, com os links por extenso. */
+@media print {
+  :root, :root[data-theme] {
+    --bg: #fff; --bg-2: #fff; --surface: #fff; --surface-2: #f2f2f2; --glass: #fff;
+    --line: #d4d4d4; --line-2: #bdbdbd; --text: #111; --text-2: #333; --muted: #555;
+    --accent: #B03A0A; --star: 17, 17, 17; --glow: 176, 58, 10;
+    color-scheme: light;
+  }
+  @page { margin: 14mm 16mm; }
+  html, body { background: #fff !important; color: #111 !important; }
+  .uni, .abertura, .hud, .trilho, .hud-base, .hud-cantos, .hud-veu, .arco, .cursor, .term, .pular,
+  .inicio__planeta, .inicio__descer, .inicio__dica, .contato__orbitas, .email__magnet,
+  .projetos__nav, .projetos__progresso, .projetos__contador, .sobre__numero, .rodape__topo { display: none !important; }
+  [data-revelar], [data-revelar="mascara"] > span, .sobre__w { opacity: 1 !important; transform: none !important; }
+  .inicio, .sobre__palco, .contato, .contato__miolo, .projetos__palco { min-height: 0 !important; height: auto !important; padding: 18px 0 !important; }
+  .inicio, .inicio__conteudo, .inicio__rotulo { display: block !important; justify-items: start !important; text-align: left !important; }
+  .inicio__conteudo { transform: none !important; opacity: 1 !important; }
+  .inicio__conteudo > * + * { margin-top: 8px !important; }
+  .inicio__marca { font-size: 44px !important; text-shadow: none; }
+  .inicio__acoes { display: none !important; }
+  .sobre, .projetos { height: auto !important; }
+  .sobre__palco, .projetos__palco { position: static !important; overflow: visible !important; }
+  .projetos__topo { position: static !important; margin: 0 0 16px !important; }
+  .projetos__trilha { display: grid !important; gap: 28px !important; width: auto !important; padding: 0 !important; transform: none !important; }
+  .projeto { width: auto !important; break-inside: avoid; }
+  .projeto--fim { display: none !important; }
+  .projeto__card { transform: none !important; opacity: 1 !important; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr) !important; }
+  .projeto__midia { translate: none !important; box-shadow: none !important; }
+  .projeto__img, .projeto__quadro svg { translate: none !important; scale: none !important; }
+  .contato__titulo { font-size: 36px !important; text-shadow: none; }
+  .email__email { font-size: 22px !important; }
+  .rodape { padding: 12px 0 0 !important; }
+  .botao, .projeto__chips li { background: #fff !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+  a[href^="http"]::after { content: " (" attr(href) ")"; font-family: var(--font-code); font-size: 9px; letter-spacing: 0; text-transform: none; color: #555; word-break: break-all; }
+  a.email__email::after, .email__link[download]::after { content: none; }
+  h2, h3 { break-after: avoid; }
+}

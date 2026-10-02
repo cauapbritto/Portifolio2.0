@@ -93,7 +93,7 @@
       root.classList.remove('is-back');
       root.classList.add('is-copied');
     }
-    announce('E-mail copiado.');
+    announce(CZ.t('E-mail copiado.', 'Email copied.'));
     clearTimeout(copiedTimer);
     copiedTimer = setTimeout(() => {
       root.classList.remove('is-copied');
@@ -108,9 +108,10 @@
       root.classList.add('is-back');
     }
     // Em tela de toque não há atalho de teclado para sugerir.
+    const atalho = apple ? 'Cmd+C' : 'Ctrl+C';
     const msg = mqTouch.matches
-      ? 'Selecionei o e-mail, é só copiar'
-      : `Selecionei o e-mail, use ${apple ? 'Cmd+C' : 'Ctrl+C'}`;
+      ? CZ.t('Selecionei o e-mail, é só copiar', 'Email selected, just copy it')
+      : CZ.t(`Selecionei o e-mail, use ${atalho}`, `Email selected, press ${atalho}`);
     if (hint) hint.textContent = msg;
     root.classList.add('is-hint');
     selectEmail();

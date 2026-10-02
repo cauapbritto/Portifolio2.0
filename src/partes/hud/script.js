@@ -43,6 +43,7 @@
     embaralhando = requestAnimationFrame(passo);
   }
 
+  CZ.on('idioma', () => { if (CZ.atual) escrever(`${CZ.atual.n} · ${CZ.atual.nome}`); });
   CZ.on('capitulo', (c) => {
     escrever(`${c.n} · ${c.nome}`);
     itens.forEach((a) => {
@@ -122,6 +123,14 @@
 
   /* ---------- terminal e atalhos ---------- */
   if (btnTerminal) btnTerminal.addEventListener('click', () => CZ.emit('terminal:abrir', btnTerminal));
+
+  /* ---------- idioma: o link leva a ?lang=; com JS a troca é na hora, sem recarregar ---------- */
+  const btnIdioma = document.querySelector('[data-idioma]');
+  if (btnIdioma) btnIdioma.addEventListener('click', (e) => {
+    if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    e.preventDefault();
+    CZ.definirIdioma(CZ.idioma === 'en' ? 'pt' : 'en');
+  });
 
   const digitando = (el) => el && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName));
   // Atalhos: "/" abre o terminal (dá para desligar com "atalhos off" no terminal, por quem usa voz);

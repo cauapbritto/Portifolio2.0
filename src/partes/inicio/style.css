@@ -21,11 +21,13 @@
   opacity: calc(1 - var(--sai) * 1.4);
 }
 
-.inicio__rotulo { display: inline-flex; align-items: center; justify-content: center; gap: 10px; max-width: 100%; color: var(--text-2); text-wrap: balance; }
-/* Ponto verde de "disponível", pulsando devagar. */
+.inicio__rotulo { max-width: 100%; color: var(--text-2); text-wrap: balance; }
+/* Ponto verde de "disponível", pulsando devagar. Fica na linha do texto, colado na primeira palavra, mesmo quando o rótulo quebra. */
 .inicio__status {
   position: relative;
-  flex: none;
+  display: inline-block;
+  vertical-align: .08em;
+  margin-right: 10px;
   width: 8px;
   height: 8px;
   border-radius: 50%;

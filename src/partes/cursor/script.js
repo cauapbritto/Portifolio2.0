@@ -6,6 +6,8 @@
   const anel = el.querySelector('.cursor__anel');
   const texto = el.querySelector('.cursor__texto');
   const ALVOS = 'a, button, [role="button"], [data-cursor], summary, label';
+  // O rótulo vem do data-cursor (em português); em inglês, a palavra equivalente.
+  const EN = { ver: 'view', baixar: 'save', escrever: 'write', abrir: 'open', visitar: 'visit', copiar: 'copy', decolar: 'liftoff', descer: 'scroll', menu: 'menu', ajustes: 'settings' };
 
   let ativo = false;
   let x = -100, y = -100, ax = -100, ay = -100;
@@ -39,7 +41,8 @@
     el.classList.toggle('is-input', !!input);
     const alvo = t && !input ? t.closest(ALVOS) : null;
     const rotulo = alvo && alvo.closest('[data-cursor]');
-    const txt = rotulo ? rotulo.dataset.cursor : '';
+    const pt = rotulo ? rotulo.dataset.cursor : '';
+    const txt = CZ.t(pt, EN[pt] || pt);
     if (texto.textContent !== txt) texto.textContent = txt;
     el.classList.toggle('is-rotulo', !!txt);
     el.classList.toggle('is-alvo', !!alvo && !txt);
