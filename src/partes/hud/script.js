@@ -43,6 +43,7 @@
     embaralhando = requestAnimationFrame(passo);
   }
 
+  CZ.on('idioma', () => { if (CZ.atual) escrever(`${CZ.atual.n} · ${CZ.atual.nome}`); });
   CZ.on('capitulo', (c) => {
     escrever(`${c.n} · ${c.nome}`);
     itens.forEach((a) => {
@@ -64,10 +65,20 @@
   const fonteBox = document.querySelector('.fonte');
   const fonteBtn = fonteBox && fonteBox.querySelector('.fonte__btn');
   const painel = fonteBox && fonteBox.querySelector('.fonte__painel');
-  const opcoes = painel ? Array.from(painel.querySelectorAll('[data-fonte]')) : [];
+  const opcoes = painel ? Array.from(painel.querySelectorAll('[data-fonte], [data-movimento]')) : [];
+  const nota = painel && painel.querySelector('.fonte__nota');
   const syncFonte = () => {
     const f = CZ.fonte();
-    opcoes.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.fonte === f)));
+    const m = CZ.movimento();
+    opcoes.forEach((b) => {
+      if (b.dataset.fonte) b.setAttribute('aria-pressed', String(b.dataset.fonte === f));
+      else {
+        b.setAttribute('aria-pressed', String(b.dataset.movimento === m));
+        // Com "reduzir movimento" no sistema, o modo normal não se aplica.
+        if (b.dataset.movimento === 'normal') b.setAttribute('aria-disabled', String(CZ.sistemaReduz));
+      }
+    });
+    if (nota) nota.hidden = !CZ.sistemaReduz;
   };
   function painelAberto(on, focar) {
     if (!painel) return;
@@ -83,7 +94,11 @@
   const fora = (e) => { if (!(e.target instanceof Element && fonteBox.contains(e.target))) painelAberto(false); };
   if (fonteBox) {
     fonteBtn.addEventListener('click', (e) => painelAberto(painel.hidden, e.detail === 0));
-    opcoes.forEach((b) => b.addEventListener('click', () => CZ.definirFonte(b.dataset.fonte)));
+    opcoes.forEach((b) => b.addEventListener('click', () => {
+      if (b.getAttribute('aria-disabled') === 'true') return;
+      if (b.dataset.fonte) CZ.definirFonte(b.dataset.fonte);
+      else CZ.definirMovimento(b.dataset.movimento);
+    }));
     fonteBox.addEventListener('keydown', (e) => {
       if (painel.hidden) return;
       if (e.key === 'Escape') {
@@ -102,22 +117,36 @@
       if (!painel.hidden && e.relatedTarget && !fonteBox.contains(e.relatedTarget)) painelAberto(false);
     });
     CZ.on('fonte', syncFonte);
+    CZ.on('movimento', syncFonte);
     syncFonte();
   }
 
   /* ---------- terminal e atalhos ---------- */
   if (btnTerminal) btnTerminal.addEventListener('click', () => CZ.emit('terminal:abrir', btnTerminal));
 
+  /* ---------- idioma: o link leva ao en.html (ou de volta à página inicial); com JS a troca é na hora, sem recarregar ---------- */
+  const btnIdioma = document.querySelector('[data-idioma]');
+  if (btnIdioma) btnIdioma.addEventListener('click', (e) => {
+    if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    e.preventDefault();
+    CZ.definirIdioma(CZ.idioma === 'en' ? 'pt' : 'en');
+  });
+
   const digitando = (el) => el && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName));
+  // Atalhos: "/" abre o terminal (dá para desligar com "atalhos off" no terminal, por quem usa voz);
+  // Alt+0 a Alt+3 levam aos capítulos (com modificador, nunca disparam sem querer).
   addEventListener('keydown', (e) => {
-    if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.altKey || digitando(e.target)) return;
+    if (e.defaultPrevented || e.metaKey || e.ctrlKey || digitando(e.target)) return;
     if (document.documentElement.classList.contains('term-aberto')) return;
-    if (e.key === '/' || e.key === '`') {
-      e.preventDefault();
-      CZ.emit('terminal:abrir', btnTerminal);
+    if (e.altKey) {
+      const m = /^Digit([0-9])$/.exec(e.code || '');
+      const n = m ? Number(m[1]) : -1;
+      if (n >= 0 && n < CZ.capitulos.length) { e.preventDefault(); CZ.ir(CZ.capitulos[n].id); }
       return;
     }
-    const n = Number(e.key);
-    if (e.key.length === 1 && n >= 0 && n < CZ.capitulos.length) CZ.ir(CZ.capitulos[n].id);
+    if ((e.key === '/' || e.key === '`') && CZ.store.get('cz-atalhos') !== 'off') {
+      e.preventDefault();
+      CZ.emit('terminal:abrir', btnTerminal);
+    }
   });
 })();

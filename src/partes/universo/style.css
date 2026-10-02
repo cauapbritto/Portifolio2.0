@@ -1,7 +1,9 @@
 /* Universo: o céu fixo atrás da página inteira. A página rola por cima e a câmera avança pelas estrelas. */
 .uni {
   position: fixed;
-  inset: 0;
+  inset: 0 0 auto;
+  height: 100vh;
+  height: 100lvh; /* a altura maior da tela: a barra do navegador do celular não redimensiona o céu */
   z-index: 0;
   overflow: hidden;
   pointer-events: none;

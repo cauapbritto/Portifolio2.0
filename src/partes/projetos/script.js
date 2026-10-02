@@ -6,7 +6,10 @@
   const atualEl = root.querySelector('.projetos__atual');
   const progresso = root.querySelector('.projetos__progresso');
   const nProjetos = slides.filter((s) => !s.classList.contains('projeto--fim')).length;
-  const mqLarga = matchMedia('(min-width: 900px) and (min-height: 560px)');
+  // Trilha só com mouse/trackpad em tela larga e alta; no toque e em tela baixa, os projetos ficam empilhados.
+  const mqLarga = matchMedia('(min-width: 900px) and (min-height: 600px) and (pointer: fine)');
+  const palco = root.querySelector('.projetos__palco');
+  const setas = Array.from(root.querySelectorAll('.projetos__seta'));
   const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
   const pecas = slides.map((s) => ({
     el: s,
@@ -15,7 +18,8 @@
   }));
 
   /* ---------- trilha horizontal ---------- */
-  let modo = false, topo = 0, dist = 1, largura = 1, centros = [];
+  let modo = false, topo = 0, dist = 1, largura = 1, centros = [], indice = 0;
+  const alvoDe = (i) => topo + clamp((centros[i] - largura / 2) / dist, 0, 1) * dist;
 
   function limpar() {
     root.style.height = '';
@@ -34,6 +38,14 @@
       if (!modo) limpar();
     }
     if (!modo) return;
+    // A trilha prende a tela: só vale se o texto de cada projeto couber inteiro (com folga para o HUD).
+    const alto = Math.max(...pecas.map((pc) => (pc.card ? pc.card.offsetHeight : 0)));
+    if (alto + 220 > innerHeight) {
+      modo = false;
+      root.classList.remove('projetos--trilha');
+      limpar();
+      return;
+    }
     trilha.style.transform = 'translate3d(0, 0, 0)';
     largura = document.documentElement.clientWidth;
     dist = Math.max(1, trilha.scrollWidth - largura);
@@ -50,7 +62,8 @@
     const x = -p * dist;
     trilha.style.transform = `translate3d(${x.toFixed(1)}px, 0, 0)`;
     if (progresso) progresso.style.setProperty('--p', p.toFixed(3));
-    let melhor = 0, bd = Infinity;
+    // melhor: o projeto mais perto do centro (o contador); perto: qualquer slide, inclusive o do GitHub (as setas).
+    let melhor = 0, bd = Infinity, perto = 0, bp = Infinity;
     pecas.forEach((pc, i) => {
       const d = clamp((centros[i] + x - largura / 2) / largura, -1, 1);
       const ad = Math.abs(d);
@@ -60,7 +73,11 @@
       }
       if (pc.midia) pc.midia.style.translate = `${(d * -40).toFixed(1)}px 0`;
       if (i < nProjetos && ad < bd) { bd = ad; melhor = i; }
+      if (ad < bp) { bp = ad; perto = i; }
     });
+    indice = perto;
+    // aria-disabled (e não disabled): o botão focado não perde o foco quando chega na ponta.
+    setas.forEach((b) => b.setAttribute('aria-disabled', String((b.dataset.dir === '-1' && p < 0.015) || (b.dataset.dir === '1' && p > 0.985))));
     const atual = String(melhor + 1).padStart(2, '0');
     if (atual !== ultimoAtual && atualEl) { ultimoAtual = atual; atualEl.textContent = atual; }
   }
@@ -68,16 +85,48 @@
   // Foco do teclado num projeto fora da tela: a página rola até ele ficar no centro.
   root.addEventListener('focusin', (e) => {
     if (!modo) return;
+    if (palco) palco.scrollLeft = 0;
     const i = slides.findIndex((s) => s.contains(e.target));
     if (i < 0) return;
-    const alvo = topo + clamp((centros[i] - largura / 2) / dist, 0, 1) * dist;
+    const alvo = alvoDe(i);
     if (Math.abs(alvo - scrollY) > 4) CZ.rolarAte(alvo);
   });
+  // Segurança: o navegador nunca rola o palco na horizontal (só a trilha anda, pelo transform).
+  if (palco) palco.addEventListener('scroll', () => { if (palco.scrollLeft) palco.scrollLeft = 0; }, { passive: true });
+
+  // Anterior / próximo: botões, setas do teclado e gesto lateral do trackpad.
+  function irPara(i) {
+    if (!modo) return;
+    const n = clamp(i, 0, slides.length - 1);
+    CZ.rolarAte(alvoDe(n));
+  }
+  setas.forEach((b) => b.addEventListener('click', () => {
+    if (b.getAttribute('aria-disabled') === 'true') return;
+    irPara(indice + Number(b.dataset.dir));
+  }));
+  const naTrilha = () => modo && scrollY >= topo - 2 && scrollY <= topo + dist + 2;
+  addEventListener('keydown', (e) => {
+    if (!naTrilha() || e.altKey || e.ctrlKey || e.metaKey || e.defaultPrevented) return;
+    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    const t = e.target;
+    if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
+    if (document.documentElement.classList.contains('term-aberto')) return;
+    if (t && t.closest && t.closest('.arco, .fonte')) return;
+    e.preventDefault();
+    irPara(indice + (e.key === 'ArrowRight' ? 1 : -1));
+  });
+  // Deslizar dois dedos para o lado no trackpad move a trilha (sem disparar o "voltar" do navegador).
+  root.addEventListener('wheel', (e) => {
+    if (!modo || Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+    e.preventDefault();
+    scrollBy(0, e.deltaX);
+  }, { passive: false });
 
   CZ.on('rolagem', ({ y }) => atualizar(y));
   CZ.on('movimento', layout);
   CZ.ouvir(mqLarga, layout);
   CZ.on('fonte', layout);
+  CZ.on('idioma', layout);
   CZ.on('fonte:pronta', layout);
   addEventListener('resize', layout, { passive: true });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
@@ -228,6 +277,7 @@
   let rafL = 0, visivel = false;
   function loop(now) {
     rafL = 0;
+    if (CZ.reduzido()) return;
     if (now >= proximo) aplicarPasso(now);
     desenhar(now);
     if (visivel && !document.hidden) rafL = requestAnimationFrame(loop);
@@ -240,5 +290,7 @@
     }
   };
   new IntersectionObserver((en) => { visivel = en[en.length - 1].isIntersecting; sync(); }).observe(lib);
+  // Modo calmo ligado depois: a mão para.
+  CZ.on('movimento', (r) => { if (r && rafL) { cancelAnimationFrame(rafL); rafL = 0; } else if (!r) sync(); });
   document.addEventListener('visibilitychange', sync);
 })();

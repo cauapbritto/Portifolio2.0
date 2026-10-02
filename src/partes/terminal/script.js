@@ -13,7 +13,7 @@
   const html = document.documentElement;
   const mqReduce = matchMedia('(prefers-reduced-motion: reduce)');
   const mqLight = matchMedia('(prefers-color-scheme: light)');
-  const reduced = () => mqReduce.matches;
+  const reduced = () => CZ.reduzido();
   const MAX_LINES = 160;
   const LINKS = {
     email: 'mailto:caua.pbritto@gmail.com',
@@ -23,6 +23,8 @@
     ecoSite: 'https://cauapbritto.github.io/lixo-eletronico/',
     ecoCode: 'https://github.com/cauapbritto/lixo-eletronico',
     v1Code: 'https://github.com/cauapbritto/portif-lio',
+    v2Code: 'https://github.com/cauapbritto/Portifolio2.0',
+    cv: 'assets/Curriculo_Caua_Pedrozo_Brito.pdf',
   };
 
   /* ---------- saída ---------- */
@@ -91,8 +93,10 @@
   function setBusy(name, on) {
     if (on) busy.add(name); else busy.delete(name);
     root.classList.toggle('term--busy', busy.size > 0);
-    if (status) status.textContent = busy.size ? Array.from(busy).join(' + ') : 'pronto';
+    if (status) status.textContent = busy.size ? Array.from(busy).join(' + ') : CZ.t('pronto', 'ready');
   }
+  if (status && !busy.size) status.textContent = CZ.t('pronto', 'ready');
+  CZ.on('idioma', () => { if (status && !busy.size) status.textContent = CZ.t('pronto', 'ready'); });
 
   /* ---------- matrix: chuva de glifos num canvas só sobre a tela ---------- */
 
@@ -252,7 +256,7 @@
     setBusy('matrix', false);
     if (!announce) return;
     batchIndex = 0;
-    print('de volta ao terminal.', 'muted');
+    print(CZ.t('de volta ao terminal.', 'back to the terminal.'), 'muted');
     trim();
     scrollEnd();
   }
@@ -284,10 +288,10 @@
       root.classList.remove('term--scanning');
       setBusy('scan', false);
       batchIndex = 0;
-      print('varredura concluída', 'strong');
-      row('linhas', String(lines.length), 'indent');
+      print(CZ.t('varredura concluída', 'scan complete'), 'strong');
+      row(CZ.t('linhas', 'lines'), String(lines.length), 'indent');
       row('links', String(linkCount), 'indent');
-      row('animação', 'só transform e opacity', 'indent');
+      row(CZ.t('animação', 'animation'), CZ.t('só transform e opacity', 'transform and opacity only'), 'indent');
       trim();
       scrollEnd();
     };
@@ -343,19 +347,25 @@
 
   /* ---------- comandos ---------- */
 
-  const SECOES = { inicio: 'inicio', home: 'inicio', topo: 'inicio', '~': 'inicio', '..': 'inicio', sobre: 'sobre', about: 'sobre', projetos: 'projetos', projects: 'projetos', contato: 'contato', contact: 'contato' };
+  const SECOES = { inicio: 'inicio', home: 'inicio', topo: 'inicio', top: 'inicio', '~': 'inicio', '..': 'inicio', sobre: 'sobre', about: 'sobre', projetos: 'projetos', projects: 'projetos', contato: 'contato', contact: 'contato' };
+  // name: o comando em português; en: como ele aparece em inglês (os dois sempre funcionam).
   const COMMANDS = [
-    { name: 'help', aliases: ['ajuda', '?', 'comandos'], desc: 'lista os comandos', run: help },
-    { name: 'sobre', aliases: ['about', 'whoami'], desc: 'quem sou', run: sobre },
-    { name: 'projetos', aliases: ['projects', 'ls'], desc: 'o que já construí', run: projetos },
-    { name: 'contato', aliases: ['contact', 'email', 'e-mail'], desc: 'e-mail e links', run: contato },
-    { name: 'ir', aliases: ['cd', 'go', 'voar'], desc: 'voa até um capítulo: ir projetos', run: ir },
-    { name: 'tema', aliases: ['theme'], desc: 'alterna claro e escuro', run: tema },
-    { name: 'som', aliases: ['sound', 'audio', 'música'], desc: 'liga ou desliga o som', run: som },
-    { name: 'fonte', aliases: ['font', 'fontes'], desc: 'troca a fonte: fonte titulos, tudo ou nova', run: fonte },
-    { name: 'limpar', aliases: ['clear', 'cls'], desc: 'limpa a tela', run: limpar },
-    { name: 'sair', aliases: ['exit', 'quit', 'fechar', 'q'], desc: 'fecha o terminal', run: sair },
+    { name: 'help', aliases: ['ajuda', '?', 'comandos'], desc: ['lista os comandos', 'lists the commands'], run: help },
+    { name: 'sobre', en: 'about', aliases: ['about', 'whoami'], desc: ['quem sou', 'who I am'], run: sobre },
+    { name: 'projetos', en: 'projects', aliases: ['projects', 'ls'], desc: ['o que já construí', 'what I’ve built'], run: projetos },
+    { name: 'contato', en: 'contact', aliases: ['contact', 'email', 'e-mail'], desc: ['e-mail e links', 'email and links'], run: contato },
+    { name: 'cv', aliases: ['curriculo', 'resume', 'curriculum'], desc: ['baixa o currículo em PDF', 'downloads my résumé (PDF, in Portuguese)'], run: cv },
+    { name: 'ir', en: 'go', aliases: ['cd', 'go', 'voar'], desc: ['voa até um capítulo: ir projetos', 'flies to a chapter: go projects'], run: ir },
+    { name: 'tema', en: 'theme', aliases: ['theme'], desc: ['alterna claro e escuro', 'toggles light and dark'], run: tema },
+    { name: 'som', en: 'sound', aliases: ['sound', 'audio', 'musica'], desc: ['liga ou desliga o som', 'turns the sound on or off'], run: som },
+    { name: 'fonte', en: 'font', aliases: ['font', 'fontes'], desc: ['troca a fonte: fonte titulos, tudo ou nova', 'changes the font: font headings, all or new'], run: fonte },
+    { name: 'movimento', en: 'motion', aliases: ['motion', 'calmo', 'animacoes'], desc: ['movimento calmo ou normal', 'calm or normal motion'], run: movimentoCmd },
+    { name: 'idioma', en: 'lang', aliases: ['lang', 'language', 'lingua'], desc: ['troca o idioma: idioma en ou pt', 'switches the language: lang pt or en'], run: idiomaCmd },
+    { name: 'atalhos', en: 'shortcuts', aliases: ['shortcuts', 'teclas'], desc: ['lista os atalhos; atalhos off desliga o /', 'lists the shortcuts; shortcuts off disables /'], run: atalhos },
+    { name: 'limpar', en: 'clear', aliases: ['clear', 'cls'], desc: ['limpa a tela', 'clears the screen'], run: limpar },
+    { name: 'sair', en: 'exit', aliases: ['exit', 'quit', 'fechar', 'q'], desc: ['fecha o terminal', 'closes the terminal'], run: sair },
   ];
+  const nomeDe = (c) => CZ.t(c.name, c.en || c.name);
   const SECRETS = [
     { name: 'matrix', aliases: ['hack'], run: matrix },
     { name: 'scan', aliases: ['scanner'], run: scan },
@@ -364,7 +374,8 @@
     { name: 'rose', aliases: ['rosa'], hidden: true, run: rose },
   ];
   const ALL = COMMANDS.concat(SECRETS);
-  const COMPLETABLE = COMMANDS.map((c) => c.name).concat(['ajuda', 'clear'], SECRETS.filter((s) => !s.hidden).map((s) => s.name));
+  // O que o Tab completa e as sugestões: os nomes do idioma atual (e uns sinônimos comuns).
+  const completaveis = () => COMMANDS.map(nomeDe).concat(CZ.t(['ajuda', 'clear'], []), SECRETS.filter((x) => !x.hidden).map((x) => x.name));
 
   // Botão que leva a um capítulo (fecha o terminal e voa até lá).
   function botaoIr(texto, id) {
@@ -375,81 +386,136 @@
   }
 
   function help() {
-    print('comandos', 'strong');
-    COMMANDS.forEach((c) => row(c.name, c.desc, 'indent'));
-    print(['segredos: ', node('span', 'term__k', 'matrix'), ', ', node('span', 'term__k', 'scan'), ', ', node('span', 'term__k', 'warp'), ', ', node('span', 'term__k', 'cauanzera')], 'muted gap');
+    print(CZ.t('comandos', 'commands'), 'strong');
+    COMMANDS.forEach((c) => row(nomeDe(c), CZ.t(c.desc[0], c.desc[1]), 'indent'));
+    print([CZ.t('segredos: ', 'secrets: '), node('span', 'term__k', 'matrix'), ', ', node('span', 'term__k', 'scan'), ', ', node('span', 'term__k', 'warp'), ', ', node('span', 'term__k', 'cauanzera')], 'muted gap');
   }
+  const NOVA_ABA = () => CZ.t(' (abre em nova aba)', ' (opens in a new tab)');
+  const CODIGO = () => CZ.t('código ↗', 'code ↗');
   function projetos() {
     print('Librahin', 'strong');
-    print('Traduz Libras para texto e voz com visão computacional, tudo offline.', 'indent');
+    print(CZ.t('Traduz Libras para texto e voz com visão computacional, tudo offline.', 'Translates Brazilian Sign Language (Libras) into text and speech with computer vision, fully offline.'), 'indent');
     print('Python, OpenCV, MediaPipe, scikit-learn', 'muted indent');
     print(fill(node('span', 'term__links'), [
-      link('código ↗', LINKS.libCode, 'Librahin: código no GitHub (abre em nova aba)'),
+      link(CODIGO(), LINKS.libCode, CZ.t('Librahin: código no GitHub', 'Librahin: code on GitHub') + NOVA_ABA()),
     ]), 'indent');
     print('EcoPontos', 'strong gap');
-    print('Encontra pontos de coleta de lixo eletrônico em Cuiabá.', 'indent');
+    print(CZ.t('Encontra pontos de coleta de lixo eletrônico em Cuiabá.', 'Finds e-waste collection points in Cuiabá.'), 'indent');
     print('HTML, CSS, JavaScript', 'muted indent');
     print(fill(node('span', 'term__links'), [
-      link('site ↗', LINKS.ecoSite, 'EcoPontos: site (abre em nova aba)'),
-      link('código ↗', LINKS.ecoCode, 'EcoPontos: código no GitHub (abre em nova aba)'),
+      link('site ↗', LINKS.ecoSite, 'EcoPontos: site' + NOVA_ABA()),
+      link(CODIGO(), LINKS.ecoCode, CZ.t('EcoPontos: código no GitHub', 'EcoPontos: code on GitHub') + NOVA_ABA()),
     ]), 'indent');
-    print('Portfólio v1', 'strong gap');
-    print('A primeira versão deste site, escrita sem framework.', 'indent');
-    print('HTML, CSS, JavaScript, Canvas 2D', 'muted indent');
+    print(CZ.t('Portfólio 2.0', 'Portfolio 2.0'), 'strong gap');
+    print(CZ.t('Este site: um céu 3D que a rolagem atravessa, sem framework. Evolução do v1.', 'This site: a 3D starfield you travel through as you scroll, with no frameworks. The next step after v1.'), 'indent');
+    print('HTML, CSS, JavaScript, Canvas 2D, Web Audio', 'muted indent');
     print(fill(node('span', 'term__links'), [
-      link('código ↗', LINKS.v1Code, 'Portfólio v1: código no GitHub (abre em nova aba)'),
+      link(CODIGO(), LINKS.v2Code, CZ.t('Portfólio 2.0: código no GitHub', 'Portfolio 2.0: code on GitHub') + NOVA_ABA()),
+      link(CZ.t('código do v1 ↗', 'v1 code ↗'), LINKS.v1Code, CZ.t('Portfólio v1: código no GitHub', 'Portfolio v1: code on GitHub') + NOVA_ABA()),
     ]), 'indent');
-    print([botaoIr('ver os projetos ↘', 'projetos')], 'gap');
+    print([botaoIr(CZ.t('ver os projetos ↘', 'see the projects ↘'), 'projetos')], 'gap');
   }
   function sobre() {
     print('Cauã Pedrozo Brito', 'strong');
-    print('Desenvolvedor front-end em formação, focado em experiências visuais e interfaces imersivas.');
-    print('Estuda Tecnologia em Análise e Desenvolvimento de Sistemas.', 'muted');
-    print([botaoIr('ler o capítulo sobre ↘', 'sobre')], 'gap');
+    print(CZ.t('Desenvolvedor front-end em formação. Aberto a oportunidades em front-end, em Cuiabá, MT, ou remoto.', 'Front-end developer in training. Open to front-end roles in Cuiabá, Brazil, or remote.'));
+    print(CZ.t('Analista de TI na Casa Civil do Governo de Mato Grosso. Estuda Análise e Desenvolvimento de Sistemas na FASIPE.', 'IT Analyst at the Casa Civil (Chief of Staff’s Office) of the Mato Grosso State Government. Systems Analysis and Development student at FASIPE.'), 'muted');
+    print([botaoIr(CZ.t('ler o capítulo sobre ↘', 'read the About chapter ↘'), 'sobre')], 'gap');
   }
   function contato() {
-    row('e-mail', link('caua.pbritto@gmail.com', LINKS.email, 'Enviar e-mail para caua.pbritto@gmail.com'));
-    row('github', link('cauapbritto ↗', LINKS.github, 'GitHub: cauapbritto (abre em nova aba)'));
-    row('linkedin', link('cauã-pedrozo-brito ↗', LINKS.linkedin, 'LinkedIn de Cauã Pedrozo Brito (abre em nova aba)'));
+    row(CZ.t('e-mail', 'email'), link('caua.pbritto@gmail.com', LINKS.email, CZ.t('Enviar e-mail para caua.pbritto@gmail.com', 'Send an email to caua.pbritto@gmail.com')));
+    row('github', link('cauapbritto ↗', LINKS.github, 'GitHub: cauapbritto' + NOVA_ABA()));
+    row('linkedin', link('cauã-pedrozo-brito ↗', LINKS.linkedin, CZ.t('LinkedIn de Cauã Pedrozo Brito', 'Cauã Pedrozo Brito on LinkedIn') + NOVA_ABA()));
+    row(CZ.t('currículo', 'résumé'), baixar(CZ.t('PDF ↓', 'PDF, in Portuguese ↓'), LINKS.cv, CZ.t('Baixar o currículo em PDF', 'Download résumé (PDF, in Portuguese)')));
+  }
+  function baixar(text, href, label) {
+    const a = node('a', '', text);
+    a.href = href;
+    a.setAttribute('download', '');
+    if (label) a.setAttribute('aria-label', label);
+    return a;
+  }
+  function cv() {
+    print([CZ.t('currículo de Cauã Pedrozo Brito: ', 'Cauã Pedrozo Brito’s résumé (in Portuguese): '), baixar(CZ.t('baixar PDF ↓', 'download PDF ↓'), LINKS.cv, CZ.t('Baixar o currículo em PDF', 'Download résumé (PDF, in Portuguese)'))]);
   }
   function ir(args) {
     const alvo = SECOES[normalize(args[0] || '')];
     if (!alvo) {
-      print(['para onde? ', node('span', 'term__k', 'ir inicio'), ', ', node('span', 'term__k', 'ir sobre'), ', ', node('span', 'term__k', 'ir projetos'), ' ou ', node('span', 'term__k', 'ir contato')], 'muted');
+      const k = (pt, en) => node('span', 'term__k', CZ.t(pt, en));
+      print([CZ.t('para onde? ', 'where to? '), k('ir inicio', 'go home'), ', ', k('ir sobre', 'go about'), ', ', k('ir projetos', 'go projects'), CZ.t(' ou ', ' or '), k('ir contato', 'go contact')], 'muted');
       return;
     }
-    print(`voando até ${alvo === 'inicio' ? 'o início' : alvo}...`, 'muted');
+    const DESTINOS = { inicio: ['o início', 'Home'], sobre: ['sobre', 'About'], projetos: ['projetos', 'Projects'], contato: ['contato', 'Contact'] };
+    print(CZ.t(`voando até ${DESTINOS[alvo][0]}...`, `flying to ${DESTINOS[alvo][1]}...`), 'muted');
     fecharE(() => CZ.ir(alvo));
   }
   function tema() {
     const next = (CZ.tema() === 'light') ? 'dark' : 'light';
     CZ.definirTema(next);
-    print(next === 'light' ? 'tema claro ativado.' : 'tema escuro ativado.', 'muted');
+    print(next === 'light' ? CZ.t('tema claro ativado.', 'light theme on.') : CZ.t('tema escuro ativado.', 'dark theme on.'), 'muted');
   }
   let somLigado = false;
   CZ.on('som:estado', (on) => { somLigado = on; });
   function som() {
     CZ.emit('som:alternar');
-    print(somLigado ? 'som ligado. use fones para a melhor viagem.' : 'som desligado.', 'muted');
+    print(somLigado ? CZ.t('som ligado. use fones para a melhor viagem.', 'sound on. put on headphones for the best trip.') : CZ.t('som desligado.', 'sound off.'), 'muted');
   }
-  const FONTES = { titulos: 'titulos', titulo: 'titulos', antiga: 'titulos', tudo: 'tudo', nova: 'nova', new: 'nova' };
-  const NOMES_FONTE = { titulos: 'antiga nos títulos', tudo: 'antiga em tudo', nova: 'nova' };
+  const FONTES = { titulos: 'titulos', titulo: 'titulos', antiga: 'titulos', headings: 'titulos', classic: 'titulos', tudo: 'tudo', all: 'tudo', nova: 'nova', new: 'nova' };
+  const NOMES_FONTE = { titulos: ['antiga nos títulos', 'classic in headings'], tudo: ['antiga em tudo', 'classic everywhere'], nova: ['nova', 'new'] };
+  const nomeFonte = (f) => CZ.t(NOMES_FONTE[f][0], NOMES_FONTE[f][1]);
   function fonte(args) {
     const pedido = FONTES[normalize(args[0] || '')];
     if (!pedido) {
-      print(`fonte atual: ${NOMES_FONTE[CZ.fonte()]}.`, 'muted');
-      print(['opções: ', node('span', 'term__k', 'fonte titulos'), ', ', node('span', 'term__k', 'fonte tudo'), ' ou ', node('span', 'term__k', 'fonte nova')], 'muted');
+      const k = (pt, en) => node('span', 'term__k', CZ.t(pt, en));
+      print(CZ.t(`fonte atual: ${nomeFonte(CZ.fonte())}.`, `current font: ${nomeFonte(CZ.fonte())}.`), 'muted');
+      print([CZ.t('opções: ', 'options: '), k('fonte titulos', 'font headings'), ', ', k('fonte tudo', 'font all'), CZ.t(' ou ', ' or '), k('fonte nova', 'font new')], 'muted');
       return;
     }
     CZ.definirFonte(pedido);
-    print(`fonte: ${NOMES_FONTE[pedido]}.`, 'muted');
+    print(CZ.t(`fonte: ${nomeFonte(pedido)}.`, `font: ${nomeFonte(pedido)}.`), 'muted');
+  }
+  function movimentoCmd(args, palavra) {
+    let pedido = normalize(args[0] || '');
+    if (palavra === 'calmo' && !pedido) pedido = 'calmo';
+    if (pedido === 'calmo' || pedido === 'calm' || pedido === 'off' || pedido === 'parar') CZ.definirMovimento('calmo');
+    else if (pedido === 'normal' || pedido === 'on' || pedido === 'ligar') CZ.definirMovimento('normal');
+    else {
+      const calmo = CZ.movimento() === 'calmo';
+      const k = (pt, en) => node('span', 'term__k', CZ.t(pt, en));
+      print(CZ.t(`movimento: ${CZ.movimento()}.`, `motion: ${calmo ? 'calm' : 'normal'}.`), 'muted');
+      print([CZ.t('opções: ', 'options: '), k('movimento calmo', 'motion calm'), CZ.t(' ou ', ' or '), k('movimento normal', 'motion normal')], 'muted');
+      return;
+    }
+    if (CZ.sistemaReduz && pedido !== 'calmo' && pedido !== 'calm') print(CZ.t('o sistema pede menos movimento, então o site continua calmo.', 'your system is set to reduce motion, so the site stays calm.'), 'muted');
+    else print(CZ.movimento() === 'calmo' ? CZ.t('movimento calmo: nada se mexe sozinho.', 'calm motion: nothing moves on its own.') : CZ.t('céu em movimento de novo.', 'the sky is moving again.'), 'muted');
+  }
+  const IDIOMAS = { en: 'en', english: 'en', ingles: 'en', pt: 'pt', 'pt-br': 'pt', portugues: 'pt', portuguese: 'pt' };
+  function idiomaCmd(args) {
+    const pedido = IDIOMAS[normalize(args[0] || '')] || (args[0] ? '' : (CZ.idioma === 'en' ? 'pt' : 'en'));
+    if (!pedido) {
+      print([CZ.t('opções: ', 'options: '), node('span', 'term__k', CZ.t('idioma pt', 'lang pt')), CZ.t(' ou ', ' or '), node('span', 'term__k', CZ.t('idioma en', 'lang en'))], 'muted');
+      return;
+    }
+    CZ.definirIdioma(pedido);
+    print(pedido === 'en' ? 'language: English. the résumé stays in Portuguese.' : 'idioma: português.', 'muted');
+  }
+  function atalhos(args) {
+    const pedido = normalize(args[0] || '');
+    if (pedido === 'off' || pedido === 'desligar') { CZ.store.set('cz-atalhos', 'off'); print(CZ.t('atalho / desligado. o terminal continua no botão do topo.', 'shortcut / disabled. the terminal is still available from the button at the top.'), 'muted'); return; }
+    if (pedido === 'on' || pedido === 'ligar') { CZ.store.set('cz-atalhos', 'on'); print(CZ.t('atalho / ligado.', 'shortcut / enabled.'), 'muted'); return; }
+    const off = CZ.store.get('cz-atalhos') === 'off';
+    print(CZ.t('atalhos', 'shortcuts'), 'strong');
+    row('/', CZ.t(`abre o terminal${off ? ' (desligado)' : ''}`, `opens the terminal${off ? ' (disabled)' : ''}`), 'indent');
+    row('alt+0..3', CZ.t('vai para início, sobre, projetos e contato', 'jumps to Home, About, Projects and Contact'), 'indent');
+    row('← →', CZ.t('na trilha de projetos, anterior e próximo', 'previous / next project (on the projects track)'), 'indent');
+    row('esc', CZ.t('fecha o terminal e o menu', 'closes the terminal and the menu'), 'indent');
+    print([CZ.t('para desligar o /: ', 'to disable /: '), node('span', 'term__k', CZ.t('atalhos off', 'shortcuts off'))], 'muted gap');
   }
   function sair() {
     fechar();
   }
   function warp() {
-    print('segure firme...', 'muted');
-    if (CZ.reduzido()) { print('o movimento reduzido está ligado no sistema; a viagem fica para outra hora.', 'muted'); return; }
+    if (CZ.reduzido()) { print(CZ.t('o movimento reduzido está ligado; a viagem fica para outra hora.', 'reduced motion is on; the trip will have to wait.'), 'muted'); return; }
+    print(CZ.t('segure firme...', 'hold on tight...'), 'muted');
     fecharE(() => CZ.emit('warp'));
   }
   function limpar() {
@@ -466,19 +532,19 @@
     setTimeout(done, 150);
   }
   function matrix() {
-    print('entrando na matrix...', 'muted');
-    if (!startRain()) print('este navegador não desenha em canvas.', 'muted');
+    print(CZ.t('entrando na matrix...', 'entering the matrix...'), 'muted');
+    if (!startRain()) print(CZ.t('este navegador não desenha em canvas.', 'this browser can’t draw on canvas.'), 'muted');
   }
   function scan() {
-    print('escaneando...', 'muted');
+    print(CZ.t('escaneando...', 'scanning...'), 'muted');
     startScan();
   }
   function cauanzera() {
     print(nameNode());
-    print('Cauã Pedrozo Brito, front-end em formação.', 'muted');
+    print(CZ.t('Cauã Pedrozo Brito, front-end em formação.', 'Cauã Pedrozo Brito, front-end developer in training.'), 'muted');
   }
   function rose() {
-    print('rose ficou no site antigo. as pétalas pesavam demais.', 'muted');
+    print(CZ.t('rose ficou no site antigo. as pétalas pesavam demais.', 'rose stayed on the old site. the petals were too heavy.'), 'muted');
   }
 
   const normalize = (v) => v.trim().replace(/^\//, '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -499,7 +565,7 @@
   function suggest(word) {
     let best = null;
     let bestD = 3;
-    COMPLETABLE.forEach((n) => {
+    completaveis().forEach((n) => {
       const dd = distance(word, n);
       if (dd < bestD) { bestD = dd; best = n; }
     });
@@ -515,12 +581,12 @@
     const cmd = find(word);
     if (rain.running && !(cmd && cmd.name === 'matrix')) stopRain(true);
     if (cmd) {
-      cmd.run(parts.slice(1));
+      cmd.run(parts.slice(1), word);
     } else {
       const s = suggest(word);
-      print(`comando não encontrado: ${text.slice(0, 40)}`);
-      if (s) print(['você quis dizer ', node('span', 'term__k', s), '?'], 'muted');
-      else print(['digite ', node('span', 'term__k', 'help'), ' para ver a lista.'], 'muted');
+      print(CZ.t(`comando não encontrado: ${text.slice(0, 40)}`, `command not found: ${text.slice(0, 40)}`));
+      if (s) print([CZ.t('você quis dizer ', 'did you mean '), node('span', 'term__k', s), '?'], 'muted');
+      else print([CZ.t('digite ', 'type '), node('span', 'term__k', 'help'), CZ.t(' para ver a lista.', ' to see the list.')], 'muted');
     }
     trim();
     if (cmd && cmd.name === 'limpar') return;
@@ -558,7 +624,7 @@
   function complete() {
     const v = normalize(input.value);
     if (!v || /\s/.test(v)) return false;
-    const matches = COMPLETABLE.filter((n) => n.startsWith(v));
+    const matches = completaveis().filter((n) => n.startsWith(v));
     if (!matches.length) return false;
     if (matches.length === 1) {
       if (matches[0] === input.value) return false; // já completo: o Tab segue para o próximo elemento
@@ -606,7 +672,7 @@
       e.preventDefault();
       echo(`${input.value}^C`);
       input.value = '';
-      if (busy.has('scan')) { cancelScan(); print('varredura interrompida.', 'muted'); }
+      if (busy.has('scan')) { cancelScan(); print(CZ.t('varredura interrompida.', 'scan interrupted.'), 'muted'); }
       if (rain.running) stopRain(false);
       trim();
       scrollEnd();

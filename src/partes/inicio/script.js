@@ -30,8 +30,10 @@
       { opacity: 1, offset: 0.4 },
       { opacity: 1, transform: 'none' },
     ], { duration: 900, delay: 360 + i * 55 }));
-    add(root.querySelector('.inicio__frase'), [{ opacity: 0, transform: 'translateY(12px)' }, { opacity: 1, transform: 'none' }], { duration: 700, delay: 900 });
-    add(root.querySelector('.inicio__descer'), [{ opacity: 0 }, { opacity: 1 }], { duration: 600, delay: 1200 });
+    add(root.querySelector('.inicio__nome'), [{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'none' }], { duration: 700, delay: 420 });
+    add(root.querySelector('.inicio__frase'), [{ opacity: 0, transform: 'translateY(12px)' }, { opacity: 1, transform: 'none' }], { duration: 700, delay: 520 });
+    add(root.querySelector('.inicio__acoes'), [{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'none' }], { duration: 700, delay: 640 });
+    add(root.querySelector('.inicio__descer'), [{ opacity: 0 }, { opacity: 1 }], { duration: 600, delay: 900 });
     add(root.querySelector('.inicio__dica'), [{ opacity: 0 }, { opacity: 1 }], { duration: 600, delay: 1400 });
   }
   if (html.classList.contains('abrindo')) CZ.on('abertura', entrar);

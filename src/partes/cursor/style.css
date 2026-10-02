@@ -1,7 +1,6 @@
-/* Cursor: um ponto exato e um anel que segue com atraso. Só com mouse e com movimento liberado. */
+/* Cursor: a seta do sistema continua visível; um anel segue com atraso e mostra o que um clique faz.
+   Só com mouse e com movimento liberado. */
 .cursor { display: none; }
-.tem-cursor, .tem-cursor * { cursor: none !important; }
-.tem-cursor input, .tem-cursor textarea { cursor: text !important; }
 .tem-cursor .cursor {
   display: block;
   position: fixed;
@@ -20,6 +19,7 @@
   will-change: transform;
 }
 .cursor__ponto {
+  display: none; /* a seta do sistema já marca o ponto exato */
   width: 6px;
   height: 6px;
   margin: -3px 0 0 -3px;
@@ -64,3 +64,6 @@
 .cursor.is-rotulo.is-apertado .cursor__circulo { transform: scale(2); }
 
 :root:is([data-font="titulos"], [data-font="tudo"]) .cursor__texto { font-size: 10px; letter-spacing: .04em; }
+
+/* Alto contraste do sistema: só o cursor do sistema. */
+@media (forced-colors: active) { .tem-cursor .cursor { display: none; } }

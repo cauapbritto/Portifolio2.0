@@ -72,10 +72,14 @@
 }
 
 .hud__acoes { display: flex; align-items: center; gap: 10px; }
+.hud__cv { padding-right: 14px; text-decoration: none; }
+/* Idioma: a sigla do outro idioma (EN no português, PT no inglês). Sem JS ela não teria efeito, então some. */
+.hud__idioma { justify-content: center; min-width: 40px; padding: 0 12px; text-decoration: none; color: var(--text); }
+html:not(.js) .hud__idioma { display: none; }
 
 /* Troca de fonte: um botão "Aa" que abre as três opções, cada uma escrita na própria fonte. */
 .fonte { position: relative; }
-.fonte__btn { justify-content: center; width: 40px; padding: 0; }
+.fonte__btn { justify-content: center; width: 40px; padding: 0; color: var(--text); }
 .fonte__aa { font-family: "Schibsted Grotesk", system-ui, sans-serif; font-size: 15px; font-weight: 500; letter-spacing: 0; text-transform: none; color: var(--text); }
 .fonte__btn[aria-expanded="true"] { border-color: var(--accent); }
 .fonte__painel {
@@ -88,14 +92,29 @@
   padding: 8px;
   border: 1px solid var(--line-2);
   border-radius: 12px;
-  background: var(--glass);
+  /* Quase opaco: o nome grande do início não aparece por trás das opções e o contraste se mantém. */
+  background: var(--surface);
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
   -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
   box-shadow: var(--shadow), 0 24px 60px -20px rgba(0, 0, 0, .6);
   animation: fonte-abre 220ms var(--ease-out);
+  /* Tela baixa ou zoom grande: o painel cabe na tela e rola por dentro. */
+  max-width: calc(100vw - 2 * var(--hud));
+  max-height: calc(100vh - var(--hud) - 70px);
+  max-height: calc(100dvh - var(--hud) - 70px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
+/* Com o painel aberto, o HUD fica acima do menu em arco (que senão cobriria as opções numa tela baixa). */
+.hud:has(.fonte__btn[aria-expanded="true"]) { z-index: 46; }
 .fonte__painel[hidden] { display: none; }
 @keyframes fonte-abre { from { opacity: 0; transform: translateY(-6px); } }
+.fonte__grupo { display: grid; gap: 4px; }
+.fonte__titulo + .fonte__grupo { margin-bottom: 6px; }
+.fonte__nota { margin: 2px 10px 4px; max-width: 26ch; font-size: 12px; line-height: 1.4; color: var(--muted); }
+.fonte__nota[hidden] { display: none; }
+.fonte__opcao[aria-disabled="true"] { opacity: .45; cursor: default; }
 .fonte__titulo {
   padding: 4px 10px 6px;
   font-family: var(--font-label);
@@ -151,6 +170,7 @@
   color: var(--muted);
   text-decoration: none;
   border-radius: 4px;
+  position: relative;
 }
 .trilho__n { position: relative; display: inline-flex; align-items: center; gap: 10px; }
 .trilho__n::after {
@@ -161,7 +181,14 @@
   transform-origin: 100% 50%;
   transition: transform var(--dur-2) var(--ease-out), background-color var(--dur-2) var(--ease-out);
 }
+/* O nome fica fora do fluxo, à esquerda do número: a área clicável do link é só o número, e o nome
+   (que aparece no hover ou no foco) não cobre o conteúdo nem rouba cliques. */
 .trilho__nome {
+  position: absolute;
+  right: 100%;
+  margin-right: 2px;
+  white-space: nowrap;
+  pointer-events: none;
   opacity: 0;
   transform: translateX(6px);
   transition: opacity var(--dur-2) var(--ease-out), transform var(--dur-2) var(--ease-out);
@@ -169,7 +196,6 @@
 .trilho__item[aria-current="true"] { color: var(--text); }
 .trilho__item[aria-current="true"] .trilho__n { color: var(--accent); }
 .trilho__item[aria-current="true"] .trilho__n::after { transform: scaleX(2); background: var(--accent); }
-.trilho__item[aria-current="true"] .trilho__nome,
 .trilho__item:focus-visible .trilho__nome { opacity: 1; transform: none; }
 @media (hover: hover) {
   .trilho__item:hover { color: var(--text); }
@@ -256,9 +282,24 @@ html:not(.js) .hud-base { display: none; }
   .trilho { display: none; }
   .hud-base__tempo, .hud-base__pct { display: none; }
 }
-@media (max-width: 420px) {
-  .hud__btn:not(.fonte__btn) span { display: none; }
+@media (max-width: 620px) {
+  .hud__btn:not(.fonte__btn):not(.hud__idioma) span,
+  .hud__btn kbd { display: none; }
   .hud__btn { padding: 0 12px; }
+  .hud__acoes { gap: 8px; }
+}
+/* Celular estreito: botões um pouco mais justos para os quatro caberem ao lado da marca. */
+@media (max-width: 400px) {
+  .hud__btn { padding: 0 10px; }
+  .hud__acoes { gap: 6px; }
+  /* O painel de Ajustes se alinha à borda da tela (preso ao botão, ele sairia pela esquerda). */
+  .fonte__painel { position: fixed; right: var(--hud); top: calc(var(--hud) + 52px); }
+  :root:is([data-font="titulos"], [data-font="tudo"]) .hud .hud__marca { font-size: 12px; letter-spacing: .04em; }
+}
+/* 320 px (celular pequeno ou zoom de 400%): a marca fica só no quadrado; o nome já está grande no início. */
+@media (max-width: 340px) {
+  .hud__marca { justify-content: center; min-width: 40px; }
+  .hud__marca span:not(.quadrado) { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .trilho__nome, .trilho__n::after, .hud__marca .quadrado { transition: none; }
@@ -269,3 +310,24 @@ html:not(.js) .hud-base { display: none; }
 :root:is([data-font="titulos"], [data-font="tudo"]) .hud__marca { font-size: 14px; letter-spacing: .06em; }
 :root:is([data-font="titulos"], [data-font="tudo"]) .hud__btn { font-size: 12px; letter-spacing: .04em; }
 :root:is([data-font="titulos"], [data-font="tudo"]) .trilho__item { font-size: 11px; letter-spacing: .03em; }
+
+/* Tela muito baixa (zoom de 400% num notebook): o HUD rola junto com a página, e os degradês e o trilho saem. */
+@media (max-height: 300px) {
+  .hud { position: absolute; }
+  .hud-veu, .trilho { display: none; }
+}
+
+/* Alto contraste do sistema: a opção escolhida em Ajustes ganha contorno e o ponto fica visível. */
+@media (forced-colors: active) {
+  .fonte__opcao[aria-pressed="true"] { outline: 2px solid Highlight; outline-offset: -2px; }
+  .fonte__opcao::before { forced-color-adjust: none; background: GrayText; }
+  .fonte__opcao[aria-pressed="true"]::before { background: Highlight; }
+}
+
+/* Tela baixa (ex.: zoom de 200% num notebook): o HUD encolhe para sobrar espaço ao conteúdo. */
+@media (max-height: 520px) {
+  .hud-base, .hud-cantos { display: none; }
+  .hud-veu i:first-child { height: calc(var(--hud) + 44px); }
+  .hud-veu i:last-child { height: calc(var(--hud) + 56px); }
+  .hud { padding-top: 10px; }
+}

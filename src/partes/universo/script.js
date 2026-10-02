@@ -60,6 +60,9 @@
   const edges = new Map();
   let reduced = CZ.reduzido();
   let lastP = -1;
+  let maxRolagem = 1;                // altura rolável, vinda do núcleo (sem ler o layout a cada quadro)
+  let ultimaAtividade = 0;           // último movimento de rolagem, ponteiro ou hiperespaço
+  let ultimoQuadro = 0;
 
   /* ---------- Cores ---------- */
   let starFill = 'rgb(236,234,228)', glowStroke = 'rgb(255,122,69)', isLight = false, sprite = null;
@@ -93,10 +96,16 @@
   }
 
   /* ---------- Tamanho ---------- */
+  const toque = matchMedia('(pointer: coarse)');
   function resize() {
-    w = Math.max(1, html.clientWidth || innerWidth);
-    h = Math.max(1, innerHeight);
-    const nextDpr = Math.min(2, window.devicePixelRatio || 1);
+    // A altura vem do próprio céu (100lvh no CSS): no celular, a barra do navegador aparecer ou sumir
+    // não muda nada e o canvas não é recriado.
+    const nw = Math.max(1, html.clientWidth || innerWidth);
+    const nh = Math.max(1, root.clientHeight || innerHeight);
+    const nextDpr = Math.min(toque.matches ? 1.5 : 2, window.devicePixelRatio || 1);
+    if (nw === w && nh === h && nextDpr === dpr && sprite) return;
+    w = nw;
+    h = nh;
     const dprChanged = nextDpr !== dpr;
     dpr = nextDpr;
     canvas.width = Math.round(w * dpr);
@@ -167,8 +176,7 @@
 
     // nebulosa acompanha o avanço da página
     if (nebulosa && !reduced) {
-      const max = Math.max(1, html.scrollHeight - innerHeight);
-      const p = Math.round((scrollY / max) * 1000) / 1000;
+      const p = Math.round(Math.min(1, scrollY / maxRolagem) * 1000) / 1000;
       if (p !== lastP) { lastP = p; nebulosa.style.setProperty('--uni-p', String(p)); }
     }
     CZ.emit('velocidade', vz);
@@ -353,6 +361,11 @@
   function tick(now) {
     raf = 0;
     if (!running) return;
+    // Economia: parado há 3 s, o céu desenha a 24 quadros por segundo; no celular, no máximo 30.
+    const ocioso = now - ultimaAtividade > 3000 && !boostFn && surge >= 1 && Math.abs(vz - DRIFT) < 4;
+    const intervalo = ocioso ? 1000 / 24 : (toque.matches ? 1000 / 30 : 0);
+    if (intervalo && now - ultimoQuadro < intervalo - 2) { raf = requestAnimationFrame(tick); return; }
+    ultimoQuadro = now;
     const dt = Math.min(0.05, Math.max(0.001, (now - last) / 1000));
     last = now; lastDt = dt;
     if (surge < 1 && surgeStart >= 0) surge = Math.min(1, (now - surgeStart) / SURGE_MS);
@@ -401,13 +414,13 @@
     };
   }
   // Abertura: as estrelas chegam do centro, como quem sai do hiperespaço.
-  const SURGE_MS = 1500;
+  const SURGE_MS = 1200;
   let surgeStart = -1;
   CZ.on('abertura', () => {
     if (reduced) { surge = 1; return; }
     surge = 0;
     surgeStart = performance.now();
-    hyperspace(5200, 0, 120, 1700);
+    hyperspace(5200, 0, 100, 1400);
   });
   CZ.on('warp', () => hyperspace(4200, 520, 900, 1600));
 
@@ -415,7 +428,11 @@
   if (!html.classList.contains('js') || reduced || !document.querySelector('.abertura')) surge = 1;
 
   /* ---------- Eventos ---------- */
+  const acordar = () => { ultimaAtividade = performance.now(); };
+  CZ.on('rolagem', ({ max }) => { maxRolagem = Math.max(1, max); acordar(); });
+  CZ.on('warp', acordar);
   function onPointer(e) {
+    acordar();
     ptr.x = e.clientX; ptr.y = e.clientY; ptr.has = true;
     if (e.pointerType === 'touch') { if (e.type === 'pointerdown') ptr.touch = true; }
     else ptr.inside = true;

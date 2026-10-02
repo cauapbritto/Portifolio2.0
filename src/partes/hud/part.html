@@ -1,18 +1,33 @@
 <header class="hud">
-  <a class="hud__marca" href="#inicio" data-ir="inicio" aria-label="Cauanzera, voltar ao início"><span class="quadrado" aria-hidden="true"></span><span aria-hidden="true">Cauanzera</span></a>
+  <a class="hud__marca" href="#inicio" data-ir="inicio" aria-label="Cauanzera, voltar ao início" data-en-aria-label="Cauanzera, back to the top"><span class="quadrado" aria-hidden="true"></span><span aria-hidden="true">Cauanzera</span></a>
   <div class="hud__acoes">
+    <a class="hud__btn hud__idioma" href="en.html" hreflang="en" lang="en" title="English version" data-en-href="./" data-en-hreflang="pt-BR" data-en-lang="pt-BR" data-en-title="Versão em português" data-idioma>
+      <span class="hud__idioma-sigla" data-en="PT">EN</span><span class="sr" data-en=", versão em português">, English version</span>
+    </a>
+    <a class="hud__btn hud__cv" href="assets/Curriculo_Caua_Pedrozo_Brito.pdf" download aria-label="Currículo em PDF" data-en-aria-label="Résumé (PDF, in Portuguese)" data-cursor="baixar">
+      <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M8 2.5v7.5M4.75 7 8 10.25 11.25 7M3 13.25h10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span data-en="Résumé">Currículo</span>
+    </a>
     <div class="fonte">
-      <button class="hud__btn fonte__btn" type="button" aria-expanded="false" aria-controls="fonte-painel" data-cursor="fonte">
-        <span class="fonte__aa" aria-hidden="true">Aa</span><span class="sr">Fonte</span>
+      <button class="hud__btn fonte__btn" type="button" aria-expanded="false" aria-controls="fonte-painel" aria-label="Ajustes: fonte e movimento" data-en-aria-label="Settings: font and motion" data-cursor="ajustes">
+        <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true" focusable="false"><path d="M2.5 4.5h6M11.5 4.5h2M2.5 11.5h2M7.5 11.5h6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="4.5" r="1.6" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="6" cy="11.5" r="1.6" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
       </button>
-      <div class="fonte__painel" id="fonte-painel" role="group" aria-labelledby="fonte-titulo" hidden>
-        <p class="fonte__titulo" id="fonte-titulo">Fonte</p>
-        <button class="fonte__opcao fonte__opcao--zh" type="button" data-fonte="titulos" aria-pressed="false">Antiga nos títulos</button>
-        <button class="fonte__opcao fonte__opcao--zh" type="button" data-fonte="tudo" aria-pressed="false">Antiga em tudo</button>
-        <button class="fonte__opcao fonte__opcao--nova" type="button" data-fonte="nova" aria-pressed="false">Nova</button>
+      <div class="fonte__painel" id="fonte-painel" role="group" aria-label="Ajustes" data-en-aria-label="Settings" hidden>
+        <p class="fonte__titulo" id="fonte-titulo" data-en="Font">Fonte</p>
+        <div class="fonte__grupo" role="group" aria-labelledby="fonte-titulo">
+          <button class="fonte__opcao fonte__opcao--zh" type="button" data-fonte="titulos" aria-pressed="false" data-en="Classic in headings">Antiga nos títulos</button>
+          <button class="fonte__opcao fonte__opcao--zh" type="button" data-fonte="tudo" aria-pressed="false" data-en="Classic everywhere">Antiga em tudo</button>
+          <button class="fonte__opcao fonte__opcao--nova" type="button" data-fonte="nova" aria-pressed="false" data-en="New">Nova</button>
+        </div>
+        <p class="fonte__titulo" id="movimento-titulo" data-en="Motion">Movimento</p>
+        <div class="fonte__grupo" role="group" aria-labelledby="movimento-titulo">
+          <button class="fonte__opcao fonte__opcao--nova" type="button" data-movimento="normal" aria-pressed="false" data-en="Moving sky">Céu em movimento</button>
+          <button class="fonte__opcao fonte__opcao--nova" type="button" data-movimento="calmo" aria-pressed="false" data-en="Calm, no animations">Calmo, sem animações</button>
+        </div>
+        <p class="fonte__nota" hidden data-en="Your system is set to reduce motion, so the site stays calm.">Seu sistema pede menos movimento, então o site fica calmo.</p>
       </div>
     </div>
-    <button class="hud__btn" type="button" data-terminal aria-haspopup="dialog" aria-controls="terminal">
+    <button class="hud__btn" type="button" data-terminal aria-haspopup="dialog" aria-controls="terminal" aria-label="Terminal">
       <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M3 4.5 6.5 8 3 11.5M8.5 11.5H13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <span>Terminal</span>
       <kbd aria-hidden="true">/</kbd>
@@ -20,12 +35,12 @@
   </div>
 </header>
 
-<nav class="trilho" aria-label="Capítulos">
+<nav class="trilho" aria-label="Capítulos" data-en-aria-label="Chapters">
   <ol role="list">
-    <li><a class="trilho__item" href="#inicio" data-ir="inicio"><span class="trilho__nome">Início</span><span class="trilho__n"><span>00</span></span></a></li>
-    <li><a class="trilho__item" href="#sobre" data-ir="sobre"><span class="trilho__nome">Sobre</span><span class="trilho__n"><span>0<span class="um">1</span></span></span></a></li>
-    <li><a class="trilho__item" href="#projetos" data-ir="projetos"><span class="trilho__nome">Projetos</span><span class="trilho__n"><span>02</span></span></a></li>
-    <li><a class="trilho__item" href="#contato" data-ir="contato"><span class="trilho__nome">Contato</span><span class="trilho__n"><span>03</span></span></a></li>
+    <li><a class="trilho__item" href="#inicio" data-ir="inicio"><span class="trilho__nome" data-en="Home">Início</span><span class="trilho__n"><span>00</span></span></a></li>
+    <li><a class="trilho__item" href="#sobre" data-ir="sobre"><span class="trilho__nome" data-en="About">Sobre</span><span class="trilho__n"><span>0<span class="um">1</span></span></span></a></li>
+    <li><a class="trilho__item" href="#projetos" data-ir="projetos"><span class="trilho__nome" data-en="Projects">Projetos</span><span class="trilho__n"><span>02</span></span></a></li>
+    <li><a class="trilho__item" href="#contato" data-ir="contato"><span class="trilho__nome" data-en="Contact">Contato</span><span class="trilho__n"><span>03</span></span></a></li>
   </ol>
   <span class="trilho__fio" aria-hidden="true"><span class="trilho__cheio"></span></span>
 </nav>

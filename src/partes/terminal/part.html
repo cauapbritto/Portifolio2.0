@@ -5,28 +5,28 @@
       <span class="term__dots" aria-hidden="true"><i></i><i></i><i></i></span>
       <h2 class="term__title" id="term-titulo">cauanzera ~ terminal</h2>
       <span class="term__status" aria-hidden="true">pronto</span>
-      <button class="term__fechar" type="button" data-term-fechar aria-label="Fechar terminal">
+      <button class="term__fechar" type="button" data-term-fechar aria-label="Fechar terminal" data-en-aria-label="Close terminal">
         <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M4 4l8 8M12 4l-8 8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
       </button>
     </div>
     <div class="term__screen">
-      <div class="term__out" id="term-out" role="log" aria-live="polite" aria-label="Saída do terminal" tabindex="0">
-        <div class="term__line">Olá. Este é o portfólio do Cauã, em linha de comando.</div>
-        <div class="term__line term__line--muted">Digite <span class="term__k">help</span> para ver os comandos. <span class="term__k">esc</span> fecha o terminal.</div>
+      <div class="term__out" id="term-out" role="log" aria-live="polite" aria-label="Saída do terminal" data-en-aria-label="Terminal output" tabindex="0">
+        <div class="term__line" data-en="Hi. This is Cauã’s portfolio, on the command line.">Olá. Este é o portfólio do Cauã, em linha de comando.</div>
+        <div class="term__line term__line--muted" data-en='Type <span class="term__k">help</span> to see the commands. <span class="term__k">esc</span> closes the terminal.'>Digite <span class="term__k">help</span> para ver os comandos. <span class="term__k">esc</span> fecha o terminal.</div>
       </div>
       <canvas class="term__rain" width="0" height="0" aria-hidden="true"></canvas>
       <div class="term__scan" aria-hidden="true"></div>
     </div>
     <form class="term__form" action="#" autocomplete="off">
-      <label class="sr" for="term-input">Comando</label>
+      <label class="sr" for="term-input" data-en="Command">Comando</label>
       <span class="term__prompt" aria-hidden="true">›</span>
-      <input class="term__input" id="term-input" name="cmd" type="text" placeholder="digite help" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go" aria-controls="term-out">
+      <input class="term__input" id="term-input" name="cmd" type="text" placeholder="digite help" data-en-placeholder="type help" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go" aria-controls="term-out">
     </form>
-    <div class="term__chips" role="group" aria-label="Atalhos">
-      <span class="term__chips-label" aria-hidden="true">Atalhos</span>
+    <div class="term__chips" role="group" aria-label="Comandos sugeridos" data-en-aria-label="Suggested commands">
+      <span class="term__chips-label" aria-hidden="true" data-en="Try">Experimente</span>
       <button class="term__chip" type="button" data-cmd="help">help</button>
-      <button class="term__chip" type="button" data-cmd="projetos">projetos</button>
-      <button class="term__chip" type="button" data-cmd="ir contato">ir contato</button>
+      <button class="term__chip" type="button" data-cmd="projetos" data-en-data-cmd="projects" data-en="projects">projetos</button>
+      <button class="term__chip" type="button" data-cmd="ir contato" data-en-data-cmd="go contact" data-en="go contact">ir contato</button>
       <button class="term__chip" type="button" data-cmd="warp">warp</button>
     </div>
   </section>

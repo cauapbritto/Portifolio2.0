@@ -3,15 +3,27 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Cauanzera · Cauã Pedrozo Brito</title>
-<meta name="description" content="Portfólio de Cauã Pedrozo Brito, desenvolvedor front-end em formação focado em experiências visuais e interfaces imersivas.">
+<title data-en="Cauã Pedrozo Brito · Front-end Developer">Cauã Pedrozo Brito · Desenvolvedor Front-end</title>
+<meta name="description" content="Portfólio de Cauã Pedrozo Brito, desenvolvedor front-end em formação em Cuiabá, MT. Projetos, currículo e contato." data-en-content="Portfolio of Cauã Pedrozo Brito, a front-end developer in training based in Cuiabá, Brazil. Projects, résumé and contact.">
 <meta name="theme-color" content="#0D0E10">
+<link rel="canonical" href="https://cauabrito.com.br/" data-en-href="https://cauabrito.com.br/en.html">
+<link rel="alternate" hreflang="pt-BR" href="https://cauabrito.com.br/">
+<link rel="alternate" hreflang="en" href="https://cauabrito.com.br/en.html">
+<link rel="alternate" hreflang="x-default" href="https://cauabrito.com.br/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Cauanzera">
-<meta property="og:title" content="Cauanzera · Cauã Pedrozo Brito">
-<meta property="og:description" content="Desenvolvedor front-end em formação, focado em experiências visuais e interfaces imersivas.">
-<meta name="twitter:card" content="summary">
+<meta property="og:locale" content="pt_BR" data-en-content="en_US">
+<meta property="og:locale:alternate" content="en_US" data-en-content="pt_BR">
+<meta property="og:url" content="https://cauabrito.com.br/" data-en-content="https://cauabrito.com.br/en.html">
+<meta property="og:title" content="Cauã Pedrozo Brito · Desenvolvedor Front-end" data-en-content="Cauã Pedrozo Brito · Front-end Developer">
+<meta property="og:description" content="Desenvolvedor front-end em formação em Cuiabá, MT. Aberto a oportunidades, também remoto." data-en-content="Front-end developer in training based in Cuiabá, Brazil. Open to opportunities, including remote.">
+<meta property="og:image" content="https://cauabrito.com.br/assets/og.jpg" data-en-content="https://cauabrito.com.br/assets/og-en.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Cauã Pedrozo Brito, desenvolvedor front-end: o nome Cauanzera sobre um céu de estrelas" data-en-content="Cauã Pedrozo Brito, front-end developer: the name Cauanzera over a starry sky">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -19,7 +31,12 @@
   "name": "Cauã Pedrozo Brito",
   "alternateName": "Cauanzera",
   "jobTitle": "Desenvolvedor front-end em formação",
+  "url": "https://cauabrito.com.br/",
+  "image": "https://cauabrito.com.br/assets/og.jpg",
   "email": "mailto:caua.pbritto@gmail.com",
+  "address": { "@type": "PostalAddress", "addressLocality": "Cuiabá", "addressRegion": "MT", "addressCountry": "BR" },
+  "alumniOf": { "@type": "CollegeOrUniversity", "name": "Faculdade FASIPE" },
+  "knowsAbout": ["HTML", "CSS", "JavaScript", "Canvas 2D", "Web Audio", "Python", "Acessibilidade"],
   "sameAs": [
     "https://github.com/cauapbritto",
     "https://www.linkedin.com/in/cau%C3%A3-pedrozo-brito-8a685b358"
@@ -27,43 +44,63 @@
 }
 </script>
 <script>
-  // Antes de pintar: marca que há JS e aplica o tema e a fonte salvos, para a página não piscar.
+  // Antes de pintar: marca que há JS e aplica o tema, a fonte e o idioma salvos, para a página não piscar.
   // Fonte: "titulos" (antiga nos títulos) por padrão, "tudo" ou "nova" (sem data-font).
+  // Idioma: o en.html é sempre inglês; no index, ?lang=en|pt no endereço, senão a escolha salva, senão inglês
+  // só para quem não tem português entre os idiomas do navegador (robôs de busca ficam no português).
+  // O núcleo depois acerta o endereço (en.html para o inglês).
   (function () {
     var d = document.documentElement;
     var f = 'titulos';
+    var l = d.getAttribute('data-pagina') === 'en' ? 'en' : (/[?&]lang=(en|pt)(&|$)/.exec(location.search) || [])[1];
     d.classList.add('js');
     try {
       var t = localStorage.getItem('cz-tema');
       if (t === 'light' || t === 'dark') d.setAttribute('data-theme', t);
+      if (localStorage.getItem('cz-movimento') === 'calmo') d.classList.add('calmo');
       var v = localStorage.getItem('cz-fonte') || localStorage.getItem('g-font');
       if (v === 'titulos' || v === 'tudo' || v === 'nova') f = v;
+      if (!l) l = localStorage.getItem('cz-idioma');
     } catch (e) {}
     if (f === 'nova') d.removeAttribute('data-font');
     else d.setAttribute('data-font', f);
+    if (l !== 'en' && l !== 'pt') {
+      var ls = navigator.languages || [navigator.language || ''];
+      l = /bot|crawl|spider|slurp|lighthouse/i.test(navigator.userAgent) ? 'pt' : 'en';
+      for (var i = 0; i < ls.length; i++) if (/^pt/i.test(ls[i])) l = 'pt';
+    }
+    // Em inglês o texto troca no fim do carregamento; até lá a página espera escondida (no máximo 1,5 s).
+    if (l === 'en') {
+      d.lang = 'en';
+      d.classList.add('traduzindo');
+      setTimeout(function () { d.classList.remove('traduzindo'); }, 1500);
+    }
   })();
 </script>
-<link rel="preload" href="assets/ZeroHour.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Martian+Mono:wght@400;500&family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="preload" href="assets/fontes/ZeroHour.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fontes/SchibstedGrotesk.woff2" as="font" type="font/woff2" crossorigin>
 <style>
 /* Zero Hour, a fonte do site antigo, em três tamanhos do mesmo arquivo:
    "Zero Hour" no nome Cauanzera, "Zero Hour UI" (86%) em títulos, botões e rótulos e "Zero Hour Texto" (80%)
    no texto corrido, porque ela é toda em maiúsculas e bem mais larga. font-weight 100 900: ela só tem um peso,
    assim o navegador não inventa um negrito falso. Sem o "~" (U+007E), que nela é um traço reto. */
-@font-face { font-family: "Zero Hour"; src: url("assets/ZeroHour.woff2") format("woff2"); font-display: swap; font-weight: 100 900; }
-@font-face { font-family: "Zero Hour UI"; src: url("assets/ZeroHour.woff2") format("woff2"); font-display: swap; size-adjust: 86%; font-weight: 100 900; unicode-range: U+0000-007D, U+007F-10FFFF; }
-@font-face { font-family: "Zero Hour Texto"; src: url("assets/ZeroHour.woff2") format("woff2"); font-display: swap; size-adjust: 80%; font-weight: 100 900; unicode-range: U+0000-007D, U+007F-10FFFF; }
+/* Schibsted Grotesk e Martian Mono servidas pelo próprio site (variáveis, só o conjunto latino; licença OFL):
+   sem esperar outro servidor e sem mandar o IP do visitante para terceiros. */
+@font-face { font-family: "Schibsted Grotesk"; src: url("assets/fontes/SchibstedGrotesk.woff2") format("woff2"); font-display: swap; font-weight: 400 900; font-style: normal; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Martian Mono"; src: url("assets/fontes/MartianMono.woff2") format("woff2"); font-display: swap; font-weight: 100 800; font-style: normal; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Zero Hour"; src: url("assets/fontes/ZeroHour.woff2") format("woff2"); font-display: swap; font-weight: 100 900; }
+@font-face { font-family: "Zero Hour UI"; src: url("assets/fontes/ZeroHour.woff2") format("woff2"); font-display: swap; size-adjust: 86%; font-weight: 100 900; unicode-range: U+0000-007D, U+007F-10FFFF; }
+@font-face { font-family: "Zero Hour Texto"; src: url("assets/fontes/ZeroHour.woff2") format("woff2"); font-display: swap; size-adjust: 80%; font-weight: 100 900; unicode-range: U+0000-007D, U+007F-10FFFF; }
 </style>
 <!-- @css -->
 </head>
 <body>
-<a class="pular" href="#sobre">Pular para o conteúdo</a>
+<a class="pular" href="#conteudo" data-en="Skip to content">Pular para o conteúdo</a>
 
 <!-- @universo -->
 <!-- @abertura -->
 <!-- @hud -->
+<!-- @arco -->
 
 <main id="conteudo">
 <!-- @inicio -->
@@ -72,7 +109,6 @@
 <!-- @contato -->
 </main>
 
-<!-- @arco -->
 <!-- @terminal -->
 <!-- @cursor -->
 

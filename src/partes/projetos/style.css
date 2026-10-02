@@ -22,9 +22,28 @@
 }
 .projetos__atual { color: var(--text); }
 .projetos__progresso { display: none; }
+.projetos__nav { display: none; gap: 6px; }
+.projetos--trilha .projetos__nav { display: inline-flex; }
+.projetos__seta {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid var(--line-2);
+  border-radius: 50%;
+  background: var(--glass);
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color var(--dur-1) var(--ease-out), opacity var(--dur-1) var(--ease-out);
+}
+@media (hover: hover) { .projetos__seta:hover { border-color: var(--accent); } }
+.projetos__seta[aria-disabled="true"] { opacity: .35; cursor: default; }
 
 .projetos__trilha {
   display: grid;
+  /* minmax(0, 1fr): uma palavra comprida não alarga a coluna além da tela. */
+  grid-template-columns: minmax(0, 1fr);
   gap: clamp(88px, 12vw, 140px);
   max-width: 1180px;
   margin: 0 auto;
@@ -33,8 +52,13 @@
 }
 
 /* ---------- Trilha horizontal ---------- */
+/* Lista empilhada com o trilho de capítulos na tela: espaço à direita para ele, como no Sobre e no Contato. */
+@media (min-width: 761px) {
+  .projetos:not(.projetos--trilha) .projetos__palco { padding-right: calc(var(--gutter) + 96px); }
+}
 .projetos--trilha {
-  --slide: min(1080px, 72vw);
+  /* O slide do centro nunca chega ao trilho de capítulos (uns 100px na borda direita). */
+  --slide: min(1080px, max(68vw, 900px), calc(100vw - 220px));
   --vao: 8vw;
 }
 .projetos--trilha .projetos__palco {
@@ -45,10 +69,11 @@
   flex-direction: column;
   justify-content: center;
   padding: 0;
-  overflow: hidden;
+  overflow: clip; /* clip, e não hidden: o foco do teclado não consegue rolar o palco por baixo da trilha */
 }
 .projetos--trilha .projetos__topo {
   position: absolute;
+  z-index: 2; /* acima da trilha, que é mais alta que o espaço livre e passaria por cima dos botões */
   top: calc(var(--hud) + 74px);
   left: var(--gutter);
   right: calc(var(--gutter) + 96px);
@@ -84,7 +109,7 @@
   will-change: transform;
 }
 .projetos--trilha .projeto { flex: none; width: var(--slide); }
-.projetos--trilha .projeto--fim { width: min(520px, 46vw); }
+.projetos--trilha .projeto--fim { width: min(480px, 38vw); }
 .projetos--trilha .projeto[data-revelar] { opacity: 1; transform: none; transition: none; }
 /* Profundidade: o JS gira e apaga os projetos dos lados (transform e opacity do card). */
 .projetos--trilha .projeto__card,
@@ -93,7 +118,7 @@
 /* ---------- Card ---------- */
 .projeto__card {
   display: grid;
-  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
   align-items: center;
   gap: clamp(28px, 4.4vw, 72px);
 }
@@ -167,9 +192,16 @@
   letter-spacing: -.03em;
   color: var(--text);
 }
+/* Na Zero Hour "v1" leria "VI": a versão fica sempre em mono. */
+.projeto__versao-inline { font-family: var(--font-code); font-size: .88em; letter-spacing: 0; text-transform: none; }
 .projeto__versao { font-family: var(--font-code); font-size: .5em; letter-spacing: 0; color: var(--accent); vertical-align: .55em; }
 .projeto__sub { font-size: clamp(17px, 1.4vw, 20px); font-weight: 500; color: var(--text); }
 .projeto__desc { max-width: 48ch; font-size: 15.5px; line-height: 1.62; color: var(--text-2); text-wrap: pretty; }
+/* Minha parte / Decisões: o que o recrutador procura, em duas linhas fáceis de achar. */
+.projeto__detalhes { display: grid; gap: 10px; margin: 2px 0 0; }
+.projeto__detalhes > div { display: grid; gap: 2px; }
+.projeto__detalhes dt { font-size: 11px; color: var(--accent); }
+.projeto__detalhes dd { margin: 0; font-size: 14px; line-height: 1.55; color: var(--text-2); text-wrap: pretty; }
 .projeto__chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 0; }
 .projeto__chips li {
   padding: 3px 9px;
@@ -252,21 +284,6 @@
 .lib--js.is-frase .lib__frase { opacity: 1; }
 .lib__sinal.is-novo rect { stroke: #FF7A45; }
 
-/* ---------- Portfólio v1: o céu ciano ---------- */
-.v1__fundo { fill: #04080A; }
-.v1__estrelas circle { fill: #A8FFFF; }
-.v1__pisca { animation: v1-pisca 2.6s ease-in-out infinite alternate; }
-.v1__arco path { fill: rgba(0, 255, 255, .06); stroke: #00E5E5; stroke-width: .8; }
-.v1__botao { fill: #04080A; stroke: #00E5E5; stroke-width: .8; }
-.v1__marca { font-family: var(--font-display); font-size: 25px; letter-spacing: 1px; text-anchor: middle; fill: none; stroke: rgba(0, 255, 255, .7); stroke-width: .55; }
-.v1__hud { font-family: var(--font-code); font-size: 7px; letter-spacing: .1em; fill: rgba(0, 255, 255, .7); }
-.v1__term rect { fill: rgba(0, 22, 26, .9); stroke: rgba(0, 255, 255, .5); stroke-width: .6; }
-.v1__term line { stroke: rgba(0, 255, 255, .35); stroke-width: .5; }
-.v1__term text { font-family: var(--font-code); font-size: 5px; fill: #7FFFFF; }
-.v1__cursor { animation: v1-cursor 1.1s steps(2, jump-none) infinite; }
-@keyframes v1-pisca { from { opacity: .15; } to { opacity: 1; } }
-@keyframes v1-cursor { 0% { opacity: 1; } 100% { opacity: .2; } }
-
 /* ---------- Tela estreita ---------- */
 @media (max-width: 899px) {
   .projeto__card { grid-template-columns: minmax(0, 1fr); gap: 24px; }
@@ -276,14 +293,15 @@
 
 @media (prefers-reduced-motion: reduce) {
   .projeto__img, .projeto__quadro svg { translate: none; scale: none; }
-  .v1__pisca, .v1__cursor { animation: none; }
   .lib__nivel { transition: none; }
 }
 
 /* ---------- Fonte antiga (Zero Hour) ----------
    Nomes sem negrito sintético nem tracking negativo, e um corpo maior para compensar os 86% da Zero Hour UI. */
 :root:is([data-font="titulos"], [data-font="tudo"]) .projeto__nome { font-size: clamp(40px, 4.9vw, 74px); font-weight: 400; line-height: 1; letter-spacing: .01em; }
-:root:is([data-font="titulos"], [data-font="tudo"]) .projeto__fim-titulo { font-size: clamp(32px, 3.7vw, 53px); font-weight: 400; letter-spacing: .01em; }
+:root:is([data-font="titulos"], [data-font="tudo"]) .projeto__fim-titulo { font-size: clamp(24px, 3.7vw, 53px); font-weight: 400; letter-spacing: .01em; }
+/* Na trilha o card final é estreito, e "EXPERIMENTOS" na Zero Hour não caberia: título menor. */
+:root:is([data-font="titulos"], [data-font="tudo"]) .projetos--trilha .projeto__fim-titulo { font-size: clamp(22px, 2.2vw, 32px); }
 :root:is([data-font="titulos"], [data-font="tudo"]) .projeto__meta,
 :root:is([data-font="titulos"], [data-font="tudo"]) .projeto__link,
 :root:is([data-font="titulos"], [data-font="tudo"]) .projeto__github { font-size: 13px; letter-spacing: .03em; word-spacing: .15em; }
@@ -291,3 +309,25 @@
 /* Texto corrido em maiúsculas: um pouco mais de entrelinha e de ar entre as letras. */
 :root[data-font="tudo"] .projeto__desc { line-height: 1.65; letter-spacing: .02em; }
 :root[data-font="tudo"] .projeto__sub { letter-spacing: .02em; }
+
+/* Tela muito estreita (zoom de 400%): nomes longos quebram em vez de vazar. */
+@media (max-width: 360px) {
+  .projeto__nome { overflow-wrap: anywhere; font-size: clamp(28px, 9vw, 40px); }
+}
+
+/* Trilha em tela mais baixa (notebooks de 720–880px): tipografia um pouco mais compacta para cada
+   projeto caber inteiro na tela. */
+@media (max-height: 880px) {
+  :root .projetos--trilha .projeto__info { gap: 9px; }
+  :root .projetos--trilha .projeto__nome { font-size: clamp(30px, 3.4vw, 50px); }
+  :root:is([data-font="titulos"], [data-font="tudo"]) .projetos--trilha .projeto__nome { font-size: clamp(34px, 3.9vw, 58px); }
+  :root .projetos--trilha .projeto__sub { font-size: 16px; }
+  :root .projetos--trilha .projeto__desc { font-size: 14px; line-height: 1.5; }
+  :root .projetos--trilha .projeto__detalhes { gap: 7px; }
+  :root .projetos--trilha .projeto__detalhes dd { font-size: 13.5px; line-height: 1.45; }
+  :root .projetos--trilha .projeto__chips { margin-top: 0; }
+  :root .projetos--trilha .projeto__links { margin-top: 0; padding-top: 8px; }
+}
+
+/* Sem JS a lista fica empilhada e o contador não teria o que contar. */
+html:not(.js) .projetos__contador { display: none; }

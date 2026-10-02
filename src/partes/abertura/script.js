@@ -7,17 +7,18 @@
   const num = el.querySelector('.abertura__num');
   const barra = el.querySelector('.abertura__barra');
   const fase = el.querySelector('.abertura__fase');
-  const FASES = [[0, 'ligando o céu'], [0.38, 'calibrando estrelas'], [0.74, 'abrindo caminho']];
+  const FASES = [[0, CZ.t('ligando o céu', 'lighting up the sky')], [0.45, CZ.t('abrindo caminho', 'clearing the way')]];
 
-  // Na segunda visita da sessão a abertura é bem mais curta.
+  // Quem voltou em até 7 dias vê a abertura curta.
+  const SEMANA = 7 * 24 * 3600 * 1000;
   let visto = false;
-  try { visto = sessionStorage.getItem('cz-visto') === '1'; } catch (e) { /* sem sessão: abertura completa */ }
-  const DUR = visto ? 600 : 1650;
+  try { visto = Date.now() - Number(localStorage.getItem('cz-visto') || 0) < SEMANA; } catch (e) { /* sem armazenamento: abertura completa */ }
+  const DUR = visto ? 420 : 900;
 
-  // Espera a fonte do nome (no máximo 2,5 s) para as letras do início não trocarem no meio da entrada.
-  let fontesOk = !document.fonts;
-  if (document.fonts) {
-    Promise.race([document.fonts.ready, new Promise((r) => setTimeout(r, 2500))]).then(() => { fontesOk = true; });
+  // Espera só a fonte do nome (pré-carregada, 10 KB), no máximo 0,8 s, para as letras não trocarem no meio.
+  let fontesOk = !(document.fonts && document.fonts.load);
+  if (!fontesOk) {
+    Promise.race([document.fonts.load('1em "Zero Hour"').catch(() => {}), new Promise((r) => setTimeout(r, 800))]).then(() => { fontesOk = true; });
   }
 
   html.classList.add('abrindo');
@@ -46,7 +47,7 @@
     num.textContent = '100';
     barra.style.transform = 'scaleX(1)';
     el.classList.add('is-saindo');
-    try { sessionStorage.setItem('cz-visto', '1'); } catch (e) { /* tudo bem */ }
+    try { localStorage.setItem('cz-visto', String(Date.now())); } catch (e) { /* tudo bem */ }
     ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach((t) => removeEventListener(t, pular, true));
     // As estrelas chegam quando as metades começam a se abrir.
     setTimeout(() => {
