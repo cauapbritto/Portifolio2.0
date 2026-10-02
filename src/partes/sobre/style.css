@@ -1,0 +1,94 @@
+/* Sobre: um texto grande que acende palavra por palavra enquanto a página rola. */
+.sobre { position: relative; }
+.sobre__palco {
+  position: relative;
+  display: grid;
+  align-items: center;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: 120px var(--gutter) 128px;
+  overflow: hidden;
+}
+/* Cena: o palco fica preso na tela enquanto a seção (mais alta) passa por baixo. */
+.sobre--cena { height: 280vh; }
+.sobre--cena .sobre__palco { position: sticky; top: 0; height: 100vh; height: 100svh; }
+
+.sobre__miolo {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: clamp(28px, 4vw, 48px);
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.sobre__manifesto {
+  max-width: 24ch;
+  font-size: clamp(26px, 3.5vw, 56px);
+  font-weight: 500;
+  line-height: 1.14;
+  letter-spacing: -.025em;
+  color: var(--text);
+  text-wrap: pretty;
+}
+.sobre__manifesto em { font-style: normal; color: var(--accent); }
+.sobre__w {
+  opacity: clamp(.14, calc(var(--k, 99) - var(--i)), 1);
+  transition: opacity 120ms linear;
+}
+.sobre--cena .sobre__manifesto[data-revelar] { opacity: 1; transform: none; }
+
+.sobre__fatos {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0 clamp(16px, 2.4vw, 32px);
+  margin: 0;
+}
+.sobre__fato {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+.sobre__fato dd { margin: 0; font-size: 15px; line-height: 1.45; color: var(--text-2); text-wrap: pretty; }
+
+/* Na cena os fatos entram quando o texto termina de acender. */
+.sobre--cena .sobre__fato[data-revelar] { opacity: 0; transform: translateY(18px); }
+.sobre--cena.is-fatos .sobre__fato[data-revelar] { opacity: 1; transform: none; }
+
+/* Número enorme vazado no fundo, que sobe devagar. */
+.sobre__numero {
+  position: absolute;
+  right: -2vw;
+  bottom: -6vw;
+  font-family: var(--font-display);
+  font-size: clamp(220px, 42vw, 640px);
+  line-height: .8;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(var(--star), .06);
+  transform: translate3d(0, calc(var(--p, 0) * -14vh), 0);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Tela larga: o texto à esquerda e os fatos numa coluna à direita. */
+@media (min-width: 1100px) {
+  .sobre__miolo { grid-template-columns: minmax(0, 1fr) minmax(220px, 300px); grid-template-rows: auto 1fr; column-gap: clamp(40px, 6vw, 110px); align-items: end; }
+  .sobre__miolo > .capitulo { grid-column: 1 / -1; }
+  .sobre__fatos { grid-template-columns: minmax(0, 1fr); gap: 18px; align-self: end; }
+  .sobre__manifesto { font-size: clamp(30px, 3.6vw, 60px); }
+}
+@media (max-width: 900px) {
+  .sobre__fatos { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 20px; }
+}
+@media (max-width: 480px) {
+  .sobre__fatos { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .sobre__fato { padding: 12px 0; grid-template-columns: 9.5em 1fr; align-items: baseline; }
+  .sobre__fato dd { font-size: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sobre__w { opacity: 1; transition: none; }
+  .sobre__numero { transform: none; }
+}

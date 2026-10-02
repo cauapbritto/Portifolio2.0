@@ -1,0 +1,75 @@
+/* Tokens do site. Escuro por padrao; claro pelo sistema ou por data-theme="light". */
+:root {
+  color-scheme: dark;
+  --bg: #0D0E10;
+  --bg-2: #08090B;            /* fundo do espaco, atras das estrelas */
+  --surface: #15171A;
+  --surface-2: #1B1D21;
+  --line: #26292E;
+  --line-2: #3A3E44;
+  --text: #ECEAE4;
+  --text-2: #C9C7C0;
+  --muted: #9C9A93;
+  --accent: #FF7A45;
+  --accent-ink: #0D0E10;      /* texto em cima do accent */
+  --star: 236, 234, 228;      /* rgb das estrelas do canvas, use rgba(var(--star), a) */
+  --glow: 255, 122, 69;       /* rgb do brilho, use rgba(var(--glow), a) */
+  --cool: 120, 150, 255;      /* rgb da nebulosa fria */
+  --glass: rgba(13, 14, 16, .62);
+  --shadow: 0 1px 0 rgba(255,255,255,.04) inset, 0 18px 40px -24px rgba(0,0,0,.8);
+
+  --font-sans: "Schibsted Grotesk", system-ui, sans-serif;
+  --font-mono: "Martian Mono", ui-monospace, monospace;
+  --font-display: "Zero Hour", "Schibsted Grotesk", sans-serif;
+
+  --radius: 6px;
+  --gutter: clamp(16px, 4vw, 56px);
+  --hud: clamp(14px, 2.2vw, 28px);
+  --ease-out: cubic-bezier(.2, .7, .2, 1);
+  --ease-in-out: cubic-bezier(.65, 0, .35, 1);
+  --ease-spring: cubic-bezier(.34, 1.4, .64, 1);
+  --dur-1: 160ms;
+  --dur-2: 320ms;
+  --dur-3: 600ms;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    color-scheme: light;
+    --bg: #F4F2EC;
+    --bg-2: #EEEBE3;
+    --surface: #FFFFFF;
+    --surface-2: #ECE9E1;
+    --line: #DCD8CE;
+    --line-2: #C4BFB3;
+    --text: #16171A;
+    --text-2: #3B3D42;
+    --muted: #66645D;
+    --accent: #C2410C;
+    --accent-ink: #FFFFFF;
+    --star: 22, 23, 26;
+    --glow: 194, 65, 12;
+    --cool: 70, 90, 170;
+    --glass: rgba(244, 242, 236, .72);
+    --shadow: 0 1px 0 rgba(255,255,255,.6) inset, 0 18px 40px -26px rgba(40,30,10,.35);
+  }
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #F4F2EC;
+  --bg-2: #EEEBE3;
+  --surface: #FFFFFF;
+  --surface-2: #ECE9E1;
+  --line: #DCD8CE;
+  --line-2: #C4BFB3;
+  --text: #16171A;
+  --text-2: #3B3D42;
+  --muted: #66645D;
+  --accent: #C2410C;
+  --accent-ink: #FFFFFF;
+  --star: 22, 23, 26;
+  --glow: 194, 65, 12;
+  --cool: 70, 90, 170;
+  --glass: rgba(244, 242, 236, .72);
+  --shadow: 0 1px 0 rgba(255,255,255,.6) inset, 0 18px 40px -26px rgba(40,30,10,.35);
+}

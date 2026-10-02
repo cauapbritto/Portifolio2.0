@@ -1,0 +1,115 @@
+/* Abertura: contador curto e a tela que se abre ao meio. Só existe com JS e com movimento liberado. */
+.abertura { display: none; }
+.js .abertura {
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  color: var(--text);
+}
+.abertura__metade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 50.2%;
+  background: var(--bg-2);
+  transition: transform 1100ms cubic-bezier(.7, 0, .2, 1);
+}
+.abertura__metade--cima { top: 0; }
+.abertura__metade--baixo { bottom: 0; }
+
+/* A fenda de luz que aparece antes das metades se separarem. */
+.abertura__fenda {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: var(--accent);
+  box-shadow: 0 0 18px 2px rgba(var(--glow), .55);
+  transform: scaleX(0);
+  opacity: 0;
+}
+
+.abertura__centro {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 16px;
+  transition: opacity 260ms var(--ease-out), transform 420ms var(--ease-out);
+}
+.abertura__topo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.abertura__num {
+  font-family: var(--font-mono);
+  font-size: clamp(44px, 9vw, 96px);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -.04em;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+.abertura__linha {
+  position: relative;
+  display: block;
+  width: min(300px, 64vw);
+  height: 1px;
+  background: var(--line);
+  overflow: hidden;
+}
+.abertura__barra {
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+}
+.abertura__fase {
+  min-height: 1.4em;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+.abertura__pular {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(var(--hud) + 8px);
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  transition: opacity 200ms var(--ease-out);
+}
+
+/* Saída: o contador some, a fenda acende e as metades vão para fora. */
+.abertura.is-saindo { pointer-events: none; }
+.abertura.is-saindo .abertura__centro { opacity: 0; transform: scale(.96); }
+.abertura.is-saindo .abertura__pular { opacity: 0; }
+.abertura.is-saindo .abertura__fenda { animation: abertura-fenda 900ms var(--ease-out) forwards; }
+.abertura.is-saindo .abertura__metade { transition-delay: 240ms; }
+.abertura.is-saindo .abertura__metade--cima { transform: translateY(-101%); }
+.abertura.is-saindo .abertura__metade--baixo { transform: translateY(101%); }
+@keyframes abertura-fenda {
+  0% { transform: scaleX(0); opacity: 1; }
+  35% { transform: scaleX(1); opacity: 1; }
+  100% { transform: scaleX(1); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js .abertura { display: none; }
+}

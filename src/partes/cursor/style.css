@@ -1,0 +1,64 @@
+/* Cursor: um ponto exato e um anel que segue com atraso. Só com mouse e com movimento liberado. */
+.cursor { display: none; }
+.tem-cursor, .tem-cursor * { cursor: none !important; }
+.tem-cursor input, .tem-cursor textarea { cursor: text !important; }
+.tem-cursor .cursor {
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: 250;
+  pointer-events: none;
+  transition: opacity var(--dur-2) var(--ease-out);
+}
+.cursor.is-fora, .cursor.is-input { opacity: 0; }
+
+.cursor__ponto,
+.cursor__anel {
+  position: absolute;
+  left: 0;
+  top: 0;
+  will-change: transform;
+}
+.cursor__ponto {
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.cursor__anel {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  margin: -19px 0 0 -19px;
+}
+.cursor__circulo {
+  grid-area: 1 / 1;
+  width: 100%;
+  height: 100%;
+  border: 1px solid rgba(var(--star), .42);
+  border-radius: 50%;
+  transition:
+    transform 380ms var(--ease-out),
+    border-color var(--dur-2) var(--ease-out),
+    background-color var(--dur-2) var(--ease-out);
+}
+.cursor__texto {
+  grid-area: 1 / 1;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--text);
+  opacity: 0;
+  transform: scale(.8);
+  transition: opacity var(--dur-1) var(--ease-out), transform var(--dur-2) var(--ease-out);
+}
+.cursor.is-alvo .cursor__circulo { transform: scale(1.5); border-color: var(--accent); background: rgba(var(--glow), .08); }
+.cursor.is-alvo .cursor__ponto { transform: scale(0); }
+.cursor.is-rotulo .cursor__circulo { transform: scale(2.3); border-color: var(--accent); background: rgba(var(--glow), .14); }
+.cursor.is-rotulo .cursor__texto { opacity: 1; transform: none; }
+.cursor.is-apertado .cursor__circulo { transform: scale(.75); }
+.cursor.is-rotulo.is-apertado .cursor__circulo { transform: scale(2); }

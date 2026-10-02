@@ -1,77 +1,52 @@
 // Monta a página: node build.js
-// Junta src/tokens.css, src/frame.css e cada componente de src/components/<id>/ num único index.html.
-// Os componentes aparecem na ordem de src/meta.json.
+// Lê src/pagina.html e troca os marcadores:
+//   <!-- @css -->   tokens, base e o style.css de cada parte (na ordem de PARTES)
+//   <!-- @nome -->  o part.html da parte src/partes/<nome>/
+//   <!-- @js -->    o núcleo e o script.js de cada parte (na ordem de PARTES)
+// O resultado é um index.html único, pronto para o GitHub Pages.
 const fs = require('fs');
 const path = require('path');
 
 const ROOT = __dirname;
 const SRC = path.join(ROOT, 'src');
-const meta = JSON.parse(fs.readFileSync(path.join(SRC, 'meta.json'), 'utf8'));
-const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
-const tokens = fs.readFileSync(path.join(SRC, 'tokens.css'), 'utf8').trim();
-const frameCss = fs.readFileSync(path.join(SRC, 'frame.css'), 'utf8').trim();
+// Ordem dos estilos e scripts. O núcleo (src/base/nucleo.js) sempre vem primeiro.
+const PARTES = ['universo', 'som', 'abertura', 'hud', 'cursor', 'inicio', 'sobre', 'projetos', 'contato', 'arco', 'terminal'];
 
-const comps = meta.components.map((c, i) => {
-  const dir = path.join(SRC, 'components', c.id);
-  const read = (f) => fs.readFileSync(path.join(dir, f), 'utf8').trim();
-  return { ...c, n: String(i + 1).padStart(2, '0'), html: read('part.html'), css: read('style.css'), js: read('script.js') };
+const ler = (...p) => {
+  const f = path.join(...p);
+  return fs.existsSync(f) ? fs.readFileSync(f, 'utf8').trim() : '';
+};
+
+const partes = PARTES.map((nome) => {
+  const dir = path.join(SRC, 'partes', nome);
+  if (!fs.existsSync(dir)) throw new Error(`Parte não encontrada: src/partes/${nome}`);
+  return { nome, html: ler(dir, 'part.html'), css: ler(dir, 'style.css'), js: ler(dir, 'script.js') };
 });
 
-const html = `<!doctype html>
-<html lang="pt-BR">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${esc(meta.title)}</title>
-<meta name="description" content="${esc(meta.lede)}">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Martian+Mono:wght@400;500&family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
-<style>
-@font-face { font-family: "Zero Hour"; src: url("assets/ZeroHour.woff2") format("woff2"); font-display: swap; }
-${tokens}
-${frameCss}
-</style>
-${comps.map(c => `<style>/* ${c.id} */\n${c.css}\n</style>`).join('\n')}
-</head>
-<body>
-<div class="g-progress" aria-hidden="true"></div>
-<a class="g-skip" href="#g-lista">Pular para os componentes</a>
+const css = [
+  `<style>\n${ler(SRC, 'base', 'tokens.css')}\n${ler(SRC, 'base', 'base.css')}\n</style>`,
+  ...partes.filter((p) => p.css).map((p) => `<style>/* ${p.nome} */\n${p.css}\n</style>`),
+].join('\n');
 
-<header class="g-head">
-  <p class="fx-label g-kicker"><span class="g-square" aria-hidden="true"></span>${esc(meta.kicker)}</p>
-  <h1 class="g-title">${esc(meta.title)}</h1>
-  <p class="g-lede">${esc(meta.lede)}</p>
-  <nav class="g-index" aria-label="Componentes">
-    <ol>
-${comps.map(c => `      <li><a href="#g-${c.id}"><span class="g-index__n">${c.n}</span>${esc(c.name)}</a></li>`).join('\n')}
-    </ol>
-  </nav>
-</header>
+const js = [
+  `<script>/* núcleo */\n${ler(SRC, 'base', 'nucleo.js')}\n</script>`,
+  ...partes.filter((p) => p.js).map((p) => `<script>/* ${p.nome} */\n${p.js}\n</script>`),
+  '<script>CZ.pronto();</script>',
+].join('\n');
 
-<main id="g-lista" class="g-main">
-${comps.map(c => `  <section class="g-sec" id="g-${c.id}" aria-labelledby="g-${c.id}-t">
-    <div class="g-sec__head">
-      <p class="fx-label g-sec__n"><span class="g-square" aria-hidden="true"></span>${c.n}</p>
-      <h2 class="g-sec__t" id="g-${c.id}-t">${esc(c.name)}</h2>
-      <p class="g-sec__d">${esc(c.desc)}</p>
-      <p class="g-sec__old"><span class="fx-label">No site antigo</span> ${esc(c.old)}</p>
-    </div>
-    <div class="g-demo">
-${c.html}
-    </div>
-  </section>`).join('\n\n')}
-</main>
+let html = ler(SRC, 'pagina.html');
+html = html.replace('<!-- @css -->', () => css).replace('<!-- @js -->', () => js);
+const usados = new Set();
+html = html.replace(/<!-- @([a-z]+) -->/g, (m, nome) => {
+  const p = partes.find((x) => x.nome === nome);
+  if (!p) throw new Error(`Marcador sem parte: ${m}`);
+  usados.add(nome);
+  return p.html;
+});
+partes.forEach((p) => {
+  if (p.html && !usados.has(p.nome)) throw new Error(`A parte ${p.nome} tem part.html mas não tem marcador em src/pagina.html`);
+});
 
-<footer class="g-foot">
-  <p>${esc(meta.footer)}</p>
-</footer>
-
-${comps.map(c => `<script>/* ${c.id} */\n${c.js}\n</script>`).join('\n')}
-</body>
-</html>
-`;
-
-fs.writeFileSync(path.join(ROOT, 'index.html'), html);
-console.log('index.html gerado:', (Buffer.byteLength(html) / 1024).toFixed(0), 'KB,', comps.length, 'componentes');
+fs.writeFileSync(path.join(ROOT, 'index.html'), `${html}\n`);
+console.log('index.html gerado:', (Buffer.byteLength(html) / 1024).toFixed(0), 'KB,', partes.length, 'partes');

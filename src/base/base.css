@@ -1,0 +1,83 @@
+/* Base: reset, tipografia e utilidades usadas por todas as partes. */
+*, *::before, *::after { box-sizing: border-box; }
+html {
+  -webkit-text-size-adjust: 100%;
+  background: var(--bg-2);
+  scrollbar-gutter: stable;
+  scrollbar-color: var(--line-2) transparent;
+  scrollbar-width: thin;
+}
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 17px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+img, svg, canvas { display: block; }
+a { color: inherit; }
+button { font: inherit; color: inherit; }
+h1, h2, h3, p, ul, ol, dl, dd, figure { margin: 0; }
+ul[role="list"], ol[role="list"] { list-style: none; padding: 0; }
+::selection { background: var(--accent); color: var(--accent-ink); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+.sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.rotulo { font-family: var(--font-mono); font-size: 12px; font-weight: 400; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.quadrado { display: inline-block; flex: none; width: 8px; height: 8px; background: var(--accent); }
+
+.pular {
+  position: fixed; left: 16px; top: -100px; z-index: 300;
+  padding: 10px 14px; border: 1px solid var(--line-2); border-radius: var(--radius);
+  background: var(--surface); color: var(--text); text-decoration: none;
+}
+.pular:focus { top: 16px; }
+
+/* Conteúdo acima do céu (que é fixo, no fundo). */
+main { position: relative; z-index: 2; }
+
+/* Título de capítulo: número em mono + nome. */
+.capitulo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+.capitulo::before { content: ""; width: 8px; height: 8px; background: var(--accent); flex: none; }
+.capitulo__n { color: var(--accent); }
+.capitulo__n::after { content: " —"; color: var(--muted); }
+
+/* Revelar ao entrar na tela: o JS liga .is-in. Sem JS ou com movimento reduzido, tudo visível. */
+.js [data-revelar] {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 700ms var(--ease-out), transform 900ms var(--ease-out);
+  transition-delay: calc(var(--i, 0) * 80ms);
+}
+.js [data-revelar].is-in { opacity: 1; transform: none; }
+/* Máscara: o texto sobe de trás da própria linha (o span interno anda, o elemento observado não). */
+.js [data-revelar="mascara"] { opacity: 1; transform: none; overflow: clip; overflow-clip-margin: 40px; padding-block: .06em; }
+.js [data-revelar="mascara"] > span { display: inline-block; transform: translateY(110%); transition: transform 1100ms var(--ease-out); transition-delay: calc(var(--i, 0) * 80ms); }
+.js [data-revelar="mascara"].is-in > span { transform: none; }
+
+/* Troca de tema com círculo (View Transitions): sem o cross-fade padrão. */
+.cz-vt::view-transition-old(root),
+.cz-vt::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+
+/* Com o terminal aberto, a página não rola por trás. */
+.term-aberto { overflow: hidden; }
+
+@media (prefers-reduced-motion: reduce) {
+  .js [data-revelar],
+  .js [data-revelar="mascara"] > span { opacity: 1; transform: none; transition: none; }
+}
