@@ -12,6 +12,7 @@
   --muted: #9C9A93;
   --accent: #FF7A45;
   --accent-ink: #0D0E10;      /* texto em cima do accent */
+  --ok: #4ADE80;              /* "disponível" */
   --star: 236, 234, 228;      /* rgb das estrelas do canvas, use rgba(var(--star), a) */
   --glow: 255, 122, 69;       /* rgb do brilho, use rgba(var(--glow), a) */
   --cool: 120, 150, 255;      /* rgb da nebulosa fria */
@@ -29,6 +30,7 @@
   --font-label: "Martian Mono", ui-monospace, monospace;
   --font-code: "Martian Mono", ui-monospace, monospace;
   --font-display: "Zero Hour", "Schibsted Grotesk", sans-serif;
+  --font-nome: "Schibsted Grotesk", system-ui, sans-serif; /* o nome real: sempre legível, não troca com a fonte */
   /* aliases antigos: preferir os papeis acima */
   --font-sans: var(--font-text);
   --font-mono: var(--font-code);
@@ -58,6 +60,7 @@
     --muted: #66645D;
     --accent: #C2410C;
     --accent-ink: #FFFFFF;
+    --ok: #15803D;
     --star: 22, 23, 26;
     --glow: 194, 65, 12;
     --cool: 70, 90, 170;
@@ -67,6 +70,7 @@
 }
 :root[data-theme="light"] {
   color-scheme: light;
+  --ok: #15803D;
   --bg: #F4F2EC;
   --bg-2: #EEEBE3;
   --surface: #FFFFFF;

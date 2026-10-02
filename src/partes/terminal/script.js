@@ -23,6 +23,8 @@
     ecoSite: 'https://cauapbritto.github.io/lixo-eletronico/',
     ecoCode: 'https://github.com/cauapbritto/lixo-eletronico',
     v1Code: 'https://github.com/cauapbritto/portif-lio',
+    v2Code: 'https://github.com/cauapbritto/Portifolio2.0',
+    cv: 'assets/Curriculo_Caua_Pedrozo_Brito.pdf',
   };
 
   /* ---------- saída ---------- */
@@ -349,6 +351,7 @@
     { name: 'sobre', aliases: ['about', 'whoami'], desc: 'quem sou', run: sobre },
     { name: 'projetos', aliases: ['projects', 'ls'], desc: 'o que já construí', run: projetos },
     { name: 'contato', aliases: ['contact', 'email', 'e-mail'], desc: 'e-mail e links', run: contato },
+    { name: 'cv', aliases: ['curriculo', 'resume', 'curriculum'], desc: 'baixa o currículo em PDF', run: cv },
     { name: 'ir', aliases: ['cd', 'go', 'voar'], desc: 'voa até um capítulo: ir projetos', run: ir },
     { name: 'tema', aliases: ['theme'], desc: 'alterna claro e escuro', run: tema },
     { name: 'som', aliases: ['sound', 'audio', 'música'], desc: 'liga ou desliga o som', run: som },
@@ -393,24 +396,36 @@
       link('site ↗', LINKS.ecoSite, 'EcoPontos: site (abre em nova aba)'),
       link('código ↗', LINKS.ecoCode, 'EcoPontos: código no GitHub (abre em nova aba)'),
     ]), 'indent');
-    print('Portfólio v1', 'strong gap');
-    print('A primeira versão deste site, escrita sem framework.', 'indent');
-    print('HTML, CSS, JavaScript, Canvas 2D', 'muted indent');
+    print('Portfólio 2.0', 'strong gap');
+    print('Este site: um céu 3D que a rolagem atravessa, sem framework. Evolução do v1.', 'indent');
+    print('HTML, CSS, JavaScript, Canvas 2D, Web Audio', 'muted indent');
     print(fill(node('span', 'term__links'), [
-      link('código ↗', LINKS.v1Code, 'Portfólio v1: código no GitHub (abre em nova aba)'),
+      link('código ↗', LINKS.v2Code, 'Portfólio 2.0: código no GitHub (abre em nova aba)'),
+      link('código do v1 ↗', LINKS.v1Code, 'Portfólio v1: código no GitHub (abre em nova aba)'),
     ]), 'indent');
     print([botaoIr('ver os projetos ↘', 'projetos')], 'gap');
   }
   function sobre() {
     print('Cauã Pedrozo Brito', 'strong');
-    print('Desenvolvedor front-end em formação, focado em experiências visuais e interfaces imersivas.');
-    print('Estuda Tecnologia em Análise e Desenvolvimento de Sistemas.', 'muted');
+    print('Desenvolvedor front-end em formação. Aberto a oportunidades em front-end, em Cuiabá, MT, ou remoto.');
+    print('Analista de TI na Casa Civil do Governo de Mato Grosso. Estuda Análise e Desenvolvimento de Sistemas na FASIPE.', 'muted');
     print([botaoIr('ler o capítulo sobre ↘', 'sobre')], 'gap');
   }
   function contato() {
     row('e-mail', link('caua.pbritto@gmail.com', LINKS.email, 'Enviar e-mail para caua.pbritto@gmail.com'));
     row('github', link('cauapbritto ↗', LINKS.github, 'GitHub: cauapbritto (abre em nova aba)'));
     row('linkedin', link('cauã-pedrozo-brito ↗', LINKS.linkedin, 'LinkedIn de Cauã Pedrozo Brito (abre em nova aba)'));
+    row('currículo', baixar('PDF ↓', LINKS.cv, 'Baixar o currículo em PDF'));
+  }
+  function baixar(text, href, label) {
+    const a = node('a', '', text);
+    a.href = href;
+    a.setAttribute('download', '');
+    if (label) a.setAttribute('aria-label', label);
+    return a;
+  }
+  function cv() {
+    print(['currículo de Cauã Pedrozo Brito: ', baixar('baixar PDF ↓', LINKS.cv, 'Baixar o currículo em PDF')]);
   }
   function ir(args) {
     const alvo = SECOES[normalize(args[0] || '')];

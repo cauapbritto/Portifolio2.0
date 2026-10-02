@@ -58,6 +58,35 @@ main { position: relative; z-index: 2; }
 .capitulo__n::after { word-spacing: normal; }
 .capitulo__n::after { content: " —"; color: var(--muted); }
 
+/* Botão em pílula (início e contato). --forte: o principal, em laranja. */
+.botao {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 20px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  color: var(--text);
+  font-family: var(--font-head);
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: border-color var(--dur-1) var(--ease-out), background-color var(--dur-1) var(--ease-out), transform var(--dur-1) var(--ease-out);
+}
+.botao__extra { font-family: var(--font-code); font-size: 10px; letter-spacing: .06em; color: var(--muted); }
+.botao--forte { border-color: var(--accent); background: var(--accent); color: var(--accent-ink); }
+.botao--forte .botao__extra { color: inherit; }
+@media (hover: hover) {
+  .botao:hover { border-color: var(--text-2); }
+  .botao--forte:hover { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 86%, var(--text)); }
+}
+.botao:active { transform: translateY(1px); }
+
 /* Revelar ao entrar na tela: o JS liga .is-in. Sem JS ou com movimento reduzido, tudo visível. */
 .js [data-revelar] {
   opacity: 0;
@@ -97,3 +126,4 @@ main { position: relative; z-index: 2; }
 }
 /* Palavras com hífen não quebram no meio: em caixa alta larga, "E-" sozinho no fim da linha lê mal. */
 :root:is([data-font="titulos"], [data-font="tudo"]) .nobr { white-space: nowrap; }
+:root:is([data-font="titulos"], [data-font="tudo"]) .botao { font-size: 14px; font-weight: 400; letter-spacing: .03em; }

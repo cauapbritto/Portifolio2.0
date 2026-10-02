@@ -3,15 +3,23 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Cauanzera · Cauã Pedrozo Brito</title>
-<meta name="description" content="Portfólio de Cauã Pedrozo Brito, desenvolvedor front-end em formação focado em experiências visuais e interfaces imersivas.">
+<title>Cauã Pedrozo Brito · Desenvolvedor Front-end</title>
+<meta name="description" content="Portfólio de Cauã Pedrozo Brito, desenvolvedor front-end em formação em Cuiabá, MT. Projetos, currículo e contato.">
 <meta name="theme-color" content="#0D0E10">
+<link rel="canonical" href="https://cauabrito.com.br/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Cauanzera">
-<meta property="og:title" content="Cauanzera · Cauã Pedrozo Brito">
-<meta property="og:description" content="Desenvolvedor front-end em formação, focado em experiências visuais e interfaces imersivas.">
-<meta name="twitter:card" content="summary">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:url" content="https://cauabrito.com.br/">
+<meta property="og:title" content="Cauã Pedrozo Brito · Desenvolvedor Front-end">
+<meta property="og:description" content="Desenvolvedor front-end em formação em Cuiabá, MT. Aberto a oportunidades, também remoto.">
+<meta property="og:image" content="https://cauabrito.com.br/assets/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Cauã Pedrozo Brito, desenvolvedor front-end: o nome Cauanzera sobre um céu de estrelas">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -19,7 +27,12 @@
   "name": "Cauã Pedrozo Brito",
   "alternateName": "Cauanzera",
   "jobTitle": "Desenvolvedor front-end em formação",
+  "url": "https://cauabrito.com.br/",
+  "image": "https://cauabrito.com.br/assets/og.jpg",
   "email": "mailto:caua.pbritto@gmail.com",
+  "address": { "@type": "PostalAddress", "addressLocality": "Cuiabá", "addressRegion": "MT", "addressCountry": "BR" },
+  "alumniOf": { "@type": "CollegeOrUniversity", "name": "Faculdade FASIPE" },
+  "knowsAbout": ["HTML", "CSS", "JavaScript", "Canvas 2D", "Web Audio", "Python", "Acessibilidade"],
   "sameAs": [
     "https://github.com/cauapbritto",
     "https://www.linkedin.com/in/cau%C3%A3-pedrozo-brito-8a685b358"
@@ -71,6 +84,7 @@
   --muted: #9C9A93;
   --accent: #FF7A45;
   --accent-ink: #0D0E10;      /* texto em cima do accent */
+  --ok: #4ADE80;              /* "disponível" */
   --star: 236, 234, 228;      /* rgb das estrelas do canvas, use rgba(var(--star), a) */
   --glow: 255, 122, 69;       /* rgb do brilho, use rgba(var(--glow), a) */
   --cool: 120, 150, 255;      /* rgb da nebulosa fria */
@@ -88,6 +102,7 @@
   --font-label: "Martian Mono", ui-monospace, monospace;
   --font-code: "Martian Mono", ui-monospace, monospace;
   --font-display: "Zero Hour", "Schibsted Grotesk", sans-serif;
+  --font-nome: "Schibsted Grotesk", system-ui, sans-serif; /* o nome real: sempre legível, não troca com a fonte */
   /* aliases antigos: preferir os papeis acima */
   --font-sans: var(--font-text);
   --font-mono: var(--font-code);
@@ -117,6 +132,7 @@
     --muted: #66645D;
     --accent: #C2410C;
     --accent-ink: #FFFFFF;
+    --ok: #15803D;
     --star: 22, 23, 26;
     --glow: 194, 65, 12;
     --cool: 70, 90, 170;
@@ -126,6 +142,7 @@
 }
 :root[data-theme="light"] {
   color-scheme: light;
+  --ok: #15803D;
   --bg: #F4F2EC;
   --bg-2: #EEEBE3;
   --surface: #FFFFFF;
@@ -216,6 +233,35 @@ main { position: relative; z-index: 2; }
 .capitulo__n::after { word-spacing: normal; }
 .capitulo__n::after { content: " —"; color: var(--muted); }
 
+/* Botão em pílula (início e contato). --forte: o principal, em laranja. */
+.botao {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 20px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  color: var(--text);
+  font-family: var(--font-head);
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: border-color var(--dur-1) var(--ease-out), background-color var(--dur-1) var(--ease-out), transform var(--dur-1) var(--ease-out);
+}
+.botao__extra { font-family: var(--font-code); font-size: 10px; letter-spacing: .06em; color: var(--muted); }
+.botao--forte { border-color: var(--accent); background: var(--accent); color: var(--accent-ink); }
+.botao--forte .botao__extra { color: inherit; }
+@media (hover: hover) {
+  .botao:hover { border-color: var(--text-2); }
+  .botao--forte:hover { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 86%, var(--text)); }
+}
+.botao:active { transform: translateY(1px); }
+
 /* Revelar ao entrar na tela: o JS liga .is-in. Sem JS ou com movimento reduzido, tudo visível. */
 .js [data-revelar] {
   opacity: 0;
@@ -255,6 +301,7 @@ main { position: relative; z-index: 2; }
 }
 /* Palavras com hífen não quebram no meio: em caixa alta larga, "E-" sozinho no fim da linha lê mal. */
 :root:is([data-font="titulos"], [data-font="tudo"]) .nobr { white-space: nowrap; }
+:root:is([data-font="titulos"], [data-font="tudo"]) .botao { font-size: 14px; font-weight: 400; letter-spacing: .03em; }
 </style>
 <style>/* universo */
 /* Universo: o céu fixo atrás da página inteira. A página rola por cima e a câmera avança pelas estrelas. */
@@ -502,6 +549,7 @@ main { position: relative; z-index: 2; }
 }
 
 .hud__acoes { display: flex; align-items: center; gap: 10px; }
+.hud__cv { padding-right: 14px; text-decoration: none; }
 
 /* Troca de fonte: um botão "Aa" que abre as três opções, cada uma escrita na própria fonte. */
 .fonte { position: relative; }
@@ -686,9 +734,10 @@ html:not(.js) .hud-base { display: none; }
   .trilho { display: none; }
   .hud-base__tempo, .hud-base__pct { display: none; }
 }
-@media (max-width: 420px) {
+@media (max-width: 560px) {
   .hud__btn:not(.fonte__btn) span { display: none; }
   .hud__btn { padding: 0 12px; }
+  .hud__acoes { gap: 8px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .trilho__nome, .trilho__n::after, .hud__marca .quadrado { transition: none; }
@@ -792,7 +841,29 @@ html:not(.js) .hud-base { display: none; }
   opacity: calc(1 - var(--sai) * 1.4);
 }
 
-.inicio__rotulo { display: inline-flex; align-items: center; gap: 10px; color: var(--text-2); }
+.inicio__rotulo { display: inline-flex; align-items: center; justify-content: center; gap: 10px; max-width: 100%; color: var(--text-2); text-wrap: balance; }
+/* Ponto verde de "disponível", pulsando devagar. */
+.inicio__status {
+  position: relative;
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ok);
+}
+.inicio__status::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1px solid var(--ok);
+  opacity: 0;
+  animation: inicio-status 2.4s var(--ease-out) infinite;
+}
+@keyframes inicio-status {
+  0% { transform: scale(.5); opacity: .8; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
 
 .inicio__marca {
   font-family: var(--font-display);
@@ -815,14 +886,30 @@ html:not(.js) .hud-base { display: none; }
   color: var(--text-2);
   text-wrap: balance;
 }
-.inicio__nome { display: block; margin-bottom: 4px; font-family: var(--font-label); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--text); }
+/* O nome real, legível em qualquer modo de fonte (o "Cauanzera" acima é a marca). */
+.inicio__nome {
+  margin-top: calc(clamp(16px, 2.2vw, 26px) * -.55);
+  font-family: var(--font-nome);
+  font-size: clamp(22px, 2.3vw, 34px);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -.01em;
+  color: var(--text);
+}
+.inicio__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 4px;
+}
 
 .inicio__descer {
   display: inline-flex;
   align-items: center;
   gap: 14px;
   min-height: 44px;
-  margin-top: clamp(6px, 2vh, 22px);
+  margin-top: clamp(0px, 1vh, 12px);
   padding: 0 6px;
   border-radius: 4px;
   font-family: var(--font-label);
@@ -915,6 +1002,8 @@ html:not(.js) .hud-base { display: none; }
 /* Antes da abertura terminar, o conteúdo espera escondido. */
 .abrindo .inicio__rotulo,
 .abrindo .inicio__char,
+.abrindo .inicio__nome,
+.abrindo .inicio__acoes,
 .abrindo .inicio__frase,
 .abrindo .inicio__descer,
 .abrindo .inicio__dica,
@@ -925,14 +1014,19 @@ html:not(.js) .hud-base { display: none; }
   .inicio__planeta { top: calc(100% - 15vh); width: 420vw; }
   .inicio__dica { display: none; }
 }
+/* Tela baixa: o nome-marca encolhe para caber tudo acima do planeta. */
+@media (max-height: 760px) and (min-width: 641px) {
+  .inicio__marca { font-size: clamp(30px, 7.4vw, 120px); }
+  .inicio { padding-top: 88px; }
+}
 @media (prefers-reduced-motion: reduce) {
+  .inicio__status::after { animation: none; }
   .inicio__trilha span { animation: none; transform: translateY(11px); }
   .inicio__conteudo { transform: none; opacity: 1; }
   .inicio__planeta { transform: translateX(-50%); }
 }
 
 /* Fonte antiga */
-:root:is([data-font="titulos"], [data-font="tudo"]) .inicio__nome { font-size: 13px; letter-spacing: .08em; }
 :root:is([data-font="titulos"], [data-font="tudo"]) .inicio__descer,
 :root:is([data-font="titulos"], [data-font="tudo"]) .inicio__dica { font-size: 12px; letter-spacing: .06em; word-spacing: .15em; }
 :root[data-font="tudo"] .inicio__frase { letter-spacing: .02em; line-height: 1.6; }
@@ -1207,9 +1301,16 @@ html:not(.js) .hud-base { display: none; }
   letter-spacing: -.03em;
   color: var(--text);
 }
+/* Na Zero Hour "v1" leria "VI": a versão fica sempre em mono. */
+.projeto__versao-inline { font-family: var(--font-code); font-size: .88em; letter-spacing: 0; text-transform: none; }
 .projeto__versao { font-family: var(--font-code); font-size: .5em; letter-spacing: 0; color: var(--accent); vertical-align: .55em; }
 .projeto__sub { font-size: clamp(17px, 1.4vw, 20px); font-weight: 500; color: var(--text); }
 .projeto__desc { max-width: 48ch; font-size: 15.5px; line-height: 1.62; color: var(--text-2); text-wrap: pretty; }
+/* Minha parte / Decisões: o que o recrutador procura, em duas linhas fáceis de achar. */
+.projeto__detalhes { display: grid; gap: 10px; margin: 2px 0 0; }
+.projeto__detalhes > div { display: grid; grid-template-columns: 7.5em minmax(0, 1fr); gap: 12px; align-items: baseline; }
+.projeto__detalhes dt { font-size: 11px; color: var(--accent); }
+.projeto__detalhes dd { margin: 0; font-size: 14px; line-height: 1.55; color: var(--text-2); text-wrap: pretty; }
 .projeto__chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 0; }
 .projeto__chips li {
   padding: 3px 9px;
@@ -1292,21 +1393,6 @@ html:not(.js) .hud-base { display: none; }
 .lib--js.is-frase .lib__frase { opacity: 1; }
 .lib__sinal.is-novo rect { stroke: #FF7A45; }
 
-/* ---------- Portfólio v1: o céu ciano ---------- */
-.v1__fundo { fill: #04080A; }
-.v1__estrelas circle { fill: #A8FFFF; }
-.v1__pisca { animation: v1-pisca 2.6s ease-in-out infinite alternate; }
-.v1__arco path { fill: rgba(0, 255, 255, .06); stroke: #00E5E5; stroke-width: .8; }
-.v1__botao { fill: #04080A; stroke: #00E5E5; stroke-width: .8; }
-.v1__marca { font-family: var(--font-display); font-size: 25px; letter-spacing: 1px; text-anchor: middle; fill: none; stroke: rgba(0, 255, 255, .7); stroke-width: .55; }
-.v1__hud { font-family: var(--font-code); font-size: 7px; letter-spacing: .1em; fill: rgba(0, 255, 255, .7); }
-.v1__term rect { fill: rgba(0, 22, 26, .9); stroke: rgba(0, 255, 255, .5); stroke-width: .6; }
-.v1__term line { stroke: rgba(0, 255, 255, .35); stroke-width: .5; }
-.v1__term text { font-family: var(--font-code); font-size: 5px; fill: #7FFFFF; }
-.v1__cursor { animation: v1-cursor 1.1s steps(2, jump-none) infinite; }
-@keyframes v1-pisca { from { opacity: .15; } to { opacity: 1; } }
-@keyframes v1-cursor { 0% { opacity: 1; } 100% { opacity: .2; } }
-
 /* ---------- Tela estreita ---------- */
 @media (max-width: 899px) {
   .projeto__card { grid-template-columns: minmax(0, 1fr); gap: 24px; }
@@ -1316,7 +1402,6 @@ html:not(.js) .hud-base { display: none; }
 
 @media (prefers-reduced-motion: reduce) {
   .projeto__img, .projeto__quadro svg { translate: none; scale: none; }
-  .v1__pisca, .v1__cursor { animation: none; }
   .lib__nivel { transition: none; }
 }
 
@@ -1475,10 +1560,26 @@ html:not(.js) .hud-base { display: none; }
   letter-spacing: -.025em;
   color: var(--text);
   overflow-wrap: break-word;
-  -webkit-user-select: all;
-  user-select: all;
 }
+.email__linha { margin: 0; }
+a.email__email {
+  display: inline-block;
+  color: var(--text);
+  text-decoration: none;
+  border-radius: 4px;
+  background-image: linear-gradient(var(--accent), var(--accent));
+  background-size: 0% 2px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size var(--dur-3) var(--ease-out);
+}
+@media (hover: hover) { a.email__email:hover { background-size: 100% 2px; } }
+a.email__email:focus-visible { background-size: 100% 2px; }
 .email__domain { color: var(--muted); }
+.email__extra { font-family: var(--font-code); font-size: .65em; letter-spacing: .06em; color: var(--muted); }
+.email__link:hover .email__arrow--baixo, .email__link:focus-visible .email__arrow--baixo { transform: translateY(2px); }
+/* Sem JS o botão de copiar não funciona: fica só o link do e-mail. */
+html:not(.js) .email__magnet { display: none; }
 .email__email::selection,
 .email__email ::selection {
   background: var(--accent);
@@ -2461,6 +2562,10 @@ html:not(.js) .arco { display: none; }
 <header class="hud">
   <a class="hud__marca" href="#inicio" data-ir="inicio" aria-label="Cauanzera, voltar ao início"><span class="quadrado" aria-hidden="true"></span><span aria-hidden="true">Cauanzera</span></a>
   <div class="hud__acoes">
+    <a class="hud__btn hud__cv" href="assets/Curriculo_Caua_Pedrozo_Brito.pdf" download aria-label="Currículo em PDF" data-cursor="baixar">
+      <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M8 2.5v7.5M4.75 7 8 10.25 11.25 7M3 13.25h10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Currículo</span>
+    </a>
     <div class="fonte">
       <button class="hud__btn fonte__btn" type="button" aria-expanded="false" aria-controls="fonte-painel" data-cursor="fonte">
         <span class="fonte__aa" aria-hidden="true">Aa</span><span class="sr">Fonte</span>
@@ -2472,7 +2577,7 @@ html:not(.js) .arco { display: none; }
         <button class="fonte__opcao fonte__opcao--nova" type="button" data-fonte="nova" aria-pressed="false">Nova</button>
       </div>
     </div>
-    <button class="hud__btn" type="button" data-terminal aria-haspopup="dialog" aria-controls="terminal">
+    <button class="hud__btn" type="button" data-terminal aria-haspopup="dialog" aria-controls="terminal" aria-label="Terminal">
       <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M3 4.5 6.5 8 3 11.5M8.5 11.5H13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <span>Terminal</span>
       <kbd aria-hidden="true">/</kbd>
@@ -2505,12 +2610,15 @@ html:not(.js) .arco { display: none; }
   </div>
 
   <div class="inicio__conteudo">
-    <p class="inicio__rotulo rotulo"><span class="quadrado" aria-hidden="true"></span>Portfólio · 2026</p>
-    <h1 class="inicio__marca" id="inicio-t" data-foco>
-      <span class="sr">Cauanzera, portfólio de Cauã Pedrozo Brito</span>
-      <span class="inicio__palavra" aria-hidden="true">Cauanzera</span>
-    </h1>
-    <p class="inicio__frase"><span class="inicio__nome">Cauã Pedrozo Brito</span> Desenvolvedor <span class="nobr">front-end</span> em formação, focado em experiências visuais e interfaces imersivas.</p>
+    <p class="inicio__rotulo rotulo"><span class="inicio__status" aria-hidden="true"></span><span>Aberto a oportunidades em <span class="nobr">front-end</span> · Cuiabá, MT · remoto</span></p>
+    <p class="inicio__marca" aria-hidden="true"><span class="inicio__palavra">Cauanzera</span></p>
+    <h1 class="inicio__nome" id="inicio-t" data-foco>Cauã Pedrozo Brito</h1>
+    <p class="inicio__frase">Desenvolvedor <span class="nobr">front-end</span> em formação. Crio interfaces interativas e acessíveis com HTML, CSS e JavaScript, sem framework.</p>
+    <div class="inicio__acoes">
+      <a class="botao botao--forte" href="#projetos" data-ir="projetos" data-cursor="ver">Ver projetos</a>
+      <a class="botao" href="assets/Curriculo_Caua_Pedrozo_Brito.pdf" download data-cursor="baixar">Currículo <span class="botao__extra">PDF</span></a>
+      <a class="botao" href="mailto:caua.pbritto@gmail.com?subject=Contato%20pelo%20portf%C3%B3lio" data-cursor="escrever">E-mail</a>
+    </div>
     <a class="inicio__descer" href="#sobre" data-ir="sobre" data-cursor="descer">
       <span class="inicio__trilha" aria-hidden="true"><span></span></span>
       <span>Role para explorar</span>
@@ -2524,12 +2632,14 @@ html:not(.js) .arco { display: none; }
     <span class="sobre__numero" aria-hidden="true">01</span>
     <div class="sobre__miolo">
       <h2 class="capitulo" id="sobre-t" data-foco><span class="capitulo__n">0<span class="um">1</span></span>Sobre</h2>
-      <p class="sobre__manifesto" data-revelar>Sou o Cauã. Estudo Análise e Desenvolvimento de Sistemas e gosto de transformar código em <em>lugares para explorar</em>: céus que reagem ao cursor, terminais com segredos e interfaces que respondem a quem passa por elas.</p>
+      <p class="sobre__manifesto" data-revelar>Sou o Cauã. Trabalho com TI em Cuiabá, estudo Análise e Desenvolvimento de Sistemas e gosto de transformar código em <em>lugares para explorar</em>: interfaces que respondem a quem passa por elas, rápidas, acessíveis e cuidadas nos detalhes.</p>
       <dl class="sobre__fatos">
-        <div class="sobre__fato" data-revelar style="--i:0"><dt class="rotulo">Curso</dt><dd>Tecnologia em Análise e Desenvolvimento de Sistemas</dd></div>
-        <div class="sobre__fato" data-revelar style="--i:1"><dt class="rotulo">Foco</dt><dd><span class="nobr">Front-end</span>, experiências visuais e interfaces imersivas</dd></div>
-        <div class="sobre__fato" data-revelar style="--i:2"><dt class="rotulo">Ferramentas</dt><dd>HTML, CSS, JavaScript, Canvas 2D, Python, Git e GitHub</dd></div>
-        <div class="sobre__fato" data-revelar style="--i:3"><dt class="rotulo">Agora</dt><dd>Construindo o Librahin e este portfólio</dd></div>
+        <div class="sobre__fato" data-revelar style="--i:0"><dt class="rotulo">Hoje</dt><dd>Analista de TI na Casa Civil do Governo de Mato Grosso</dd></div>
+        <div class="sobre__fato" data-revelar style="--i:1"><dt class="rotulo">Formação</dt><dd>Análise e Desenvolvimento de Sistemas · FASIPE · 3º semestre, conclusão prevista em dez/2027</dd></div>
+        <div class="sobre__fato" data-revelar style="--i:2"><dt class="rotulo">Foco</dt><dd><span class="nobr">Front-end</span>, interfaces interativas e acessibilidade</dd></div>
+        <div class="sobre__fato" data-revelar style="--i:3"><dt class="rotulo"><span class="nobr">Front-end</span></dt><dd>HTML, CSS, JavaScript, Canvas 2D e Web Audio</dd></div>
+        <div class="sobre__fato" data-revelar style="--i:4"><dt class="rotulo">Também</dt><dd>Python (OpenCV, MediaPipe, scikit-learn), Git e GitHub</dd></div>
+        <div class="sobre__fato" data-revelar style="--i:5"><dt class="rotulo">Base</dt><dd>Cuiabá, MT · aberto a remoto</dd></div>
       </dl>
     </div>
   </div>
@@ -2618,10 +2728,14 @@ html:not(.js) .arco { display: none; }
             </div>
           </div>
           <div class="projeto__info">
-            <p class="projeto__meta"><span class="projeto__n">0<span class="um">1</span></span><span>Visão computacional · 2026</span></p>
+            <p class="projeto__meta"><span class="projeto__n">0<span class="um">1</span></span><span>2026 · Acadêmico · Grupo de 4</span></p>
             <h3 class="projeto__nome" id="projeto-librahin">Librahin</h3>
             <p class="projeto__sub">Tradução de Libras para texto e voz</p>
-            <p class="projeto__desc">A webcam reconhece sinais de Libras em tempo real, o programa monta a frase e fala em português. Roda inteiro no computador, sem internet. Trabalho em grupo do curso de Análise e Desenvolvimento de Sistemas, com Adryel Rocha, Alber Cabral e João Malaquias, orientado pelo professor Éder Lemes.</p>
+            <p class="projeto__desc">Reconhece sinais de Libras pela webcam, em tempo real, monta a frase e fala em português. Roda inteiro no computador, sem internet.</p>
+            <dl class="projeto__detalhes">
+              <div><dt class="rotulo">Minha parte</dt><dd>Fiz praticamente todo o projeto, principalmente o desenvolvimento. Trabalho do curso de ADS com Adryel Rocha, Alber Cabral e João Malaquias, orientado pelo professor Éder Lemes.</dd></div>
+              <div><dt class="rotulo">Decisões</dt><dd>Guarda só os pontos da mão e do corpo (MediaPipe), não as imagens; lê janelas de 1,5 s, porque vários sinais têm movimento; compara Random Forest, SVM e MLP; aceita um sinal só acima de 75% de confiança.</dd></div>
+            </dl>
             <ul class="projeto__chips" role="list" aria-label="Tecnologias">
               <li>Python</li><li>OpenCV</li><li>MediaPipe</li><li>scikit-learn</li><li>CustomTkinter</li>
             </ul>
@@ -2641,10 +2755,14 @@ html:not(.js) .arco { display: none; }
             </div>
           </div>
           <div class="projeto__info">
-            <p class="projeto__meta"><span class="projeto__n">02</span><span>Site · Cuiabá</span></p>
+            <p class="projeto__meta"><span class="projeto__n">02</span><span>2026 · Projeto solo · Cuiabá, MT</span></p>
             <h3 class="projeto__nome" id="projeto-ecopontos">EcoPontos</h3>
             <p class="projeto__sub">Onde descartar lixo eletrônico</p>
-            <p class="projeto__desc">Site que ajuda a encontrar pontos de coleta de lixo eletrônico em Cuiabá, para quem quer descartar eletrônicos do jeito certo.</p>
+            <p class="projeto__desc">Site que ajuda a encontrar pontos de coleta de lixo eletrônico em Cuiabá: ecopontos públicos, lojas, supermercados e cooperativas.</p>
+            <dl class="projeto__detalhes">
+              <div><dt class="rotulo">Minha parte</dt><dd>Fiz sozinho, do zero, sem framework.</dd></div>
+              <div><dt class="rotulo">Destaques</dt><dd>Busca por nome e filtro por tipo de local; tema claro e escuro que lembra a escolha; compartilhar um ponto pela Web Share API; leitor de tela, movimento reduzido e alto contraste.</dd></div>
+            </dl>
             <ul class="projeto__chips" role="list" aria-label="Tecnologias">
               <li>HTML</li><li>CSS</li><li>JavaScript</li>
             </ul>
@@ -2657,114 +2775,27 @@ html:not(.js) .arco { display: none; }
       </li>
 
       <li class="projeto" data-revelar>
-        <article class="projeto__card" aria-labelledby="projeto-v1">
+        <article class="projeto__card" aria-labelledby="projeto-portfolio">
           <div class="projeto__midia" data-tilt>
             <span class="projeto__luz" aria-hidden="true"></span>
-            <div class="projeto__quadro projeto__quadro--v1">
-              <svg class="v1" viewBox="0 0 320 200" role="img" aria-label="Ilustração do portfólio v1: céu de estrelas ciano, o menu em meio-arco no alto e um terminal no canto">
-                <rect width="320" height="200" class="v1__fundo"/>
-                <g class="v1__estrelas">
-                <circle class="v1__pisca" cx="105.0" cy="33.0" r="1.2" opacity="0.38"/>
-        <circle cx="260.2" cy="22.1" r="1" opacity="0.38"/>
-        <circle cx="162.3" cy="11.2" r="0.8" opacity="0.6"/>
-        <circle cx="79.1" cy="109.8" r="0.5" opacity="0.85"/>
-        <circle cx="42.6" cy="46.9" r="1.2" opacity="0.7"/>
-        <circle cx="23.3" cy="116.4" r="0.5" opacity="0.94"/>
-        <circle cx="18.5" cy="168.8" r="0.7" opacity="0.6"/>
-        <circle cx="172.7" cy="113.6" r="1" opacity="0.84"/>
-        <circle cx="60.4" cy="115.7" r="1.2" opacity="0.46"/>
-        <circle class="v1__pisca" cx="34.4" cy="140.7" r="1" opacity="0.39"/>
-        <circle cx="68.3" cy="134.6" r="0.8" opacity="0.82"/>
-        <circle cx="149.3" cy="181.3" r="0.7" opacity="0.53"/>
-        <circle cx="251.8" cy="138.2" r="0.6" opacity="0.4"/>
-        <circle cx="97.7" cy="99.1" r="0.7" opacity="0.79"/>
-        <circle cx="93.8" cy="192.2" r="0.5" opacity="0.66"/>
-        <circle cx="55.5" cy="69.7" r="0.8" opacity="0.6"/>
-        <circle cx="304.1" cy="18.9" r="1" opacity="0.69"/>
-        <circle cx="277.1" cy="64.2" r="1.2" opacity="0.56"/>
-        <circle class="v1__pisca" cx="159.0" cy="157.0" r="0.5" opacity="0.85"/>
-        <circle cx="298.7" cy="95.0" r="1.2" opacity="0.39"/>
-        <circle cx="232.1" cy="63.4" r="1" opacity="0.95"/>
-        <circle cx="260.4" cy="58.6" r="0.8" opacity="0.88"/>
-        <circle cx="112.3" cy="184.6" r="0.7" opacity="0.45"/>
-        <circle cx="40.5" cy="15.3" r="0.7" opacity="0.43"/>
-        <circle cx="81.3" cy="79.1" r="0.8" opacity="0.4"/>
-        <circle cx="144.1" cy="109.5" r="0.6" opacity="0.84"/>
-        <circle cx="273.6" cy="57.5" r="0.8" opacity="0.94"/>
-        <circle class="v1__pisca" cx="217.0" cy="77.0" r="0.6" opacity="0.44"/>
-        <circle cx="59.0" cy="48.5" r="0.6" opacity="0.36"/>
-        <circle cx="263.3" cy="39.0" r="0.7" opacity="0.35"/>
-        <circle cx="134.7" cy="74.9" r="1" opacity="0.54"/>
-        <circle cx="43.2" cy="169.0" r="1" opacity="0.74"/>
-        <circle cx="234.8" cy="91.7" r="1.2" opacity="0.83"/>
-        <circle cx="126.4" cy="80.6" r="0.5" opacity="0.64"/>
-        <circle cx="128.9" cy="40.6" r="0.6" opacity="0.61"/>
-        <circle cx="38.3" cy="119.3" r="0.5" opacity="0.35"/>
-        <circle class="v1__pisca" cx="51.2" cy="23.5" r="0.7" opacity="0.72"/>
-        <circle cx="25.9" cy="43.9" r="0.8" opacity="0.44"/>
-        <circle cx="82.7" cy="70.7" r="0.7" opacity="0.63"/>
-        <circle cx="40.0" cy="97.7" r="0.8" opacity="0.64"/>
-        <circle cx="101.3" cy="31.7" r="1.2" opacity="0.56"/>
-        <circle cx="86.6" cy="163.1" r="0.6" opacity="0.66"/>
-        <circle cx="68.0" cy="186.8" r="0.7" opacity="0.44"/>
-        <circle cx="173.5" cy="9.2" r="1" opacity="0.53"/>
-        <circle cx="204.6" cy="21.5" r="0.7" opacity="0.66"/>
-        <circle class="v1__pisca" cx="287.4" cy="72.3" r="0.6" opacity="0.67"/>
-        <circle cx="247.1" cy="67.3" r="0.6" opacity="0.72"/>
-        <circle cx="250.0" cy="149.6" r="0.6" opacity="0.83"/>
-        <circle cx="259.3" cy="146.1" r="0.6" opacity="0.47"/>
-        <circle cx="157.7" cy="144.4" r="0.5" opacity="0.82"/>
-        <circle cx="151.3" cy="41.2" r="1" opacity="0.92"/>
-        <circle cx="143.5" cy="183.9" r="0.7" opacity="0.92"/>
-        <circle cx="117.8" cy="46.3" r="0.6" opacity="0.63"/>
-        <circle cx="109.4" cy="96.7" r="1" opacity="0.85"/>
-        <circle class="v1__pisca" cx="153.6" cy="129.4" r="1.2" opacity="0.4"/>
-        <circle cx="210.1" cy="178.7" r="1.2" opacity="0.8"/>
-        <circle cx="153.1" cy="38.3" r="1.2" opacity="0.55"/>
-        <circle cx="253.9" cy="190.6" r="0.8" opacity="0.63"/>
-        <circle cx="235.9" cy="20.3" r="0.6" opacity="0.45"/>
-        <circle cx="43.6" cy="33.0" r="0.8" opacity="0.83"/>
-        <circle cx="49.6" cy="162.7" r="0.8" opacity="0.74"/>
-        <circle cx="113.3" cy="109.3" r="0.6" opacity="0.36"/>
-        <circle cx="253.4" cy="143.5" r="0.5" opacity="0.67"/>
-        <circle class="v1__pisca" cx="295.3" cy="87.3" r="0.6" opacity="0.85"/>
-        <circle cx="69.8" cy="52.4" r="0.7" opacity="0.65"/>
-        <circle cx="242.3" cy="66.6" r="1" opacity="0.6"/>
-        <circle cx="44.9" cy="178.7" r="0.7" opacity="0.89"/>
-        <circle cx="210.7" cy="160.5" r="1" opacity="0.6"/>
-        <circle cx="290.3" cy="100.3" r="1" opacity="0.44"/>
-        <circle cx="163.3" cy="171.6" r="0.6" opacity="0.72"/>
-                </g>
-                <g class="v1__arco">
-                <path d="M116.01 77.08A44 44 0 0 1 123.87 52.89L143.58 66.59A20 20 0 0 0 140.0 77.58Z"/>
-        <path d="M124.95 51.4A44 44 0 0 1 145.53 36.45L153.42 59.11A20 20 0 0 0 144.07 65.91Z"/>
-        <path d="M147.28 35.88A44 44 0 0 1 172.72 35.88L165.78 58.85A20 20 0 0 0 154.22 58.85Z"/>
-        <path d="M174.47 36.45A44 44 0 0 1 195.05 51.4L175.93 65.91A20 20 0 0 0 166.58 59.11Z"/>
-        <path d="M196.13 52.89A44 44 0 0 1 203.99 77.08L180.0 77.58A20 20 0 0 0 176.42 66.59Z"/>
-                  <circle cx="160" cy="78" r="9" class="v1__botao"/>
-                </g>
-                <text class="v1__marca" x="160" y="130">CAUANZERA</text>
-                <text class="v1__hud" x="14" y="190">00:00:42</text>
-                <g class="v1__term">
-                  <rect x="196" y="146" width="112" height="44" rx="2"/>
-                  <line x1="196" y1="156" x2="308" y2="156"/>
-                  <text x="201" y="153.5">C:\CAUANZERA\PORTFOLIO.EXE</text>
-                  <text x="201" y="168">C:\PORTFOLIO&gt; help</text>
-                  <text x="201" y="180" class="v1__cursor">C:\PORTFOLIO&gt; _</text>
-                </g>
-              </svg>
+            <div class="projeto__quadro">
+              <img class="projeto__img" src="assets/portfolio2.webp" width="1600" height="1000" alt="Primeira tela deste portfólio: o nome Cauanzera sobre um céu de estrelas, com a borda de um planeta embaixo" loading="lazy" decoding="async">
             </div>
           </div>
           <div class="projeto__info">
-            <p class="projeto__meta"><span class="projeto__n">03</span><span>Site · Canvas 2D</span></p>
-            <h3 class="projeto__nome" id="projeto-v1">Portfólio <span class="projeto__versao">v1</span></h3>
-            <p class="projeto__sub">A primeira versão deste site</p>
-            <p class="projeto__desc">Escrita sem framework: campo de estrelas em canvas, menu em <span class="nobr">meio-arco</span>, terminal com segredos, trilha sonora e tema claro e escuro. Muitos efeitos deste site nasceram lá.</p>
+            <p class="projeto__meta"><span class="projeto__n">03</span><span>2026 · Projeto pessoal</span></p>
+            <h3 class="projeto__nome" id="projeto-portfolio">Portfólio 2.0</h3>
+            <p class="projeto__sub">Este site</p>
+            <p class="projeto__desc">Uma página só, em tela cheia: um céu de estrelas em 3D que a rolagem atravessa, com terminal, menu em meio-arco, tema claro e escuro e versão em inglês. Evolução do Portfólio <span class="projeto__versao-inline">v1</span>.</p>
+            <dl class="projeto__detalhes">
+              <div><dt class="rotulo">Destaques</dt><dd>Funciona pelo teclado, sem JavaScript e com “reduzir movimento”; o céu pausa com a aba escondida e economiza bateria com a página parada; um build em Node gera um único HTML.</dd></div>
+            </dl>
             <ul class="projeto__chips" role="list" aria-label="Tecnologias">
-              <li>HTML</li><li>CSS</li><li>JavaScript</li><li>Canvas 2D</li>
+              <li>HTML</li><li>CSS</li><li>JavaScript</li><li>Canvas 2D</li><li>Web Audio</li>
             </ul>
             <div class="projeto__links">
-              <a class="projeto__link" href="https://github.com/cauapbritto/portif-lio" target="_blank" rel="noopener noreferrer" data-cursor="abrir">Código<span class="sr"> do Portfólio v1 (abre em nova aba)</span><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M5 11 11 5M6 5h5v5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+              <a class="projeto__link" href="https://github.com/cauapbritto/Portifolio2.0" target="_blank" rel="noopener noreferrer" data-cursor="abrir">Código<span class="sr"> do Portfólio 2.0 (abre em nova aba)</span><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M5 11 11 5M6 5h5v5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+              <a class="projeto__link" href="https://cauapbritto.github.io/portif-lio/" target="_blank" rel="noopener noreferrer" data-cursor="visitar">Ver o <span class="projeto__versao-inline">v1</span><span class="sr">, a primeira versão do portfólio (abre em nova aba)</span><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M5 11 11 5M6 5h5v5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
             </div>
           </div>
         </article>
@@ -2772,8 +2803,8 @@ html:not(.js) .arco { display: none; }
 
       <li class="projeto projeto--fim" data-revelar>
         <div class="projeto__fim">
-          <p class="rotulo">Em órbita</p>
-          <p class="projeto__fim-titulo">Mais projetos a caminho.</p>
+          <p class="rotulo">Outros repositórios</p>
+          <p class="projeto__fim-titulo">Estudos e experimentos no GitHub.</p>
           <a class="projeto__github" href="https://github.com/cauapbritto" target="_blank" rel="noopener noreferrer" data-cursor="abrir">Ver tudo no GitHub<span class="sr"> (abre em nova aba)</span><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M5 11 11 5M6 5h5v5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         </div>
       </li>
@@ -2790,13 +2821,13 @@ html:not(.js) .arco { display: none; }
   <div class="contato__miolo">
     <h2 class="capitulo" id="contato-t" data-foco><span class="capitulo__n">03</span>Contato</h2>
     <p class="contato__titulo" data-revelar="mascara"><span>Vamos conversar?</span></p>
-    <p class="contato__texto" data-revelar style="--i:1">Quer trocar uma ideia, propor um projeto ou só dizer oi? O <span class="nobr">e-mail</span> é o caminho mais curto.</p>
+    <p class="contato__texto" data-revelar style="--i:1">Estou aberto a oportunidades em <span class="nobr">front-end</span>, em Cuiabá ou remoto. O jeito mais rápido de falar comigo é por <span class="nobr">e-mail</span>; o currículo está logo abaixo.</p>
     <div class="email" data-revelar style="--i:2">
       <p class="email__label rotulo">
         <span class="email__label-text">E-mail</span>
         <span class="email__hint" aria-hidden="true"></span>
       </p>
-      <p class="email__email"><span class="email__user">caua.pbritto</span><wbr><span class="email__domain">@gmail.com</span></p>
+      <p class="email__linha"><a class="email__email" href="mailto:caua.pbritto@gmail.com?subject=Contato%20pelo%20portf%C3%B3lio" data-cursor="escrever"><span class="email__user">caua.pbritto</span><wbr><span class="email__domain">@gmail.com</span></a></p>
       <div class="email__bar">
         <span class="email__magnet">
           <button class="email__btn" type="button" data-cursor="copiar">
@@ -2813,6 +2844,9 @@ html:not(.js) .arco { display: none; }
           </button>
         </span>
         <ul class="email__links" role="list">
+          <li>
+            <a class="email__link" href="assets/Curriculo_Caua_Pedrozo_Brito.pdf" download data-cursor="baixar"><span class="email__link-text">Currículo <span class="email__extra">PDF</span></span><svg class="email__arrow email__arrow--baixo" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path d="M8 3v8.5M4.5 8 8 11.5 11.5 8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          </li>
           <li>
             <a class="email__link" href="https://github.com/cauapbritto" target="_blank" rel="noopener noreferrer"><span class="email__link-text">GitHub</span><svg class="email__arrow" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path d="M4.5 11.5 11.5 4.5M5.5 4.5h6v6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="sr"> (abre em nova aba)</span></a>
           </li>
@@ -4126,8 +4160,10 @@ window.CZ = (() => {
       { opacity: 1, offset: 0.4 },
       { opacity: 1, transform: 'none' },
     ], { duration: 900, delay: 360 + i * 55 }));
-    add(root.querySelector('.inicio__frase'), [{ opacity: 0, transform: 'translateY(12px)' }, { opacity: 1, transform: 'none' }], { duration: 700, delay: 900 });
-    add(root.querySelector('.inicio__descer'), [{ opacity: 0 }, { opacity: 1 }], { duration: 600, delay: 1200 });
+    add(root.querySelector('.inicio__nome'), [{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'none' }], { duration: 700, delay: 420 });
+    add(root.querySelector('.inicio__frase'), [{ opacity: 0, transform: 'translateY(12px)' }, { opacity: 1, transform: 'none' }], { duration: 700, delay: 520 });
+    add(root.querySelector('.inicio__acoes'), [{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'none' }], { duration: 700, delay: 640 });
+    add(root.querySelector('.inicio__descer'), [{ opacity: 0 }, { opacity: 1 }], { duration: 600, delay: 900 });
     add(root.querySelector('.inicio__dica'), [{ opacity: 0 }, { opacity: 1 }], { duration: 600, delay: 1400 });
   }
   if (html.classList.contains('abrindo')) CZ.on('abertura', entrar);
@@ -5035,6 +5071,8 @@ window.CZ = (() => {
     ecoSite: 'https://cauapbritto.github.io/lixo-eletronico/',
     ecoCode: 'https://github.com/cauapbritto/lixo-eletronico',
     v1Code: 'https://github.com/cauapbritto/portif-lio',
+    v2Code: 'https://github.com/cauapbritto/Portifolio2.0',
+    cv: 'assets/Curriculo_Caua_Pedrozo_Brito.pdf',
   };
 
   /* ---------- saída ---------- */
@@ -5361,6 +5399,7 @@ window.CZ = (() => {
     { name: 'sobre', aliases: ['about', 'whoami'], desc: 'quem sou', run: sobre },
     { name: 'projetos', aliases: ['projects', 'ls'], desc: 'o que já construí', run: projetos },
     { name: 'contato', aliases: ['contact', 'email', 'e-mail'], desc: 'e-mail e links', run: contato },
+    { name: 'cv', aliases: ['curriculo', 'resume', 'curriculum'], desc: 'baixa o currículo em PDF', run: cv },
     { name: 'ir', aliases: ['cd', 'go', 'voar'], desc: 'voa até um capítulo: ir projetos', run: ir },
     { name: 'tema', aliases: ['theme'], desc: 'alterna claro e escuro', run: tema },
     { name: 'som', aliases: ['sound', 'audio', 'música'], desc: 'liga ou desliga o som', run: som },
@@ -5405,24 +5444,36 @@ window.CZ = (() => {
       link('site ↗', LINKS.ecoSite, 'EcoPontos: site (abre em nova aba)'),
       link('código ↗', LINKS.ecoCode, 'EcoPontos: código no GitHub (abre em nova aba)'),
     ]), 'indent');
-    print('Portfólio v1', 'strong gap');
-    print('A primeira versão deste site, escrita sem framework.', 'indent');
-    print('HTML, CSS, JavaScript, Canvas 2D', 'muted indent');
+    print('Portfólio 2.0', 'strong gap');
+    print('Este site: um céu 3D que a rolagem atravessa, sem framework. Evolução do v1.', 'indent');
+    print('HTML, CSS, JavaScript, Canvas 2D, Web Audio', 'muted indent');
     print(fill(node('span', 'term__links'), [
-      link('código ↗', LINKS.v1Code, 'Portfólio v1: código no GitHub (abre em nova aba)'),
+      link('código ↗', LINKS.v2Code, 'Portfólio 2.0: código no GitHub (abre em nova aba)'),
+      link('código do v1 ↗', LINKS.v1Code, 'Portfólio v1: código no GitHub (abre em nova aba)'),
     ]), 'indent');
     print([botaoIr('ver os projetos ↘', 'projetos')], 'gap');
   }
   function sobre() {
     print('Cauã Pedrozo Brito', 'strong');
-    print('Desenvolvedor front-end em formação, focado em experiências visuais e interfaces imersivas.');
-    print('Estuda Tecnologia em Análise e Desenvolvimento de Sistemas.', 'muted');
+    print('Desenvolvedor front-end em formação. Aberto a oportunidades em front-end, em Cuiabá, MT, ou remoto.');
+    print('Analista de TI na Casa Civil do Governo de Mato Grosso. Estuda Análise e Desenvolvimento de Sistemas na FASIPE.', 'muted');
     print([botaoIr('ler o capítulo sobre ↘', 'sobre')], 'gap');
   }
   function contato() {
     row('e-mail', link('caua.pbritto@gmail.com', LINKS.email, 'Enviar e-mail para caua.pbritto@gmail.com'));
     row('github', link('cauapbritto ↗', LINKS.github, 'GitHub: cauapbritto (abre em nova aba)'));
     row('linkedin', link('cauã-pedrozo-brito ↗', LINKS.linkedin, 'LinkedIn de Cauã Pedrozo Brito (abre em nova aba)'));
+    row('currículo', baixar('PDF ↓', LINKS.cv, 'Baixar o currículo em PDF'));
+  }
+  function baixar(text, href, label) {
+    const a = node('a', '', text);
+    a.href = href;
+    a.setAttribute('download', '');
+    if (label) a.setAttribute('aria-label', label);
+    return a;
+  }
+  function cv() {
+    print(['currículo de Cauã Pedrozo Brito: ', baixar('baixar PDF ↓', LINKS.cv, 'Baixar o currículo em PDF')]);
   }
   function ir(args) {
     const alvo = SECOES[normalize(args[0] || '')];

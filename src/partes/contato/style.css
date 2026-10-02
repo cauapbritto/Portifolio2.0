@@ -140,10 +140,26 @@
   letter-spacing: -.025em;
   color: var(--text);
   overflow-wrap: break-word;
-  -webkit-user-select: all;
-  user-select: all;
 }
+.email__linha { margin: 0; }
+a.email__email {
+  display: inline-block;
+  color: var(--text);
+  text-decoration: none;
+  border-radius: 4px;
+  background-image: linear-gradient(var(--accent), var(--accent));
+  background-size: 0% 2px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size var(--dur-3) var(--ease-out);
+}
+@media (hover: hover) { a.email__email:hover { background-size: 100% 2px; } }
+a.email__email:focus-visible { background-size: 100% 2px; }
 .email__domain { color: var(--muted); }
+.email__extra { font-family: var(--font-code); font-size: .65em; letter-spacing: .06em; color: var(--muted); }
+.email__link:hover .email__arrow--baixo, .email__link:focus-visible .email__arrow--baixo { transform: translateY(2px); }
+/* Sem JS o botão de copiar não funciona: fica só o link do e-mail. */
+html:not(.js) .email__magnet { display: none; }
 .email__email::selection,
 .email__email ::selection {
   background: var(--accent);

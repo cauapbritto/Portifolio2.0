@@ -21,7 +21,29 @@
   opacity: calc(1 - var(--sai) * 1.4);
 }
 
-.inicio__rotulo { display: inline-flex; align-items: center; gap: 10px; color: var(--text-2); }
+.inicio__rotulo { display: inline-flex; align-items: center; justify-content: center; gap: 10px; max-width: 100%; color: var(--text-2); text-wrap: balance; }
+/* Ponto verde de "disponível", pulsando devagar. */
+.inicio__status {
+  position: relative;
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ok);
+}
+.inicio__status::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1px solid var(--ok);
+  opacity: 0;
+  animation: inicio-status 2.4s var(--ease-out) infinite;
+}
+@keyframes inicio-status {
+  0% { transform: scale(.5); opacity: .8; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
 
 .inicio__marca {
   font-family: var(--font-display);
@@ -44,14 +66,30 @@
   color: var(--text-2);
   text-wrap: balance;
 }
-.inicio__nome { display: block; margin-bottom: 4px; font-family: var(--font-label); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--text); }
+/* O nome real, legível em qualquer modo de fonte (o "Cauanzera" acima é a marca). */
+.inicio__nome {
+  margin-top: calc(clamp(16px, 2.2vw, 26px) * -.55);
+  font-family: var(--font-nome);
+  font-size: clamp(22px, 2.3vw, 34px);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -.01em;
+  color: var(--text);
+}
+.inicio__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 4px;
+}
 
 .inicio__descer {
   display: inline-flex;
   align-items: center;
   gap: 14px;
   min-height: 44px;
-  margin-top: clamp(6px, 2vh, 22px);
+  margin-top: clamp(0px, 1vh, 12px);
   padding: 0 6px;
   border-radius: 4px;
   font-family: var(--font-label);
@@ -144,6 +182,8 @@
 /* Antes da abertura terminar, o conteúdo espera escondido. */
 .abrindo .inicio__rotulo,
 .abrindo .inicio__char,
+.abrindo .inicio__nome,
+.abrindo .inicio__acoes,
 .abrindo .inicio__frase,
 .abrindo .inicio__descer,
 .abrindo .inicio__dica,
@@ -154,14 +194,19 @@
   .inicio__planeta { top: calc(100% - 15vh); width: 420vw; }
   .inicio__dica { display: none; }
 }
+/* Tela baixa: o nome-marca encolhe para caber tudo acima do planeta. */
+@media (max-height: 760px) and (min-width: 641px) {
+  .inicio__marca { font-size: clamp(30px, 7.4vw, 120px); }
+  .inicio { padding-top: 88px; }
+}
 @media (prefers-reduced-motion: reduce) {
+  .inicio__status::after { animation: none; }
   .inicio__trilha span { animation: none; transform: translateY(11px); }
   .inicio__conteudo { transform: none; opacity: 1; }
   .inicio__planeta { transform: translateX(-50%); }
 }
 
 /* Fonte antiga */
-:root:is([data-font="titulos"], [data-font="tudo"]) .inicio__nome { font-size: 13px; letter-spacing: .08em; }
 :root:is([data-font="titulos"], [data-font="tudo"]) .inicio__descer,
 :root:is([data-font="titulos"], [data-font="tudo"]) .inicio__dica { font-size: 12px; letter-spacing: .06em; word-spacing: .15em; }
 :root[data-font="tudo"] .inicio__frase { letter-spacing: .02em; line-height: 1.6; }
