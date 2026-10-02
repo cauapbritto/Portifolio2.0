@@ -65,35 +65,6 @@ main { position: relative; z-index: 2; }
 .capitulo__n::after { word-spacing: normal; }
 .capitulo__n::after { content: " —"; color: var(--muted); }
 
-/* Botão em pílula (início e contato). --forte: o principal, em laranja. */
-.botao {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 44px;
-  padding: 0 20px;
-  border: 1px solid var(--line-2);
-  border-radius: 999px;
-  background: var(--glass);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
-  color: var(--text);
-  font-family: var(--font-head);
-  font-size: 15px;
-  font-weight: 500;
-  text-decoration: none;
-  white-space: nowrap;
-  transition: border-color var(--dur-1) var(--ease-out), background-color var(--dur-1) var(--ease-out), transform var(--dur-1) var(--ease-out);
-}
-.botao__extra { font-family: var(--font-code); font-size: 10px; letter-spacing: .06em; color: var(--muted); }
-.botao--forte { border-color: var(--accent); background: var(--accent); color: var(--accent-ink); }
-.botao--forte .botao__extra { color: inherit; }
-@media (hover: hover) {
-  .botao:hover { border-color: var(--text-2); }
-  .botao--forte:hover { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 86%, var(--text)); }
-}
-.botao:active { transform: translateY(1px); }
-
 /* Revelar ao entrar na tela: o JS liga .is-in. Sem JS ou com movimento reduzido, tudo visível. */
 .js [data-revelar] {
   opacity: 0;
@@ -133,7 +104,6 @@ main { position: relative; z-index: 2; }
 }
 /* Palavras com hífen não quebram no meio: em caixa alta larga, "E-" sozinho no fim da linha lê mal. */
 :root:is([data-font="titulos"], [data-font="tudo"]) .nobr { white-space: nowrap; }
-:root:is([data-font="titulos"], [data-font="tudo"]) .botao { font-size: 14px; font-weight: 400; letter-spacing: .03em; }
 
 /* Modo calmo (Ajustes → Movimento, ou "reduzir movimento" no sistema): nada se mexe sozinho. */
 .calmo *, .calmo *::before, .calmo *::after {
@@ -164,7 +134,7 @@ main { position: relative; z-index: 2; }
   .inicio, .inicio__conteudo { display: block !important; justify-items: start !important; text-align: left !important; }
   .inicio__conteudo { transform: none !important; opacity: 1 !important; }
   .inicio__conteudo > * + * { margin-top: 8px !important; }
-  .inicio__marca { font-size: 31px !important; text-shadow: none; }
+  .inicio__marca { font-size: 31px !important; text-shadow: none !important; }
   .sobre, .projetos { height: auto !important; }
   .sobre__palco, .projetos__palco { position: static !important; overflow: visible !important; }
   .projetos__topo { position: static !important; margin: 0 0 16px !important; }
@@ -174,10 +144,10 @@ main { position: relative; z-index: 2; }
   .projeto__card { transform: none !important; opacity: 1 !important; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr) !important; }
   .projeto__midia { translate: none !important; box-shadow: none !important; }
   .projeto__img, .projeto__quadro svg { translate: none !important; scale: none !important; }
-  .contato__titulo { font-size: 25px !important; text-shadow: none; }
+  .contato__titulo { font-size: 25px !important; text-shadow: none !important; }
   .email__email { font-size: 22px !important; }
   .rodape { padding: 12px 0 0 !important; }
-  .botao, .projeto__chips li { background: #fff !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+  .projeto__chips li { background: #fff !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
   .projeto__links { display: grid !important; gap: 4px !important; }
   .projeto__link { display: block !important; }
   .projeto__link svg { display: none !important; }

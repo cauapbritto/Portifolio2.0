@@ -7,7 +7,7 @@
   const texto = el.querySelector('.cursor__texto');
   const ALVOS = 'a, button, [role="button"], [data-cursor], summary, label';
   // O rótulo vem do data-cursor (em português); em inglês, a palavra equivalente.
-  const EN = { ver: 'view', baixar: 'save', escrever: 'write', abrir: 'open', visitar: 'visit', copiar: 'copy', decolar: 'liftoff', descer: 'scroll', menu: 'menu', ajustes: 'settings' };
+  const EN = { baixar: 'save', escrever: 'write', abrir: 'open', visitar: 'visit', copiar: 'copy', decolar: 'liftoff', descer: 'scroll', menu: 'menu', ajustes: 'settings' };
 
   let ativo = false;
   let x = -100, y = -100, ax = -100, ay = -100;

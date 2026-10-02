@@ -62,6 +62,9 @@
   --vao: 8vw;
 }
 .projetos--trilha .projetos__palco {
+  /* O card vizinho some antes de chegar ao trilho de capítulos, na borda direita. */
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 130px), transparent calc(100% - 50px));
+  mask-image: linear-gradient(to right, #000 calc(100% - 130px), transparent calc(100% - 50px));
   position: sticky;
   top: 0;
   height: 100vh;
@@ -197,11 +200,6 @@
 .projeto__versao { font-family: var(--font-code); font-size: .5em; letter-spacing: 0; color: var(--accent); vertical-align: .55em; }
 .projeto__sub { font-size: clamp(17px, 1.4vw, 20px); font-weight: 500; color: var(--text); }
 .projeto__desc { max-width: 48ch; font-size: 15.5px; line-height: 1.62; color: var(--text-2); text-wrap: pretty; }
-/* Minha parte / Decisões: o que o recrutador procura, em duas linhas fáceis de achar. */
-.projeto__detalhes { display: grid; gap: 10px; margin: 2px 0 0; }
-.projeto__detalhes > div { display: grid; gap: 2px; }
-.projeto__detalhes dt { font-size: 11px; color: var(--accent); }
-.projeto__detalhes dd { margin: 0; font-size: 14px; line-height: 1.55; color: var(--text-2); text-wrap: pretty; }
 .projeto__chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 0; }
 .projeto__chips li {
   padding: 3px 9px;
@@ -313,6 +311,7 @@
 /* Tela muito estreita (zoom de 400%): nomes longos quebram em vez de vazar. */
 @media (max-width: 360px) {
   .projeto__nome { overflow-wrap: anywhere; font-size: clamp(28px, 9vw, 40px); }
+  :root:is([data-font="titulos"], [data-font="tudo"]) .projeto__nome { font-size: clamp(24px, 8.4vw, 40px); }
 }
 
 /* Trilha em tela mais baixa (notebooks de 720–880px): tipografia um pouco mais compacta para cada
@@ -323,8 +322,6 @@
   :root:is([data-font="titulos"], [data-font="tudo"]) .projetos--trilha .projeto__nome { font-size: clamp(34px, 3.9vw, 58px); }
   :root .projetos--trilha .projeto__sub { font-size: 16px; }
   :root .projetos--trilha .projeto__desc { font-size: 14px; line-height: 1.5; }
-  :root .projetos--trilha .projeto__detalhes { gap: 7px; }
-  :root .projetos--trilha .projeto__detalhes dd { font-size: 13.5px; line-height: 1.45; }
   :root .projetos--trilha .projeto__chips { margin-top: 0; }
   :root .projetos--trilha .projeto__links { margin-top: 0; padding-top: 8px; }
 }
