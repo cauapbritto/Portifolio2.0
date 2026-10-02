@@ -275,6 +275,7 @@
   let rafL = 0, visivel = false;
   function loop(now) {
     rafL = 0;
+    if (CZ.reduzido()) return;
     if (now >= proximo) aplicarPasso(now);
     desenhar(now);
     if (visivel && !document.hidden) rafL = requestAnimationFrame(loop);
@@ -287,5 +288,7 @@
     }
   };
   new IntersectionObserver((en) => { visivel = en[en.length - 1].isIntersecting; sync(); }).observe(lib);
+  // Modo calmo ligado depois: a mão para.
+  CZ.on('movimento', (r) => { if (r && rafL) { cancelAnimationFrame(rafL); rafL = 0; } else if (!r) sync(); });
   document.addEventListener('visibilitychange', sync);
 })();

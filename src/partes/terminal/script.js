@@ -13,7 +13,7 @@
   const html = document.documentElement;
   const mqReduce = matchMedia('(prefers-reduced-motion: reduce)');
   const mqLight = matchMedia('(prefers-color-scheme: light)');
-  const reduced = () => mqReduce.matches;
+  const reduced = () => CZ.reduzido();
   const MAX_LINES = 160;
   const LINKS = {
     email: 'mailto:caua.pbritto@gmail.com',
@@ -356,6 +356,7 @@
     { name: 'tema', aliases: ['theme'], desc: 'alterna claro e escuro', run: tema },
     { name: 'som', aliases: ['sound', 'audio', 'música'], desc: 'liga ou desliga o som', run: som },
     { name: 'fonte', aliases: ['font', 'fontes'], desc: 'troca a fonte: fonte titulos, tudo ou nova', run: fonte },
+    { name: 'movimento', aliases: ['motion', 'calmo', 'animacoes'], desc: 'movimento calmo ou normal', run: movimentoCmd },
     { name: 'atalhos', aliases: ['shortcuts', 'teclas'], desc: 'lista os atalhos; atalhos off desliga o /', run: atalhos },
     { name: 'limpar', aliases: ['clear', 'cls'], desc: 'limpa a tela', run: limpar },
     { name: 'sair', aliases: ['exit', 'quit', 'fechar', 'q'], desc: 'fecha o terminal', run: sair },
@@ -460,6 +461,19 @@
     CZ.definirFonte(pedido);
     print(`fonte: ${NOMES_FONTE[pedido]}.`, 'muted');
   }
+  function movimentoCmd(args, palavra) {
+    let pedido = normalize(args[0] || '');
+    if (palavra === 'calmo' && !pedido) pedido = 'calmo';
+    if (pedido === 'calmo' || pedido === 'off' || pedido === 'parar') CZ.definirMovimento('calmo');
+    else if (pedido === 'normal' || pedido === 'on' || pedido === 'ligar') CZ.definirMovimento('normal');
+    else {
+      print(`movimento: ${CZ.movimento()}.`, 'muted');
+      print(['opções: ', node('span', 'term__k', 'movimento calmo'), ' ou ', node('span', 'term__k', 'movimento normal')], 'muted');
+      return;
+    }
+    if (CZ.sistemaReduz && pedido !== 'calmo') print('o sistema pede menos movimento, então o site continua calmo.', 'muted');
+    else print(CZ.movimento() === 'calmo' ? 'movimento calmo: nada se mexe sozinho.' : 'céu em movimento de novo.', 'muted');
+  }
   function atalhos(args) {
     const pedido = normalize(args[0] || '');
     if (pedido === 'off' || pedido === 'desligar') { CZ.store.set('cz-atalhos', 'off'); print('atalho / desligado. o terminal continua no botão do topo.', 'muted'); return; }
@@ -542,7 +556,7 @@
     const cmd = find(word);
     if (rain.running && !(cmd && cmd.name === 'matrix')) stopRain(true);
     if (cmd) {
-      cmd.run(parts.slice(1));
+      cmd.run(parts.slice(1), word);
     } else {
       const s = suggest(word);
       print(`comando não encontrado: ${text.slice(0, 40)}`);

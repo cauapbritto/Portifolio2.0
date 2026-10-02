@@ -64,10 +64,20 @@
   const fonteBox = document.querySelector('.fonte');
   const fonteBtn = fonteBox && fonteBox.querySelector('.fonte__btn');
   const painel = fonteBox && fonteBox.querySelector('.fonte__painel');
-  const opcoes = painel ? Array.from(painel.querySelectorAll('[data-fonte]')) : [];
+  const opcoes = painel ? Array.from(painel.querySelectorAll('[data-fonte], [data-movimento]')) : [];
+  const nota = painel && painel.querySelector('.fonte__nota');
   const syncFonte = () => {
     const f = CZ.fonte();
-    opcoes.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.fonte === f)));
+    const m = CZ.movimento();
+    opcoes.forEach((b) => {
+      if (b.dataset.fonte) b.setAttribute('aria-pressed', String(b.dataset.fonte === f));
+      else {
+        b.setAttribute('aria-pressed', String(b.dataset.movimento === m));
+        // Com "reduzir movimento" no sistema, o modo normal não se aplica.
+        if (b.dataset.movimento === 'normal') b.setAttribute('aria-disabled', String(CZ.sistemaReduz));
+      }
+    });
+    if (nota) nota.hidden = !CZ.sistemaReduz;
   };
   function painelAberto(on, focar) {
     if (!painel) return;
@@ -83,7 +93,11 @@
   const fora = (e) => { if (!(e.target instanceof Element && fonteBox.contains(e.target))) painelAberto(false); };
   if (fonteBox) {
     fonteBtn.addEventListener('click', (e) => painelAberto(painel.hidden, e.detail === 0));
-    opcoes.forEach((b) => b.addEventListener('click', () => CZ.definirFonte(b.dataset.fonte)));
+    opcoes.forEach((b) => b.addEventListener('click', () => {
+      if (b.getAttribute('aria-disabled') === 'true') return;
+      if (b.dataset.fonte) CZ.definirFonte(b.dataset.fonte);
+      else CZ.definirMovimento(b.dataset.movimento);
+    }));
     fonteBox.addEventListener('keydown', (e) => {
       if (painel.hidden) return;
       if (e.key === 'Escape') {
@@ -102,6 +116,7 @@
       if (!painel.hidden && e.relatedTarget && !fonteBox.contains(e.relatedTarget)) painelAberto(false);
     });
     CZ.on('fonte', syncFonte);
+    CZ.on('movimento', syncFonte);
     syncFonte();
   }
 

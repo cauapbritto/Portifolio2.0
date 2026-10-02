@@ -109,3 +109,6 @@
 @media (min-width: 761px) {
   .sobre__miolo { padding-right: 96px; max-width: 1276px; }
 }
+
+.calmo .sobre__w { opacity: 1; transition: none; }
+.calmo .sobre__numero { transform: none; }

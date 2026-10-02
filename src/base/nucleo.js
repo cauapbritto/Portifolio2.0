@@ -28,9 +28,20 @@ window.CZ = (() => {
     get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
     set(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* sem armazenamento: só não lembra */ } },
   };
-  const reduzido = () => mqReduce.matches;
+  // Movimento: o sistema pode pedir menos movimento, e o visitante pode escolher "calmo" em Ajustes.
+  let calmo = store.get('cz-movimento') === 'calmo';
+  const reduzido = () => mqReduce.matches || calmo;
+  const movimento = () => (reduzido() ? 'calmo' : 'normal');
   const mouse = () => mqFine.matches;
-  ouvir(mqReduce, () => emit('movimento', reduzido()));
+  const marcarCalmo = () => html.classList.toggle('calmo', reduzido());
+  function definirMovimento(m) {
+    calmo = m === 'calmo';
+    store.set('cz-movimento', calmo ? 'calmo' : 'normal');
+    marcarCalmo();
+    emit('movimento', reduzido());
+  }
+  marcarCalmo();
+  ouvir(mqReduce, () => { marcarCalmo(); emit('movimento', reduzido()); });
 
   /* ---------- tema ---------- */
 
@@ -233,7 +244,8 @@ window.CZ = (() => {
   return {
     on, emit, store, reduzido, mouse, ouvir,
     tema, definirTema, alternarTema,
-    fonte, definirFonte,
+    fonte, definirFonte, movimento, definirMovimento,
+    get sistemaReduz() { return mqReduce.matches; },
     capitulos, ir, rolarAte, medir, revelar, pronto,
     get atual() { return atual; },
   };

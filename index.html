@@ -49,6 +49,7 @@
     try {
       var t = localStorage.getItem('cz-tema');
       if (t === 'light' || t === 'dark') d.setAttribute('data-theme', t);
+      if (localStorage.getItem('cz-movimento') === 'calmo') d.classList.add('calmo');
       var v = localStorage.getItem('cz-fonte') || localStorage.getItem('g-font');
       if (v === 'titulos' || v === 'tudo' || v === 'nova') f = v;
     } catch (e) {}
@@ -56,18 +57,20 @@
     else d.setAttribute('data-font', f);
   })();
 </script>
-<link rel="preload" href="assets/ZeroHour.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Martian+Mono:wght@400;500&family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="preload" href="assets/fontes/ZeroHour.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fontes/SchibstedGrotesk.woff2" as="font" type="font/woff2" crossorigin>
 <style>
 /* Zero Hour, a fonte do site antigo, em três tamanhos do mesmo arquivo:
    "Zero Hour" no nome Cauanzera, "Zero Hour UI" (86%) em títulos, botões e rótulos e "Zero Hour Texto" (80%)
    no texto corrido, porque ela é toda em maiúsculas e bem mais larga. font-weight 100 900: ela só tem um peso,
    assim o navegador não inventa um negrito falso. Sem o "~" (U+007E), que nela é um traço reto. */
-@font-face { font-family: "Zero Hour"; src: url("assets/ZeroHour.woff2") format("woff2"); font-display: swap; font-weight: 100 900; }
-@font-face { font-family: "Zero Hour UI"; src: url("assets/ZeroHour.woff2") format("woff2"); font-display: swap; size-adjust: 86%; font-weight: 100 900; unicode-range: U+0000-007D, U+007F-10FFFF; }
-@font-face { font-family: "Zero Hour Texto"; src: url("assets/ZeroHour.woff2") format("woff2"); font-display: swap; size-adjust: 80%; font-weight: 100 900; unicode-range: U+0000-007D, U+007F-10FFFF; }
+/* Schibsted Grotesk e Martian Mono servidas pelo próprio site (variáveis, só o conjunto latino; licença OFL):
+   sem esperar outro servidor e sem mandar o IP do visitante para terceiros. */
+@font-face { font-family: "Schibsted Grotesk"; src: url("assets/fontes/SchibstedGrotesk.woff2") format("woff2"); font-display: swap; font-weight: 400 900; font-style: normal; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Martian Mono"; src: url("assets/fontes/MartianMono.woff2") format("woff2"); font-display: swap; font-weight: 100 800; font-style: normal; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Zero Hour"; src: url("assets/fontes/ZeroHour.woff2") format("woff2"); font-display: swap; font-weight: 100 900; }
+@font-face { font-family: "Zero Hour UI"; src: url("assets/fontes/ZeroHour.woff2") format("woff2"); font-display: swap; size-adjust: 86%; font-weight: 100 900; unicode-range: U+0000-007D, U+007F-10FFFF; }
+@font-face { font-family: "Zero Hour Texto"; src: url("assets/fontes/ZeroHour.woff2") format("woff2"); font-display: swap; size-adjust: 80%; font-weight: 100 900; unicode-range: U+0000-007D, U+007F-10FFFF; }
 </style>
 <style>
 /* Tokens do site. Escuro por padrao; claro pelo sistema ou por data-theme="light". */
@@ -196,6 +199,7 @@ body {
   overflow-x: clip;
 }
 img, svg, canvas { display: block; }
+i { font-style: normal; } /* os <i> do site são só enfeite; sem isso o navegador inventaria um itálico */
 a { color: inherit; }
 button { font: inherit; color: inherit; }
 h1, h2, h3, p, ul, ol, dl, dd, figure { margin: 0; }
@@ -304,12 +308,24 @@ main { position: relative; z-index: 2; }
 /* Palavras com hífen não quebram no meio: em caixa alta larga, "E-" sozinho no fim da linha lê mal. */
 :root:is([data-font="titulos"], [data-font="tudo"]) .nobr { white-space: nowrap; }
 :root:is([data-font="titulos"], [data-font="tudo"]) .botao { font-size: 14px; font-weight: 400; letter-spacing: .03em; }
+
+/* Modo calmo (Ajustes → Movimento, ou "reduzir movimento" no sistema): nada se mexe sozinho. */
+.calmo *, .calmo *::before, .calmo *::after {
+  animation-duration: .001ms !important;
+  animation-delay: 0s !important;
+  animation-iteration-count: 1 !important;
+  scroll-behavior: auto !important;
+}
+.calmo .abertura { display: none !important; }
+.calmo [data-revelar], .calmo [data-revelar="mascara"] > span { opacity: 1; transform: none; transition: none; }
 </style>
 <style>/* universo */
 /* Universo: o céu fixo atrás da página inteira. A página rola por cima e a câmera avança pelas estrelas. */
 .uni {
   position: fixed;
-  inset: 0;
+  inset: 0 0 auto;
+  height: 100vh;
+  height: 100lvh; /* a altura maior da tela: a barra do navegador do celular não redimensiona o céu */
   z-index: 0;
   overflow: hidden;
   pointer-events: none;
@@ -446,11 +462,16 @@ main { position: relative; z-index: 2; }
   bottom: calc(var(--hud) + 8px);
   text-align: center;
   font-family: var(--font-label);
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: .12em;
   text-transform: uppercase;
   color: var(--muted);
   transition: opacity 200ms var(--ease-out);
+}
+.abertura__pular-toque { display: none; }
+@media (hover: none), (pointer: coarse) {
+  .abertura__pular-mouse { display: none; }
+  .abertura__pular-toque { display: inline; }
 }
 
 /* Saída: o contador some, a fenda acende e as metades vão para fora. */
@@ -555,7 +576,7 @@ main { position: relative; z-index: 2; }
 
 /* Troca de fonte: um botão "Aa" que abre as três opções, cada uma escrita na própria fonte. */
 .fonte { position: relative; }
-.fonte__btn { justify-content: center; width: 40px; padding: 0; }
+.fonte__btn { justify-content: center; width: 40px; padding: 0; color: var(--text); }
 .fonte__aa { font-family: "Schibsted Grotesk", system-ui, sans-serif; font-size: 15px; font-weight: 500; letter-spacing: 0; text-transform: none; color: var(--text); }
 .fonte__btn[aria-expanded="true"] { border-color: var(--accent); }
 .fonte__painel {
@@ -576,6 +597,11 @@ main { position: relative; z-index: 2; }
 }
 .fonte__painel[hidden] { display: none; }
 @keyframes fonte-abre { from { opacity: 0; transform: translateY(-6px); } }
+.fonte__grupo { display: grid; gap: 4px; }
+.fonte__titulo + .fonte__grupo { margin-bottom: 6px; }
+.fonte__nota { margin: 2px 10px 4px; max-width: 26ch; font-size: 12px; line-height: 1.4; color: var(--muted); }
+.fonte__nota[hidden] { display: none; }
+.fonte__opcao[aria-disabled="true"] { opacity: .45; cursor: default; }
 .fonte__titulo {
   padding: 4px 10px 6px;
   font-family: var(--font-label);
@@ -1043,6 +1069,10 @@ html:not(.js) .hud-base { display: none; }
 :root:is([data-font="titulos"], [data-font="tudo"]) .inicio__descer,
 :root:is([data-font="titulos"], [data-font="tudo"]) .inicio__dica { font-size: 12px; letter-spacing: .06em; word-spacing: .15em; }
 :root[data-font="tudo"] .inicio__frase { letter-spacing: .02em; line-height: 1.6; }
+
+.calmo .inicio__conteudo { transform: none; opacity: 1; }
+.calmo .inicio__planeta { transform: translateX(-50%); }
+.calmo .inicio__dica { opacity: 1; }
 </style>
 <style>/* sobre */
 /* Sobre: um texto grande que acende palavra por palavra enquanto a página rola. */
@@ -1156,6 +1186,9 @@ html:not(.js) .hud-base { display: none; }
 @media (min-width: 761px) {
   .sobre__miolo { padding-right: 96px; max-width: 1276px; }
 }
+
+.calmo .sobre__w { opacity: 1; transition: none; }
+.calmo .sobre__numero { transform: none; }
 </style>
 <style>/* projetos */
 /* Projetos: em tela larga, a rolagem vertical atravessa uma trilha horizontal de projetos.
@@ -2648,7 +2681,7 @@ html:not(.js) .arco { display: none; }
     <span class="abertura__linha"><span class="abertura__barra"></span></span>
     <p class="abertura__fase">ligando o céu</p>
   </div>
-  <p class="abertura__pular">Clique ou aperte uma tecla para pular</p>
+  <p class="abertura__pular"><span class="abertura__pular-mouse">Clique ou aperte uma tecla para pular</span><span class="abertura__pular-toque">Toque para pular</span></p>
 </div>
 <header class="hud">
   <a class="hud__marca" href="#inicio" data-ir="inicio" aria-label="Cauanzera, voltar ao início"><span class="quadrado" aria-hidden="true"></span><span aria-hidden="true">Cauanzera</span></a>
@@ -2658,14 +2691,22 @@ html:not(.js) .arco { display: none; }
       <span>Currículo</span>
     </a>
     <div class="fonte">
-      <button class="hud__btn fonte__btn" type="button" aria-expanded="false" aria-controls="fonte-painel" data-cursor="fonte">
-        <span class="fonte__aa" aria-hidden="true">Aa</span><span class="sr">Fonte</span>
+      <button class="hud__btn fonte__btn" type="button" aria-expanded="false" aria-controls="fonte-painel" aria-label="Ajustes: fonte e movimento" data-cursor="ajustes">
+        <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true" focusable="false"><path d="M2.5 4.5h6M11.5 4.5h2M2.5 11.5h2M7.5 11.5h6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="4.5" r="1.6" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="6" cy="11.5" r="1.6" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
       </button>
-      <div class="fonte__painel" id="fonte-painel" role="group" aria-labelledby="fonte-titulo" hidden>
+      <div class="fonte__painel" id="fonte-painel" role="group" aria-label="Ajustes" hidden>
         <p class="fonte__titulo" id="fonte-titulo">Fonte</p>
-        <button class="fonte__opcao fonte__opcao--zh" type="button" data-fonte="titulos" aria-pressed="false">Antiga nos títulos</button>
-        <button class="fonte__opcao fonte__opcao--zh" type="button" data-fonte="tudo" aria-pressed="false">Antiga em tudo</button>
-        <button class="fonte__opcao fonte__opcao--nova" type="button" data-fonte="nova" aria-pressed="false">Nova</button>
+        <div class="fonte__grupo" role="group" aria-labelledby="fonte-titulo">
+          <button class="fonte__opcao fonte__opcao--zh" type="button" data-fonte="titulos" aria-pressed="false">Antiga nos títulos</button>
+          <button class="fonte__opcao fonte__opcao--zh" type="button" data-fonte="tudo" aria-pressed="false">Antiga em tudo</button>
+          <button class="fonte__opcao fonte__opcao--nova" type="button" data-fonte="nova" aria-pressed="false">Nova</button>
+        </div>
+        <p class="fonte__titulo" id="movimento-titulo">Movimento</p>
+        <div class="fonte__grupo" role="group" aria-labelledby="movimento-titulo">
+          <button class="fonte__opcao fonte__opcao--nova" type="button" data-movimento="normal" aria-pressed="false">Céu em movimento</button>
+          <button class="fonte__opcao fonte__opcao--nova" type="button" data-movimento="calmo" aria-pressed="false">Calmo, sem animações</button>
+        </div>
+        <p class="fonte__nota" hidden>Seu sistema pede menos movimento, então o site fica calmo.</p>
       </div>
     </div>
     <button class="hud__btn" type="button" data-terminal aria-haspopup="dialog" aria-controls="terminal" aria-label="Terminal">
@@ -3103,9 +3144,20 @@ window.CZ = (() => {
     get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
     set(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* sem armazenamento: só não lembra */ } },
   };
-  const reduzido = () => mqReduce.matches;
+  // Movimento: o sistema pode pedir menos movimento, e o visitante pode escolher "calmo" em Ajustes.
+  let calmo = store.get('cz-movimento') === 'calmo';
+  const reduzido = () => mqReduce.matches || calmo;
+  const movimento = () => (reduzido() ? 'calmo' : 'normal');
   const mouse = () => mqFine.matches;
-  ouvir(mqReduce, () => emit('movimento', reduzido()));
+  const marcarCalmo = () => html.classList.toggle('calmo', reduzido());
+  function definirMovimento(m) {
+    calmo = m === 'calmo';
+    store.set('cz-movimento', calmo ? 'calmo' : 'normal');
+    marcarCalmo();
+    emit('movimento', reduzido());
+  }
+  marcarCalmo();
+  ouvir(mqReduce, () => { marcarCalmo(); emit('movimento', reduzido()); });
 
   /* ---------- tema ---------- */
 
@@ -3308,7 +3360,8 @@ window.CZ = (() => {
   return {
     on, emit, store, reduzido, mouse, ouvir,
     tema, definirTema, alternarTema,
-    fonte, definirFonte,
+    fonte, definirFonte, movimento, definirMovimento,
+    get sistemaReduz() { return mqReduce.matches; },
     capitulos, ir, rolarAte, medir, revelar, pronto,
     get atual() { return atual; },
   };
@@ -3377,6 +3430,9 @@ window.CZ = (() => {
   const edges = new Map();
   let reduced = CZ.reduzido();
   let lastP = -1;
+  let maxRolagem = 1;                // altura rolável, vinda do núcleo (sem ler o layout a cada quadro)
+  let ultimaAtividade = 0;           // último movimento de rolagem, ponteiro ou hiperespaço
+  let ultimoQuadro = 0;
 
   /* ---------- Cores ---------- */
   let starFill = 'rgb(236,234,228)', glowStroke = 'rgb(255,122,69)', isLight = false, sprite = null;
@@ -3410,10 +3466,16 @@ window.CZ = (() => {
   }
 
   /* ---------- Tamanho ---------- */
+  const toque = matchMedia('(pointer: coarse)');
   function resize() {
-    w = Math.max(1, html.clientWidth || innerWidth);
-    h = Math.max(1, innerHeight);
-    const nextDpr = Math.min(2, window.devicePixelRatio || 1);
+    // A altura vem do próprio céu (100lvh no CSS): no celular, a barra do navegador aparecer ou sumir
+    // não muda nada e o canvas não é recriado.
+    const nw = Math.max(1, html.clientWidth || innerWidth);
+    const nh = Math.max(1, root.clientHeight || innerHeight);
+    const nextDpr = Math.min(toque.matches ? 1.5 : 2, window.devicePixelRatio || 1);
+    if (nw === w && nh === h && nextDpr === dpr && sprite) return;
+    w = nw;
+    h = nh;
     const dprChanged = nextDpr !== dpr;
     dpr = nextDpr;
     canvas.width = Math.round(w * dpr);
@@ -3484,8 +3546,7 @@ window.CZ = (() => {
 
     // nebulosa acompanha o avanço da página
     if (nebulosa && !reduced) {
-      const max = Math.max(1, html.scrollHeight - innerHeight);
-      const p = Math.round((scrollY / max) * 1000) / 1000;
+      const p = Math.round(Math.min(1, scrollY / maxRolagem) * 1000) / 1000;
       if (p !== lastP) { lastP = p; nebulosa.style.setProperty('--uni-p', String(p)); }
     }
     CZ.emit('velocidade', vz);
@@ -3670,6 +3731,11 @@ window.CZ = (() => {
   function tick(now) {
     raf = 0;
     if (!running) return;
+    // Economia: parado há 3 s, o céu desenha a 24 quadros por segundo; no celular, no máximo 30.
+    const ocioso = now - ultimaAtividade > 3000 && !boostFn && surge >= 1 && Math.abs(vz - DRIFT) < 4;
+    const intervalo = ocioso ? 1000 / 24 : (toque.matches ? 1000 / 30 : 0);
+    if (intervalo && now - ultimoQuadro < intervalo - 2) { raf = requestAnimationFrame(tick); return; }
+    ultimoQuadro = now;
     const dt = Math.min(0.05, Math.max(0.001, (now - last) / 1000));
     last = now; lastDt = dt;
     if (surge < 1 && surgeStart >= 0) surge = Math.min(1, (now - surgeStart) / SURGE_MS);
@@ -3718,13 +3784,13 @@ window.CZ = (() => {
     };
   }
   // Abertura: as estrelas chegam do centro, como quem sai do hiperespaço.
-  const SURGE_MS = 1500;
+  const SURGE_MS = 1200;
   let surgeStart = -1;
   CZ.on('abertura', () => {
     if (reduced) { surge = 1; return; }
     surge = 0;
     surgeStart = performance.now();
-    hyperspace(5200, 0, 120, 1700);
+    hyperspace(5200, 0, 100, 1400);
   });
   CZ.on('warp', () => hyperspace(4200, 520, 900, 1600));
 
@@ -3732,7 +3798,11 @@ window.CZ = (() => {
   if (!html.classList.contains('js') || reduced || !document.querySelector('.abertura')) surge = 1;
 
   /* ---------- Eventos ---------- */
+  const acordar = () => { ultimaAtividade = performance.now(); };
+  CZ.on('rolagem', ({ max }) => { maxRolagem = Math.max(1, max); acordar(); });
+  CZ.on('warp', acordar);
   function onPointer(e) {
+    acordar();
     ptr.x = e.clientX; ptr.y = e.clientY; ptr.has = true;
     if (e.pointerType === 'touch') { if (e.type === 'pointerdown') ptr.touch = true; }
     else ptr.inside = true;
@@ -3974,17 +4044,18 @@ window.CZ = (() => {
   const num = el.querySelector('.abertura__num');
   const barra = el.querySelector('.abertura__barra');
   const fase = el.querySelector('.abertura__fase');
-  const FASES = [[0, 'ligando o céu'], [0.38, 'calibrando estrelas'], [0.74, 'abrindo caminho']];
+  const FASES = [[0, 'ligando o céu'], [0.45, 'abrindo caminho']];
 
-  // Na segunda visita da sessão a abertura é bem mais curta.
+  // Quem voltou em até 7 dias vê a abertura curta.
+  const SEMANA = 7 * 24 * 3600 * 1000;
   let visto = false;
-  try { visto = sessionStorage.getItem('cz-visto') === '1'; } catch (e) { /* sem sessão: abertura completa */ }
-  const DUR = visto ? 600 : 1650;
+  try { visto = Date.now() - Number(localStorage.getItem('cz-visto') || 0) < SEMANA; } catch (e) { /* sem armazenamento: abertura completa */ }
+  const DUR = visto ? 420 : 900;
 
-  // Espera a fonte do nome (no máximo 2,5 s) para as letras do início não trocarem no meio da entrada.
-  let fontesOk = !document.fonts;
-  if (document.fonts) {
-    Promise.race([document.fonts.ready, new Promise((r) => setTimeout(r, 2500))]).then(() => { fontesOk = true; });
+  // Espera só a fonte do nome (pré-carregada, 10 KB), no máximo 0,8 s, para as letras não trocarem no meio.
+  let fontesOk = !(document.fonts && document.fonts.load);
+  if (!fontesOk) {
+    Promise.race([document.fonts.load('1em "Zero Hour"').catch(() => {}), new Promise((r) => setTimeout(r, 800))]).then(() => { fontesOk = true; });
   }
 
   html.classList.add('abrindo');
@@ -4013,7 +4084,7 @@ window.CZ = (() => {
     num.textContent = '100';
     barra.style.transform = 'scaleX(1)';
     el.classList.add('is-saindo');
-    try { sessionStorage.setItem('cz-visto', '1'); } catch (e) { /* tudo bem */ }
+    try { localStorage.setItem('cz-visto', String(Date.now())); } catch (e) { /* tudo bem */ }
     ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach((t) => removeEventListener(t, pular, true));
     // As estrelas chegam quando as metades começam a se abrir.
     setTimeout(() => {
@@ -4095,10 +4166,20 @@ window.CZ = (() => {
   const fonteBox = document.querySelector('.fonte');
   const fonteBtn = fonteBox && fonteBox.querySelector('.fonte__btn');
   const painel = fonteBox && fonteBox.querySelector('.fonte__painel');
-  const opcoes = painel ? Array.from(painel.querySelectorAll('[data-fonte]')) : [];
+  const opcoes = painel ? Array.from(painel.querySelectorAll('[data-fonte], [data-movimento]')) : [];
+  const nota = painel && painel.querySelector('.fonte__nota');
   const syncFonte = () => {
     const f = CZ.fonte();
-    opcoes.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.fonte === f)));
+    const m = CZ.movimento();
+    opcoes.forEach((b) => {
+      if (b.dataset.fonte) b.setAttribute('aria-pressed', String(b.dataset.fonte === f));
+      else {
+        b.setAttribute('aria-pressed', String(b.dataset.movimento === m));
+        // Com "reduzir movimento" no sistema, o modo normal não se aplica.
+        if (b.dataset.movimento === 'normal') b.setAttribute('aria-disabled', String(CZ.sistemaReduz));
+      }
+    });
+    if (nota) nota.hidden = !CZ.sistemaReduz;
   };
   function painelAberto(on, focar) {
     if (!painel) return;
@@ -4114,7 +4195,11 @@ window.CZ = (() => {
   const fora = (e) => { if (!(e.target instanceof Element && fonteBox.contains(e.target))) painelAberto(false); };
   if (fonteBox) {
     fonteBtn.addEventListener('click', (e) => painelAberto(painel.hidden, e.detail === 0));
-    opcoes.forEach((b) => b.addEventListener('click', () => CZ.definirFonte(b.dataset.fonte)));
+    opcoes.forEach((b) => b.addEventListener('click', () => {
+      if (b.getAttribute('aria-disabled') === 'true') return;
+      if (b.dataset.fonte) CZ.definirFonte(b.dataset.fonte);
+      else CZ.definirMovimento(b.dataset.movimento);
+    }));
     fonteBox.addEventListener('keydown', (e) => {
       if (painel.hidden) return;
       if (e.key === 'Escape') {
@@ -4133,6 +4218,7 @@ window.CZ = (() => {
       if (!painel.hidden && e.relatedTarget && !fonteBox.contains(e.relatedTarget)) painelAberto(false);
     });
     CZ.on('fonte', syncFonte);
+    CZ.on('movimento', syncFonte);
     syncFonte();
   }
 
@@ -4640,6 +4726,7 @@ window.CZ = (() => {
   let rafL = 0, visivel = false;
   function loop(now) {
     rafL = 0;
+    if (CZ.reduzido()) return;
     if (now >= proximo) aplicarPasso(now);
     desenhar(now);
     if (visivel && !document.hidden) rafL = requestAnimationFrame(loop);
@@ -4652,6 +4739,8 @@ window.CZ = (() => {
     }
   };
   new IntersectionObserver((en) => { visivel = en[en.length - 1].isIntersecting; sync(); }).observe(lib);
+  // Modo calmo ligado depois: a mão para.
+  CZ.on('movimento', (r) => { if (r && rafL) { cancelAnimationFrame(rafL); rafL = 0; } else if (!r) sync(); });
   document.addEventListener('visibilitychange', sync);
 })();
 </script>
@@ -4903,7 +4992,7 @@ window.CZ = (() => {
   }
 
   function update() {
-    enabled = mqFine.matches && !mqReduce.matches;
+    enabled = mqFine.matches && !CZ.reduzido();
     const active = enabled && inView && pageVisible;
     listen(active);
     if (!active) reset();
@@ -4935,6 +5024,7 @@ window.CZ = (() => {
     else if (mq.addListener) mq.addListener(onMq);
   });
 
+  CZ.on('movimento', update);
   update();
 })();
 </script>
@@ -5215,7 +5305,7 @@ window.CZ = (() => {
   const html = document.documentElement;
   const mqReduce = matchMedia('(prefers-reduced-motion: reduce)');
   const mqLight = matchMedia('(prefers-color-scheme: light)');
-  const reduced = () => mqReduce.matches;
+  const reduced = () => CZ.reduzido();
   const MAX_LINES = 160;
   const LINKS = {
     email: 'mailto:caua.pbritto@gmail.com',
@@ -5558,6 +5648,7 @@ window.CZ = (() => {
     { name: 'tema', aliases: ['theme'], desc: 'alterna claro e escuro', run: tema },
     { name: 'som', aliases: ['sound', 'audio', 'música'], desc: 'liga ou desliga o som', run: som },
     { name: 'fonte', aliases: ['font', 'fontes'], desc: 'troca a fonte: fonte titulos, tudo ou nova', run: fonte },
+    { name: 'movimento', aliases: ['motion', 'calmo', 'animacoes'], desc: 'movimento calmo ou normal', run: movimentoCmd },
     { name: 'atalhos', aliases: ['shortcuts', 'teclas'], desc: 'lista os atalhos; atalhos off desliga o /', run: atalhos },
     { name: 'limpar', aliases: ['clear', 'cls'], desc: 'limpa a tela', run: limpar },
     { name: 'sair', aliases: ['exit', 'quit', 'fechar', 'q'], desc: 'fecha o terminal', run: sair },
@@ -5662,6 +5753,19 @@ window.CZ = (() => {
     CZ.definirFonte(pedido);
     print(`fonte: ${NOMES_FONTE[pedido]}.`, 'muted');
   }
+  function movimentoCmd(args, palavra) {
+    let pedido = normalize(args[0] || '');
+    if (palavra === 'calmo' && !pedido) pedido = 'calmo';
+    if (pedido === 'calmo' || pedido === 'off' || pedido === 'parar') CZ.definirMovimento('calmo');
+    else if (pedido === 'normal' || pedido === 'on' || pedido === 'ligar') CZ.definirMovimento('normal');
+    else {
+      print(`movimento: ${CZ.movimento()}.`, 'muted');
+      print(['opções: ', node('span', 'term__k', 'movimento calmo'), ' ou ', node('span', 'term__k', 'movimento normal')], 'muted');
+      return;
+    }
+    if (CZ.sistemaReduz && pedido !== 'calmo') print('o sistema pede menos movimento, então o site continua calmo.', 'muted');
+    else print(CZ.movimento() === 'calmo' ? 'movimento calmo: nada se mexe sozinho.' : 'céu em movimento de novo.', 'muted');
+  }
   function atalhos(args) {
     const pedido = normalize(args[0] || '');
     if (pedido === 'off' || pedido === 'desligar') { CZ.store.set('cz-atalhos', 'off'); print('atalho / desligado. o terminal continua no botão do topo.', 'muted'); return; }
@@ -5744,7 +5848,7 @@ window.CZ = (() => {
     const cmd = find(word);
     if (rain.running && !(cmd && cmd.name === 'matrix')) stopRain(true);
     if (cmd) {
-      cmd.run(parts.slice(1));
+      cmd.run(parts.slice(1), word);
     } else {
       const s = suggest(word);
       print(`comando não encontrado: ${text.slice(0, 40)}`);

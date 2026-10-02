@@ -21,6 +21,7 @@ body {
   overflow-x: clip;
 }
 img, svg, canvas { display: block; }
+i { font-style: normal; } /* os <i> do site são só enfeite; sem isso o navegador inventaria um itálico */
 a { color: inherit; }
 button { font: inherit; color: inherit; }
 h1, h2, h3, p, ul, ol, dl, dd, figure { margin: 0; }
@@ -129,3 +130,13 @@ main { position: relative; z-index: 2; }
 /* Palavras com hífen não quebram no meio: em caixa alta larga, "E-" sozinho no fim da linha lê mal. */
 :root:is([data-font="titulos"], [data-font="tudo"]) .nobr { white-space: nowrap; }
 :root:is([data-font="titulos"], [data-font="tudo"]) .botao { font-size: 14px; font-weight: 400; letter-spacing: .03em; }
+
+/* Modo calmo (Ajustes → Movimento, ou "reduzir movimento" no sistema): nada se mexe sozinho. */
+.calmo *, .calmo *::before, .calmo *::after {
+  animation-duration: .001ms !important;
+  animation-delay: 0s !important;
+  animation-iteration-count: 1 !important;
+  scroll-behavior: auto !important;
+}
+.calmo .abertura { display: none !important; }
+.calmo [data-revelar], .calmo [data-revelar="mascara"] > span { opacity: 1; transform: none; transition: none; }

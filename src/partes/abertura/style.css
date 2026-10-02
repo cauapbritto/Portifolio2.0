@@ -89,11 +89,16 @@
   bottom: calc(var(--hud) + 8px);
   text-align: center;
   font-family: var(--font-label);
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: .12em;
   text-transform: uppercase;
   color: var(--muted);
   transition: opacity 200ms var(--ease-out);
+}
+.abertura__pular-toque { display: none; }
+@media (hover: none), (pointer: coarse) {
+  .abertura__pular-mouse { display: none; }
+  .abertura__pular-toque { display: inline; }
 }
 
 /* Saída: o contador some, a fenda acende e as metades vão para fora. */

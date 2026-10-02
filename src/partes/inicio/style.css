@@ -210,3 +210,7 @@
 :root:is([data-font="titulos"], [data-font="tudo"]) .inicio__descer,
 :root:is([data-font="titulos"], [data-font="tudo"]) .inicio__dica { font-size: 12px; letter-spacing: .06em; word-spacing: .15em; }
 :root[data-font="tudo"] .inicio__frase { letter-spacing: .02em; line-height: 1.6; }
+
+.calmo .inicio__conteudo { transform: none; opacity: 1; }
+.calmo .inicio__planeta { transform: translateX(-50%); }
+.calmo .inicio__dica { opacity: 1; }

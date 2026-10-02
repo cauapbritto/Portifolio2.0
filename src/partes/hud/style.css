@@ -76,7 +76,7 @@
 
 /* Troca de fonte: um botão "Aa" que abre as três opções, cada uma escrita na própria fonte. */
 .fonte { position: relative; }
-.fonte__btn { justify-content: center; width: 40px; padding: 0; }
+.fonte__btn { justify-content: center; width: 40px; padding: 0; color: var(--text); }
 .fonte__aa { font-family: "Schibsted Grotesk", system-ui, sans-serif; font-size: 15px; font-weight: 500; letter-spacing: 0; text-transform: none; color: var(--text); }
 .fonte__btn[aria-expanded="true"] { border-color: var(--accent); }
 .fonte__painel {
@@ -97,6 +97,11 @@
 }
 .fonte__painel[hidden] { display: none; }
 @keyframes fonte-abre { from { opacity: 0; transform: translateY(-6px); } }
+.fonte__grupo { display: grid; gap: 4px; }
+.fonte__titulo + .fonte__grupo { margin-bottom: 6px; }
+.fonte__nota { margin: 2px 10px 4px; max-width: 26ch; font-size: 12px; line-height: 1.4; color: var(--muted); }
+.fonte__nota[hidden] { display: none; }
+.fonte__opcao[aria-disabled="true"] { opacity: .45; cursor: default; }
 .fonte__titulo {
   padding: 4px 10px 6px;
   font-family: var(--font-label);

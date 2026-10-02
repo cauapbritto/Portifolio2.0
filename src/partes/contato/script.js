@@ -245,7 +245,7 @@
   }
 
   function update() {
-    enabled = mqFine.matches && !mqReduce.matches;
+    enabled = mqFine.matches && !CZ.reduzido();
     const active = enabled && inView && pageVisible;
     listen(active);
     if (!active) reset();
@@ -277,5 +277,6 @@
     else if (mq.addListener) mq.addListener(onMq);
   });
 
+  CZ.on('movimento', update);
   update();
 })();
