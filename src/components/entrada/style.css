@@ -40,7 +40,7 @@
   border-radius: var(--radius);
   background: none;
   color: var(--muted);
-  font: 500 14px/1 var(--font-sans);
+  font: 500 14px/1 var(--font-head);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   transition: color var(--dur-1) var(--ease-out), border-color var(--dur-1) var(--ease-out), background-color var(--dur-1) var(--ease-out);
@@ -60,6 +60,7 @@
 /* Título: o texto sobe de trás de uma linha com overflow escondido */
 .fx-entrada__title {
   margin: 0;
+  font-family: var(--font-head);
   font-size: clamp(44px, 7vw, 84px);
   font-weight: 600;
   line-height: 1;
@@ -96,6 +97,7 @@
 .fx-entrada__text {
   margin: 0;
   max-width: 34ch;
+  font-family: var(--font-text);
   font-size: clamp(19px, 1.9vw, 23px);
   line-height: 1.45;
   letter-spacing: -.01em;
@@ -130,6 +132,7 @@
 .fx-entrada__row dt { margin: 0; }
 .fx-entrada__row dd {
   margin: 0;
+  font-family: var(--font-text);
   font-size: 16px;
   line-height: 1.5;
   color: var(--text);
@@ -150,7 +153,7 @@
   border-radius: 4px;
   background: var(--surface);
   color: var(--text-2);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 12px;
   line-height: 1.5;
   white-space: nowrap;
@@ -212,6 +215,82 @@
   .fx-entrada__grid { grid-template-columns: minmax(0, 1fr); }
   .fx-entrada__text { max-width: none; }
   .fx-entrada__row { grid-template-columns: 104px minmax(0, 1fr); }
+}
+
+/* Fonte antiga (Zero Hour), nos modos "titulos" e "tudo". Ela é toda em maiúsculas e ~1,75x mais larga:
+   rótulos com pouco espaço entre letras, título um pouco menor e coluna de rótulos mais larga
+   ("Ferramentas" não cabia em 112px). */
+:root:is([data-font="titulos"], [data-font="tudo"]) .fx-entrada__kicker {
+  font-size: 13px;
+  letter-spacing: .03em;
+  word-spacing: .15em;
+}
+:root:is([data-font="titulos"], [data-font="tudo"]) .fx-entrada__replay {
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: .03em;
+  word-spacing: .15em;
+}
+:root:is([data-font="titulos"], [data-font="tudo"]) .fx-entrada__title {
+  font-size: clamp(40px, 6.4vw, 76px);
+  font-weight: 400;
+  letter-spacing: .01em;
+}
+:root:is([data-font="titulos"], [data-font="tudo"]) .fx-entrada__row { grid-template-columns: 132px minmax(0, 1fr); }
+:root:is([data-font="titulos"], [data-font="tudo"]) .fx-entrada__row dt,
+:root:is([data-font="titulos"], [data-font="tudo"]) .fx-entrada__chip { letter-spacing: .02em; }
+/* Chips com a mesma medida dos cards de projeto na Zero Hour (22px: as maiúsculas dela são menores). */
+:root:is([data-font="titulos"], [data-font="tudo"]) .fx-entrada__chip { padding: 2px 8px; line-height: 16px; }
+/* "tudo": texto corrido todo em maiúsculas pede corpo menor, mais entrelinha e um pouco de ar. */
+:root[data-font="tudo"] .fx-entrada__text {
+  font-size: clamp(17px, 1.7vw, 21px);
+  line-height: 1.65;
+  letter-spacing: .02em;
+  word-spacing: .1em;
+}
+:root[data-font="tudo"] .fx-entrada__row dd {
+  font-size: 15px;
+  line-height: 1.65;
+  letter-spacing: .02em;
+  word-spacing: .1em;
+}
+/* Com a Zero Hour a coluna de fatos fica estreita demais ao lado do texto antes de 960px
+   ("Ferramentas" + valor em 4 linhas): empilha mais cedo, como a versão de celular. */
+@media (max-width: 960px) {
+  :root:is([data-font="titulos"], [data-font="tudo"]) .fx-entrada__grid { grid-template-columns: minmax(0, 1fr); }
+  :root:is([data-font="titulos"], [data-font="tudo"]) .fx-entrada__text { max-width: none; }
+}
+@media (max-width: 720px) {
+  :root:is([data-font="titulos"], [data-font="tudo"]) .fx-entrada__row {
+    grid-template-columns: 128px minmax(0, 1fr);
+    column-gap: 12px;
+  }
+}
+/* Celular: rótulo e botão de rever só cabem lado a lado com 11px e espaços mais curtos (a partir de
+   375px). Se ainda faltar espaço, o botão desce inteiro e fica à direita em vez de quebrar o texto. */
+@media (max-width: 480px) {
+  :root:is([data-font="titulos"], [data-font="tudo"]) .fx-entrada__top {
+    flex-wrap: wrap;
+    gap: 4px 8px;
+  }
+  :root:is([data-font="titulos"], [data-font="tudo"]) .fx-entrada__kicker,
+  :root:is([data-font="titulos"], [data-font="tudo"]) .fx-entrada__replay {
+    font-size: 11px;
+    letter-spacing: .02em;
+    word-spacing: normal;
+    white-space: nowrap;
+  }
+  :root:is([data-font="titulos"], [data-font="tudo"]) .fx-entrada__kicker { gap: 8px; }
+  :root:is([data-font="titulos"], [data-font="tudo"]) .fx-entrada__replay {
+    gap: 6px;
+    margin: 0 -8px 0 auto;
+    padding: 0 8px;
+  }
+  /* "tudo": valores em Zero Hour ficam estreitos ao lado do rótulo; o rótulo sobe para cima do valor. */
+  :root[data-font="tudo"] .fx-entrada__row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+  }
 }
 
 /* Movimento reduzido: nada se mexe. Sem JS ou ao carregar, tudo já aparece;

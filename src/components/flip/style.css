@@ -117,7 +117,7 @@
 .fx-flip__tag,
 .fx-flip__label {
   margin: 0;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 12px;
   line-height: 1.5;
   letter-spacing: .06em;
@@ -127,6 +127,7 @@
 
 .fx-flip__name {
   margin: 6px 0 0;
+  font-family: var(--font-head);
   font-size: 22px;
   font-weight: 600;
   line-height: 1.2;
@@ -152,6 +153,7 @@
 .fx-flip__text {
   margin: 6px 0 0;
   color: var(--text-2);
+  font-family: var(--font-text);
   font-size: 16px;
   line-height: 1.55;
   text-wrap: pretty;
@@ -170,7 +172,7 @@
   padding: 3px 8px;
   border: 1px solid var(--line);
   border-radius: 4px;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 12px;
   line-height: 1.5;
   color: var(--text-2);
@@ -193,7 +195,7 @@
   min-height: 44px;
   padding: 0 8px;
   border-radius: 4px;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 12px;
   letter-spacing: .06em;
   text-transform: uppercase;
@@ -223,7 +225,7 @@
   border-radius: 8px;
   background: transparent;
   color: var(--text);
-  font: 500 12px/1 var(--font-mono);
+  font: 500 12px/1 var(--font-label);
   letter-spacing: .06em;
   text-transform: uppercase;
   cursor: pointer;
@@ -276,7 +278,7 @@
 .fx-flip__hint {
   margin: 0;
   text-wrap: balance;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 12px;
   line-height: 1.6;
   color: var(--muted);
@@ -382,6 +384,80 @@
   }
 }
 
+/* Fonte antiga (Zero Hour): modos "titulos" e "tudo". No modo novo nada daqui se aplica.
+   A Zero Hour tem um peso so e ja e larga: nome sem negrito sintetico e sem tracking negativo,
+   rotulos e botoes com bem menos espacamento entre letras. */
+:root[data-font="titulos"] .fx-flip__name,
+:root[data-font="tudo"] .fx-flip__name {
+  font-weight: 400;
+  letter-spacing: .01em;
+}
+:root[data-font="titulos"] .fx-flip__tag,
+:root[data-font="tudo"] .fx-flip__tag,
+:root[data-font="titulos"] .fx-flip__label,
+:root[data-font="tudo"] .fx-flip__label,
+:root[data-font="titulos"] .fx-flip__link,
+:root[data-font="tudo"] .fx-flip__link,
+:root[data-font="titulos"] .fx-flip__chips li,
+:root[data-font="tudo"] .fx-flip__chips li,
+:root[data-font="titulos"] .fx-flip__hint,
+:root[data-font="tudo"] .fx-flip__hint {
+  letter-spacing: .02em;
+}
+:root[data-font="titulos"] .fx-flip__btn,
+:root[data-font="tudo"] .fx-flip__btn {
+  font-weight: 400;
+  letter-spacing: .02em;
+}
+/* Na Zero Hour o "1" e o "I" sao o mesmo traco ("v1" leria "VI"). Uma bandeirinha no topo,
+   com a espessura e a altura de maiuscula da propria fonte (Zero Hour UI = 86%), devolve o 1.
+   E fundo do proprio span: nada posicionado, nada a mais para pintar. */
+:root[data-font="titulos"] .fx-flip__one,
+:root[data-font="tudo"] .fx-flip__one {
+  margin-left: .075em;
+  padding-left: .15em;
+  background: linear-gradient(currentColor, currentColor) 0 calc((.968 - .749) * .86em) / .21em calc(.118 * .86em) no-repeat;
+}
+/* Os chips quebram em duas linhas (a Zero Hour e mais larga) e o verso ficaria mais alto que a capa,
+   abrindo um buraco na capa entre o nome e o botao. O verso usa o ritmo apertado do card estreito,
+   chips mais baixos (as maiusculas da Zero Hour sao menores, o respiro continua o mesmo)
+   e, com mouse, links de 36px como no card de projeto. */
+:root[data-font="titulos"] .fx-flip__back,
+:root[data-font="tudo"] .fx-flip__back {
+  padding-top: 18px;
+}
+:root[data-font="titulos"] .fx-flip__back .fx-flip__name,
+:root[data-font="tudo"] .fx-flip__back .fx-flip__name {
+  padding-bottom: 12px;
+}
+:root[data-font="titulos"] .fx-flip__label,
+:root[data-font="tudo"] .fx-flip__label,
+:root[data-font="titulos"] .fx-flip__chips,
+:root[data-font="tudo"] .fx-flip__chips {
+  margin-top: 12px;
+}
+:root[data-font="titulos"] .fx-flip__chips li,
+:root[data-font="tudo"] .fx-flip__chips li {
+  padding: 2px 7px;
+  line-height: 16px;
+}
+:root[data-font="titulos"] .fx-flip__links,
+:root[data-font="tudo"] .fx-flip__links {
+  padding-top: 4px;
+  margin-bottom: 4px;
+}
+@media (hover: hover) and (pointer: fine) and (min-width: 561px) {
+  :root[data-font="titulos"] .fx-flip__link,
+  :root[data-font="tudo"] .fx-flip__link {
+    min-height: 36px;
+  }
+}
+/* Texto corrido todo em maiusculas: um pouco mais de entrelinha e de ar entre as letras */
+:root[data-font="tudo"] .fx-flip__text {
+  line-height: 1.65;
+  letter-spacing: .02em;
+}
+
 /* Espaço reservado enquanto o print do projeto não existe */
 .fx-flip__ph {
   display: grid;
@@ -390,10 +466,12 @@
   padding: 16px;
   border: 1px dashed var(--line-2);
   border-radius: inherit;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 12px;
   letter-spacing: .06em;
   text-transform: uppercase;
   text-align: center;
   color: var(--muted);
 }
+:root[data-font="titulos"] .fx-flip__ph,
+:root[data-font="tudo"] .fx-flip__ph { letter-spacing: .02em; }

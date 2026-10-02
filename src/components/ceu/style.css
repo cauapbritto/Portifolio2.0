@@ -42,7 +42,7 @@
 .fx-ceu__label,
 .fx-ceu__hint {
   margin: 0;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 12px;
   line-height: 1.4;
   letter-spacing: .06em;
@@ -98,6 +98,7 @@
 .fx-ceu__tagline {
   margin: 0;
   max-width: 36ch;
+  font-family: var(--font-text);
   font-size: clamp(15px, 1.75cqi, 19px);
   line-height: 1.5;
   color: var(--text-2);
@@ -115,7 +116,7 @@
   border-radius: 4px;
   background: var(--bg);
   color: var(--text-2);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 11px;
   letter-spacing: .06em;
   text-transform: uppercase;
@@ -126,6 +127,29 @@
 .fx-ceu__replay:hover { color: var(--text); border-color: var(--line-2); }
 .fx-ceu__replay:active .fx-ceu__replay-icon { transform: rotate(-90deg); }
 .fx-ceu__replay-icon { transition: transform var(--dur-2) var(--ease-out); }
+
+/* Fonte antiga (Zero Hour) nos rótulos e no botão: ela tem caixa-alta menor e é larga, então ganha 1px,
+   perde espaçamento entre letras e ganha entre palavras (o espaço da Zero Hour é curto). */
+:root[data-font="titulos"] .fx-ceu__label,
+:root[data-font="tudo"] .fx-ceu__label { font-size: 13px; letter-spacing: .03em; word-spacing: .15em; }
+:root[data-font="titulos"] .fx-ceu__hint,
+:root[data-font="tudo"] .fx-ceu__hint,
+:root[data-font="titulos"] .fx-ceu__replay,
+:root[data-font="tudo"] .fx-ceu__replay { font-size: 12px; letter-spacing: .03em; word-spacing: .15em; }
+/* "tudo": a frase também vira Zero Hour, toda em maiúsculas; pede mais entrelinha e um pouco de ar. */
+:root[data-font="tudo"] .fx-ceu__tagline { line-height: 1.6; letter-spacing: .02em; word-spacing: .1em; }
+/* Se rótulo e dica não couberem lado a lado, a dica desce inteira para a linha de baixo
+   em vez de quebrar em três linhas estreitas. */
+:root[data-font="titulos"] .fx-ceu__top,
+:root[data-font="tudo"] .fx-ceu__top { flex-wrap: wrap; row-gap: 8px; }
+/* No celular rótulo e dica dividem a linha de cima: 1px e um pouco de espaçamento a menos para caberem
+   lado a lado (abaixo de 340px a dica já some). */
+@container (max-width: 480px) {
+  :root[data-font="titulos"] .fx-ceu__label,
+  :root[data-font="tudo"] .fx-ceu__label { font-size: 12px; letter-spacing: .02em; }
+  :root[data-font="titulos"] .fx-ceu__hint,
+  :root[data-font="tudo"] .fx-ceu__hint { font-size: 11px; letter-spacing: .02em; }
+}
 
 /* Estado antes da entrada (só com JS e com movimento liberado). */
 .fx-ceu--pre .fx-ceu__char,

@@ -5,7 +5,7 @@
   max-width: 1072px;
 }
 
-/* Rótulo em mono acima do e-mail. Vira a dica "Selecionei o e-mail..." quando a cópia falha. */
+/* Rótulo pequeno (papel --font-label) acima do e-mail. Vira a dica "Selecionei o e-mail..." quando a cópia falha. */
 .fx-contato__label {
   display: grid;
   margin: 0 0 14px;
@@ -26,7 +26,7 @@
 /* O e-mail em si. Texto, não link: um clique seleciona o endereço inteiro. */
 .fx-contato__email {
   margin: 0;
-  font-family: var(--font-sans);
+  font-family: var(--font-text);
   font-size: clamp(24px, 4.4vw, 52px);
   font-weight: 500;
   line-height: 1.08;
@@ -71,7 +71,7 @@
   border-radius: var(--radius);
   background: var(--surface);
   color: var(--text);
-  font: 500 15px/1 var(--font-sans);
+  font: 500 15px/1 var(--font-head);
   letter-spacing: -.005em;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
@@ -161,6 +161,7 @@
   min-height: 44px;
   border-radius: var(--radius); /* anel de foco com o mesmo canto do botão */
   color: var(--text);
+  font-family: var(--font-head);
   font-size: 17px;
   font-weight: 500;
   text-decoration: none;
@@ -230,6 +231,37 @@
 
 @media (max-width: 520px) {
   .fx-contato__bar { gap: 12px 24px; }
+}
+
+/* Fonte antiga (Zero Hour), nos modos "titulos" e "tudo". Ela é toda em maiúsculas e bem mais larga:
+   rótulo, botão e links pedem corpo menor e pouco espaço entre letras. Sem descendentes, a folga
+   embaixo do link sobrava: a entrelinha fecha e o fio fica a uns 6px das letras, como na Schibsted. */
+:root:is([data-font="titulos"], [data-font="tudo"]) .fx-contato__label {
+  font-size: 13px;
+  letter-spacing: .03em;
+  word-spacing: .15em;
+}
+:root:is([data-font="titulos"], [data-font="tudo"]) .fx-contato__btn {
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: .03em;
+}
+:root:is([data-font="titulos"], [data-font="tudo"]) .fx-contato__link {
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: .03em;
+}
+:root:is([data-font="titulos"], [data-font="tudo"]) .fx-contato__link-text {
+  line-height: 16px;
+  padding-bottom: 4px;
+}
+/* A seta centraliza com as letras (não com letras + folga do fio). */
+:root:is([data-font="titulos"], [data-font="tudo"]) .fx-contato__arrow { margin-bottom: 4px; }
+/* "tudo": o e-mail também vira Zero Hour. Corpo mínimo menor para caber numa linha em 390px. */
+:root[data-font="tudo"] .fx-contato__email {
+  font-size: clamp(21px, 4.4vw, 52px);
+  line-height: 1.15;
+  letter-spacing: .01em;
 }
 
 @media (prefers-reduced-motion: reduce) {

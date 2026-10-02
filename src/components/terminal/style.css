@@ -3,7 +3,7 @@
   --fx-terminal-lh: 1.75;
   max-width: 880px;
   color: var(--text);
-  font-family: var(--font-mono);
+  font-family: var(--font-code);
 }
 
 .fx-terminal__win {
@@ -22,6 +22,7 @@
   height: 38px;
   padding: 0 var(--fx-terminal-px);
   border-bottom: 1px solid var(--line);
+  font-family: var(--font-label);
   font-size: 11px;
   letter-spacing: .02em;
   color: var(--muted);
@@ -227,7 +228,7 @@
   border-radius: 0;
   background: transparent;
   color: var(--text);
-  font-family: var(--font-mono);
+  font-family: var(--font-code);
   font-size: 14px;
   caret-color: var(--accent);
   -webkit-appearance: none;
@@ -247,6 +248,7 @@
 }
 .fx-terminal__chips-label {
   margin-right: 6px;
+  font-family: var(--font-label);
   font-size: 10px;
   letter-spacing: .08em;
   text-transform: uppercase;
@@ -259,7 +261,7 @@
   border-radius: var(--radius);
   background: transparent;
   color: var(--text-2);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 12px;
   line-height: 1;
   cursor: pointer;
@@ -297,4 +299,24 @@
 @media (prefers-reduced-motion: reduce) {
   .fx-terminal__out { transition: none; }
   .fx-terminal__rain { transition: opacity 160ms linear; }
+}
+
+/* Fonte antiga (Zero Hour, data-font="titulos" ou "tudo"): só a moldura muda (título, estado, atalhos);
+   a tela continua em mono, como o terminal do site antigo. A Zero Hour já é larga, então os rótulos perdem o
+   espaçamento extra. line-height inteiro: com 15.5px o Chrome arredonda a meia-entrelinha para baixo e as
+   maiúsculas da Zero Hour sobem 1px. */
+:root[data-font="titulos"] .fx-terminal__status,
+:root[data-font="tudo"] .fx-terminal__status,
+:root[data-font="titulos"] .fx-terminal__chips-label,
+:root[data-font="tudo"] .fx-terminal__chips-label { letter-spacing: .03em; line-height: 16px; }
+@media (max-width: 560px) {
+  /* Título inteiro de 360px para cima (antes virava "CAUANZERA ~ TERMIN..."). */
+  :root[data-font="titulos"] .fx-terminal__bar,
+  :root[data-font="tudo"] .fx-terminal__bar { gap: 10px; }
+  :root[data-font="titulos"] .fx-terminal__title,
+  :root[data-font="tudo"] .fx-terminal__title { font-size: 10.5px; line-height: 17px; letter-spacing: 0; }
+  /* Os quatro atalhos continuam numa linha só de 360px para cima, como na fonte nova: corpo um pouco menor e
+     padding mínimo (o flex-grow devolve a folga quando sobra espaço). */
+  :root[data-font="titulos"] .fx-terminal__chip,
+  :root[data-font="tudo"] .fx-terminal__chip { font-size: 11px; padding: 0 4px; }
 }

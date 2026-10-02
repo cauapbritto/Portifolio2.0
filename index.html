@@ -9,7 +9,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Martian+Mono:wght@400;500&family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
-@font-face { font-family: "Zero Hour"; src: url("assets/ZeroHour.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "Zero Hour"; src: url("assets/ZeroHour.woff2") format("woff2"); font-display: swap; font-weight: 100 900; }
+/* Fonte antiga em dois tamanhos (mesmo arquivo, menor): titulos/rotulos/botoes e texto corrido. Ver src/tokens.css.
+   font-weight 100 900: a Zero Hour so tem um peso; assim o navegador nao inventa um negrito falso.
+   Sem o "~" (U+007E): o til da Zero Hour e um traco reto; ele cai na fonte seguinte da pilha. */
+@font-face { font-family: "Zero Hour UI"; src: url("assets/ZeroHour.woff2") format("woff2"); font-display: swap; size-adjust: 86%; font-weight: 100 900; unicode-range: U+0000-007D, U+007F-10FFFF; }
+@font-face { font-family: "Zero Hour Texto"; src: url("assets/ZeroHour.woff2") format("woff2"); font-display: swap; size-adjust: 80%; font-weight: 100 900; unicode-range: U+0000-007D, U+007F-10FFFF; }
 /* Tokens compartilhados da galeria. Escuro por padrao; claro pelo sistema ou por data-theme="light". */
 :root {
   color-scheme: dark;
@@ -27,9 +32,20 @@
   --glow: 255, 122, 69;       /* rgb do brilho, use rgba(var(--glow), a) */
   --shadow: 0 1px 0 rgba(255,255,255,.04) inset, 0 18px 40px -24px rgba(0,0,0,.8);
 
-  --font-sans: "Schibsted Grotesk", system-ui, sans-serif;
-  --font-mono: "Martian Mono", ui-monospace, monospace;
+  /* Fontes por papel. A troca de fonte (data-font no :root) so mexe nestes quatro papeis:
+     --font-head: titulos, nomes de projeto, botoes, itens de menu
+     --font-text: texto corrido (paragrafos, descricoes, valores de lista, e-mail)
+     --font-label: rotulos pequenos em caixa alta, kickers, tags, chips de tecnologia
+     --font-code: terminal e qualquer coisa que precise de largura fixa
+     --font-display: o nome "Cauanzera" (sempre Zero Hour) */
+  --font-head: "Schibsted Grotesk", system-ui, sans-serif;
+  --font-text: "Schibsted Grotesk", system-ui, sans-serif;
+  --font-label: "Martian Mono", ui-monospace, monospace;
+  --font-code: "Martian Mono", ui-monospace, monospace;
   --font-display: "Zero Hour", "Schibsted Grotesk", sans-serif;
+  /* aliases antigos: preferir os papeis acima */
+  --font-sans: var(--font-text);
+  --font-mono: var(--font-code);
 
   --radius: 6px;
   --ease-out: cubic-bezier(.2, .7, .2, 1);
@@ -74,20 +90,33 @@
   --shadow: 0 1px 0 rgba(255,255,255,.6) inset, 0 18px 40px -26px rgba(40,30,10,.35);
 }
 
+/* Fonte antiga (Zero Hour, a do site v1). "Zero Hour UI" e "Zero Hour Texto" sao o mesmo arquivo com size-adjust,
+   porque a Zero Hour e toda em maiusculas e bem mais larga: 100% estouraria os layouts feitos para a Schibsted.
+   As @font-face ficam na pagina (precisam da URL do arquivo). */
+:root[data-font="titulos"] {
+  --font-head: "Zero Hour UI", "Schibsted Grotesk", sans-serif;
+  --font-label: "Zero Hour UI", "Martian Mono", monospace;
+}
+:root[data-font="tudo"] {
+  --font-head: "Zero Hour UI", "Schibsted Grotesk", sans-serif;
+  --font-label: "Zero Hour UI", "Martian Mono", monospace;
+  --font-text: "Zero Hour Texto", "Schibsted Grotesk", sans-serif;
+}
+
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
 body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font-family: var(--font-sans);
+  font-family: var(--font-text);
   font-size: 17px;
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
 }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .fx-sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
-.fx-label { font-family: var(--font-mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.fx-label { font-family: var(--font-label); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
 /* Moldura da galeria (cabecalho, secoes, rodape). Os componentes trazem o proprio CSS prefixado com .fx-<id>. */
 .g-progress { position: fixed; inset: 0 0 auto; height: 2px; background: var(--accent); transform-origin: 0 50%; transform: scaleX(0); z-index: 50; pointer-events: none; }
 @supports (animation-timeline: scroll()) {
@@ -103,21 +132,21 @@ body {
 .g-head { padding-top: clamp(56px, 9vw, 120px); padding-bottom: clamp(40px, 6vw, 72px); border-bottom: 1px solid var(--line); }
 .g-square { display: inline-block; width: 8px; height: 8px; background: var(--accent); }
 .g-kicker { display: flex; align-items: center; gap: 10px; margin: 0; }
-.g-title { margin: 20px 0 0; font-size: clamp(40px, 7vw, 84px); font-weight: 600; line-height: .98; letter-spacing: -.03em; text-wrap: balance; }
+.g-title { margin: 20px 0 0; font-family: var(--font-head); font-size: clamp(40px, 7vw, 84px); font-weight: 600; line-height: .98; letter-spacing: -.03em; text-wrap: balance; }
 .g-lede { max-width: 620px; margin: 24px 0 0; font-size: clamp(18px, 1.6vw, 21px); line-height: 1.5; color: var(--text-2); text-wrap: pretty; }
 
 .g-index { margin-top: clamp(32px, 5vw, 56px); }
 .g-index ol { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); gap: 0 32px; margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
 .g-index li { border-bottom: 1px solid var(--line); }
-.g-index a { display: flex; align-items: baseline; gap: 14px; min-height: 48px; padding: 13px 0; color: var(--text); text-decoration: none; }
+.g-index a { font-family: var(--font-head); display: flex; align-items: baseline; gap: 14px; min-height: 48px; padding: 13px 0; color: var(--text); text-decoration: none; }
 .g-index a:hover { color: var(--text); }
 .g-index a:hover .g-index__n { color: var(--accent); }
-.g-index__n { font-family: var(--font-mono); font-size: 12px; color: var(--muted); transition: color var(--dur-1) var(--ease-out); }
+.g-index__n { font-family: var(--font-label); font-size: 12px; color: var(--muted); transition: color var(--dur-1) var(--ease-out); }
 
 .g-sec { padding-top: clamp(72px, 10vw, 128px); scroll-margin-top: 24px; }
 .g-sec__head { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; max-width: 760px; margin-bottom: clamp(24px, 4vw, 40px); }
 .g-sec__n { display: flex; align-items: center; gap: 10px; margin: 0; }
-.g-sec__t { margin: 0; font-size: clamp(30px, 4vw, 44px); font-weight: 600; line-height: 1.05; letter-spacing: -.02em; }
+.g-sec__t { margin: 0; font-family: var(--font-head); font-size: clamp(30px, 4vw, 44px); font-weight: 600; line-height: 1.05; letter-spacing: -.02em; }
 .g-sec__d { margin: 0; color: var(--text-2); text-wrap: pretty; }
 .g-sec__old { margin: 0; font-size: 15px; color: var(--muted); }
 .g-sec__old .fx-label { margin-right: 8px; }
@@ -125,6 +154,45 @@ body {
 
 .g-foot { margin-top: clamp(96px, 12vw, 160px); padding-top: 28px; padding-bottom: 48px; border-top: 1px solid var(--line); }
 .g-foot p { max-width: 720px; margin: 0; font-size: 15px; color: var(--muted); }
+
+/* Troca de fonte (nova / antiga nos titulos / antiga em tudo). Cada opcao aparece escrita na propria fonte. */
+.g-font { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin-top: clamp(28px, 4vw, 40px); }
+.g-font__opts { display: inline-flex; gap: 4px; padding: 4px; border: 1px solid var(--line); border-radius: 999px; }
+.g-font__opt { min-height: 40px; padding: 8px 16px; border: 0; border-radius: 999px; background: transparent; color: var(--muted); font-size: 15px; line-height: 1.2; cursor: pointer; transition: color var(--dur-1) var(--ease-out), background-color var(--dur-1) var(--ease-out); }
+.g-font__opt:hover { color: var(--text); }
+.g-font__opt[aria-pressed="true"] { background: var(--surface-2); color: var(--text); box-shadow: inset 0 0 0 1px var(--line-2); }
+.g-font__opt--zh { font-family: "Zero Hour UI", var(--font-head); letter-spacing: .02em; }
+.g-font__opt--nova { font-family: "Schibsted Grotesk", system-ui, sans-serif; }
+@media (pointer: coarse) { .g-font__opt { min-height: 44px; } }
+@media (max-width: 560px) {
+  .g-font { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .g-font__opts { display: grid; grid-template-columns: minmax(0, 1fr); border-radius: var(--radius); }
+  .g-font__opt { border-radius: 4px; text-align: left; }
+}
+
+/* Zero Hour so tem um peso e ja e larga: sem tracking negativo nos titulos. */
+:root[data-font="titulos"] .g-title, :root[data-font="tudo"] .g-title { font-size: clamp(30px, 6.4vw, 76px); letter-spacing: 0; line-height: 1.04; }
+:root[data-font="titulos"] .g-sec__t, :root[data-font="tudo"] .g-sec__t { font-size: clamp(24px, 3.4vw, 38px); letter-spacing: .01em; line-height: 1.1; }
+:root[data-font="titulos"] .g-index__n, :root[data-font="tudo"] .g-index__n { letter-spacing: .02em; }
+:root[data-font="titulos"] .g-index a, :root[data-font="tudo"] .g-index a { font-size: 14px; letter-spacing: .03em; align-items: center; }
+:root[data-font="tudo"] .g-lede, :root[data-font="tudo"] .g-sec__d { line-height: 1.6; letter-spacing: .02em; }
+:root[data-font="tudo"] .g-sec__old, :root[data-font="tudo"] .g-foot p { line-height: 1.6; letter-spacing: .02em; }
+/* Rotulos da moldura na mesma escala dos componentes: kicker 13px, rotulo em linha 12px, pouco tracking
+   e um pouco mais de espaco entre palavras (o espaco da Zero Hour e curto). */
+:root:is([data-font="titulos"], [data-font="tudo"]) :is(.g-head, .g-sec__head) .fx-label { font-size: 13px; letter-spacing: .03em; word-spacing: .15em; }
+:root:is([data-font="titulos"], [data-font="tudo"]) .g-sec__old .fx-label { font-size: 12px; }
+/* Numeros do indice com largura fixa: na Zero Hour o "01" e mais estreito e os nomes nao alinhavam. */
+:root:is([data-font="titulos"], [data-font="tudo"]) .g-index__n { flex: none; min-width: 1.9em; }
+/* Na Zero Hour o "1" e o mesmo traco do "I" ("01" lia "OI"): a mesma bandeirinha dos cards de projeto. */
+:root:is([data-font="titulos"], [data-font="tudo"]) .g-one {
+  margin-left: .075em;
+  padding-left: .15em;
+  background: linear-gradient(currentColor, currentColor) 0 calc((.968 - .749) * .86em) / .21em calc(.118 * .86em) no-repeat;
+}
+/* Palavras com hifen ("e-mail") nao quebram no meio: em caixa alta larga "E-" sozinho no fim da linha le mal. */
+:root:is([data-font="titulos"], [data-font="tudo"]) .g-nobr { white-space: nowrap; }
+/* "tudo": rotulo e frase ficam na mesma fonte; o rotulo sobe para a propria linha para nao virar parte da frase. */
+:root[data-font="tudo"] .g-sec__old .fx-label { display: block; margin: 0 0 4px; }
 
 @media (prefers-reduced-motion: reduce) { .g-progress { display: none; } }
 </style>
@@ -173,7 +241,7 @@ body {
 .fx-ceu__label,
 .fx-ceu__hint {
   margin: 0;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 12px;
   line-height: 1.4;
   letter-spacing: .06em;
@@ -229,6 +297,7 @@ body {
 .fx-ceu__tagline {
   margin: 0;
   max-width: 36ch;
+  font-family: var(--font-text);
   font-size: clamp(15px, 1.75cqi, 19px);
   line-height: 1.5;
   color: var(--text-2);
@@ -246,7 +315,7 @@ body {
   border-radius: 4px;
   background: var(--bg);
   color: var(--text-2);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 11px;
   letter-spacing: .06em;
   text-transform: uppercase;
@@ -257,6 +326,29 @@ body {
 .fx-ceu__replay:hover { color: var(--text); border-color: var(--line-2); }
 .fx-ceu__replay:active .fx-ceu__replay-icon { transform: rotate(-90deg); }
 .fx-ceu__replay-icon { transition: transform var(--dur-2) var(--ease-out); }
+
+/* Fonte antiga (Zero Hour) nos rótulos e no botão: ela tem caixa-alta menor e é larga, então ganha 1px,
+   perde espaçamento entre letras e ganha entre palavras (o espaço da Zero Hour é curto). */
+:root[data-font="titulos"] .fx-ceu__label,
+:root[data-font="tudo"] .fx-ceu__label { font-size: 13px; letter-spacing: .03em; word-spacing: .15em; }
+:root[data-font="titulos"] .fx-ceu__hint,
+:root[data-font="tudo"] .fx-ceu__hint,
+:root[data-font="titulos"] .fx-ceu__replay,
+:root[data-font="tudo"] .fx-ceu__replay { font-size: 12px; letter-spacing: .03em; word-spacing: .15em; }
+/* "tudo": a frase também vira Zero Hour, toda em maiúsculas; pede mais entrelinha e um pouco de ar. */
+:root[data-font="tudo"] .fx-ceu__tagline { line-height: 1.6; letter-spacing: .02em; word-spacing: .1em; }
+/* Se rótulo e dica não couberem lado a lado, a dica desce inteira para a linha de baixo
+   em vez de quebrar em três linhas estreitas. */
+:root[data-font="titulos"] .fx-ceu__top,
+:root[data-font="tudo"] .fx-ceu__top { flex-wrap: wrap; row-gap: 8px; }
+/* No celular rótulo e dica dividem a linha de cima: 1px e um pouco de espaçamento a menos para caberem
+   lado a lado (abaixo de 340px a dica já some). */
+@container (max-width: 480px) {
+  :root[data-font="titulos"] .fx-ceu__label,
+  :root[data-font="tudo"] .fx-ceu__label { font-size: 12px; letter-spacing: .02em; }
+  :root[data-font="titulos"] .fx-ceu__hint,
+  :root[data-font="tudo"] .fx-ceu__hint { font-size: 11px; letter-spacing: .02em; }
+}
 
 /* Estado antes da entrada (só com JS e com movimento liberado). */
 .fx-ceu--pre .fx-ceu__char,
@@ -381,7 +473,7 @@ body {
 .fx-tema__label {
   margin: 0;
   min-width: 12ch;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 12px;
   line-height: 1.4;
   letter-spacing: .06em;
@@ -420,14 +512,21 @@ body {
 
 .fx-tema__name,
 .fx-tema__hex {
-  font-family: var(--font-mono);
   font-size: 11px;
   line-height: 1.35;
   letter-spacing: .04em;
   white-space: nowrap;
 }
-.fx-tema__name { color: var(--muted); text-transform: uppercase; }
-.fx-tema__hex { color: var(--text-2); min-height: 1.35em; }
+/* nome da cor = rótulo; valor hex = código (largura fixa: não pula quando o tema troca) */
+.fx-tema__name { font-family: var(--font-label); color: var(--muted); text-transform: uppercase; }
+.fx-tema__hex { font-family: var(--font-code); color: var(--text-2); min-height: 1.35em; }
+
+/* Fonte antiga (Zero Hour) nos rótulos: caixa-alta menor e mais larga, então +1px, menos espaço entre letras
+   e mais entre palavras. O hex continua mono. */
+:root[data-font="titulos"] .fx-tema__label,
+:root[data-font="tudo"] .fx-tema__label { font-size: 13px; letter-spacing: .03em; word-spacing: .15em; }
+:root[data-font="titulos"] .fx-tema__name,
+:root[data-font="tudo"] .fx-tema__name { font-size: 12px; letter-spacing: .03em; }
 
 @container (max-width: 640px) {
   .fx-tema__strip { padding: 12px; }
@@ -551,7 +650,7 @@ body {
 
 .fx-card__tag {
   margin: 0;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 12px;
   letter-spacing: .06em;
   text-transform: uppercase;
@@ -563,6 +662,7 @@ body {
   align-items: center;
   gap: 8px;
   margin: 8px 0 0;
+  font-family: var(--font-head);
   font-size: 24px;
   font-weight: 600;
   line-height: 1.2;
@@ -594,6 +694,7 @@ body {
   margin: 10px 0 0;
   max-width: 48ch;
   color: var(--text-2);
+  font-family: var(--font-text);
   font-size: 16px;
   line-height: 1.55;
   text-wrap: pretty;
@@ -612,7 +713,7 @@ body {
   padding: 3px 8px;
   border: 1px solid var(--line);
   border-radius: 4px;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 12px;
   line-height: 1.5;
   color: var(--text-2);
@@ -643,7 +744,7 @@ body {
   gap: 6px;
   min-height: 44px;
   padding: 0 8px;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 12px;
   letter-spacing: .06em;
   text-transform: uppercase;
@@ -759,6 +860,41 @@ body {
   }
 }
 
+/* Fonte antiga (Zero Hour): modos "titulos" e "tudo". No modo novo nada daqui se aplica.
+   A Zero Hour tem um peso so e ja e larga: titulo sem negrito sintetico e sem tracking negativo,
+   rotulos com bem menos espacamento entre letras. */
+:root[data-font="titulos"] .fx-card__title,
+:root[data-font="tudo"] .fx-card__title {
+  font-weight: 400;
+  letter-spacing: .01em;
+}
+:root[data-font="titulos"] .fx-card__tag,
+:root[data-font="tudo"] .fx-card__tag,
+:root[data-font="titulos"] .fx-card__sub,
+:root[data-font="tudo"] .fx-card__sub {
+  letter-spacing: .02em;
+}
+:root[data-font="titulos"] .fx-card__chips li,
+:root[data-font="tudo"] .fx-card__chips li {
+  padding: 2px 7px;
+  line-height: 16px;
+  letter-spacing: .02em;
+}
+/* Na Zero Hour o "1" e o "I" sao o mesmo traco ("v1" leria "VI"). Uma bandeirinha no topo,
+   com a espessura e a altura de maiuscula da propria fonte (Zero Hour UI = 86%), devolve o 1.
+   E fundo do proprio span: nada posicionado, nada a mais para pintar. */
+:root[data-font="titulos"] .fx-card__one,
+:root[data-font="tudo"] .fx-card__one {
+  margin-left: .075em;
+  padding-left: .15em;
+  background: linear-gradient(currentColor, currentColor) 0 calc((.968 - .749) * .86em) / .21em calc(.118 * .86em) no-repeat;
+}
+/* Texto corrido todo em maiusculas: um pouco mais de entrelinha e de ar entre as letras */
+:root[data-font="tudo"] .fx-card__desc {
+  line-height: 1.65;
+  letter-spacing: .02em;
+}
+
 /* Espaço reservado enquanto o print do projeto não existe */
 .fx-card__ph {
   display: grid;
@@ -766,13 +902,15 @@ body {
   padding: 16px;
   border: 1px dashed var(--line-2);
   border-radius: inherit;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 12px;
   letter-spacing: .06em;
   text-transform: uppercase;
   text-align: center;
   color: var(--muted);
 }
+:root[data-font="titulos"] .fx-card__ph,
+:root[data-font="tudo"] .fx-card__ph { letter-spacing: .02em; }
 </style>
 <style>/* flip */
 /* Card que vira: rotateY com mola, faces empilhadas no mesmo lugar do grid. */
@@ -894,7 +1032,7 @@ body {
 .fx-flip__tag,
 .fx-flip__label {
   margin: 0;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 12px;
   line-height: 1.5;
   letter-spacing: .06em;
@@ -904,6 +1042,7 @@ body {
 
 .fx-flip__name {
   margin: 6px 0 0;
+  font-family: var(--font-head);
   font-size: 22px;
   font-weight: 600;
   line-height: 1.2;
@@ -929,6 +1068,7 @@ body {
 .fx-flip__text {
   margin: 6px 0 0;
   color: var(--text-2);
+  font-family: var(--font-text);
   font-size: 16px;
   line-height: 1.55;
   text-wrap: pretty;
@@ -947,7 +1087,7 @@ body {
   padding: 3px 8px;
   border: 1px solid var(--line);
   border-radius: 4px;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 12px;
   line-height: 1.5;
   color: var(--text-2);
@@ -970,7 +1110,7 @@ body {
   min-height: 44px;
   padding: 0 8px;
   border-radius: 4px;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 12px;
   letter-spacing: .06em;
   text-transform: uppercase;
@@ -1000,7 +1140,7 @@ body {
   border-radius: 8px;
   background: transparent;
   color: var(--text);
-  font: 500 12px/1 var(--font-mono);
+  font: 500 12px/1 var(--font-label);
   letter-spacing: .06em;
   text-transform: uppercase;
   cursor: pointer;
@@ -1053,7 +1193,7 @@ body {
 .fx-flip__hint {
   margin: 0;
   text-wrap: balance;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 12px;
   line-height: 1.6;
   color: var(--muted);
@@ -1159,6 +1299,80 @@ body {
   }
 }
 
+/* Fonte antiga (Zero Hour): modos "titulos" e "tudo". No modo novo nada daqui se aplica.
+   A Zero Hour tem um peso so e ja e larga: nome sem negrito sintetico e sem tracking negativo,
+   rotulos e botoes com bem menos espacamento entre letras. */
+:root[data-font="titulos"] .fx-flip__name,
+:root[data-font="tudo"] .fx-flip__name {
+  font-weight: 400;
+  letter-spacing: .01em;
+}
+:root[data-font="titulos"] .fx-flip__tag,
+:root[data-font="tudo"] .fx-flip__tag,
+:root[data-font="titulos"] .fx-flip__label,
+:root[data-font="tudo"] .fx-flip__label,
+:root[data-font="titulos"] .fx-flip__link,
+:root[data-font="tudo"] .fx-flip__link,
+:root[data-font="titulos"] .fx-flip__chips li,
+:root[data-font="tudo"] .fx-flip__chips li,
+:root[data-font="titulos"] .fx-flip__hint,
+:root[data-font="tudo"] .fx-flip__hint {
+  letter-spacing: .02em;
+}
+:root[data-font="titulos"] .fx-flip__btn,
+:root[data-font="tudo"] .fx-flip__btn {
+  font-weight: 400;
+  letter-spacing: .02em;
+}
+/* Na Zero Hour o "1" e o "I" sao o mesmo traco ("v1" leria "VI"). Uma bandeirinha no topo,
+   com a espessura e a altura de maiuscula da propria fonte (Zero Hour UI = 86%), devolve o 1.
+   E fundo do proprio span: nada posicionado, nada a mais para pintar. */
+:root[data-font="titulos"] .fx-flip__one,
+:root[data-font="tudo"] .fx-flip__one {
+  margin-left: .075em;
+  padding-left: .15em;
+  background: linear-gradient(currentColor, currentColor) 0 calc((.968 - .749) * .86em) / .21em calc(.118 * .86em) no-repeat;
+}
+/* Os chips quebram em duas linhas (a Zero Hour e mais larga) e o verso ficaria mais alto que a capa,
+   abrindo um buraco na capa entre o nome e o botao. O verso usa o ritmo apertado do card estreito,
+   chips mais baixos (as maiusculas da Zero Hour sao menores, o respiro continua o mesmo)
+   e, com mouse, links de 36px como no card de projeto. */
+:root[data-font="titulos"] .fx-flip__back,
+:root[data-font="tudo"] .fx-flip__back {
+  padding-top: 18px;
+}
+:root[data-font="titulos"] .fx-flip__back .fx-flip__name,
+:root[data-font="tudo"] .fx-flip__back .fx-flip__name {
+  padding-bottom: 12px;
+}
+:root[data-font="titulos"] .fx-flip__label,
+:root[data-font="tudo"] .fx-flip__label,
+:root[data-font="titulos"] .fx-flip__chips,
+:root[data-font="tudo"] .fx-flip__chips {
+  margin-top: 12px;
+}
+:root[data-font="titulos"] .fx-flip__chips li,
+:root[data-font="tudo"] .fx-flip__chips li {
+  padding: 2px 7px;
+  line-height: 16px;
+}
+:root[data-font="titulos"] .fx-flip__links,
+:root[data-font="tudo"] .fx-flip__links {
+  padding-top: 4px;
+  margin-bottom: 4px;
+}
+@media (hover: hover) and (pointer: fine) and (min-width: 561px) {
+  :root[data-font="titulos"] .fx-flip__link,
+  :root[data-font="tudo"] .fx-flip__link {
+    min-height: 36px;
+  }
+}
+/* Texto corrido todo em maiusculas: um pouco mais de entrelinha e de ar entre as letras */
+:root[data-font="tudo"] .fx-flip__text {
+  line-height: 1.65;
+  letter-spacing: .02em;
+}
+
 /* Espaço reservado enquanto o print do projeto não existe */
 .fx-flip__ph {
   display: grid;
@@ -1167,13 +1381,15 @@ body {
   padding: 16px;
   border: 1px dashed var(--line-2);
   border-radius: inherit;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 12px;
   letter-spacing: .06em;
   text-transform: uppercase;
   text-align: center;
   color: var(--muted);
 }
+:root[data-font="titulos"] .fx-flip__ph,
+:root[data-font="tudo"] .fx-flip__ph { letter-spacing: .02em; }
 </style>
 <style>/* entrada */
 /* Entrada no scroll: título por máscara de linha, texto que sobe, linhas que se desenham e chips em sequência.
@@ -1218,7 +1434,7 @@ body {
   border-radius: var(--radius);
   background: none;
   color: var(--muted);
-  font: 500 14px/1 var(--font-sans);
+  font: 500 14px/1 var(--font-head);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   transition: color var(--dur-1) var(--ease-out), border-color var(--dur-1) var(--ease-out), background-color var(--dur-1) var(--ease-out);
@@ -1238,6 +1454,7 @@ body {
 /* Título: o texto sobe de trás de uma linha com overflow escondido */
 .fx-entrada__title {
   margin: 0;
+  font-family: var(--font-head);
   font-size: clamp(44px, 7vw, 84px);
   font-weight: 600;
   line-height: 1;
@@ -1274,6 +1491,7 @@ body {
 .fx-entrada__text {
   margin: 0;
   max-width: 34ch;
+  font-family: var(--font-text);
   font-size: clamp(19px, 1.9vw, 23px);
   line-height: 1.45;
   letter-spacing: -.01em;
@@ -1308,6 +1526,7 @@ body {
 .fx-entrada__row dt { margin: 0; }
 .fx-entrada__row dd {
   margin: 0;
+  font-family: var(--font-text);
   font-size: 16px;
   line-height: 1.5;
   color: var(--text);
@@ -1328,7 +1547,7 @@ body {
   border-radius: 4px;
   background: var(--surface);
   color: var(--text-2);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 12px;
   line-height: 1.5;
   white-space: nowrap;
@@ -1392,6 +1611,82 @@ body {
   .fx-entrada__row { grid-template-columns: 104px minmax(0, 1fr); }
 }
 
+/* Fonte antiga (Zero Hour), nos modos "titulos" e "tudo". Ela é toda em maiúsculas e ~1,75x mais larga:
+   rótulos com pouco espaço entre letras, título um pouco menor e coluna de rótulos mais larga
+   ("Ferramentas" não cabia em 112px). */
+:root:is([data-font="titulos"], [data-font="tudo"]) .fx-entrada__kicker {
+  font-size: 13px;
+  letter-spacing: .03em;
+  word-spacing: .15em;
+}
+:root:is([data-font="titulos"], [data-font="tudo"]) .fx-entrada__replay {
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: .03em;
+  word-spacing: .15em;
+}
+:root:is([data-font="titulos"], [data-font="tudo"]) .fx-entrada__title {
+  font-size: clamp(40px, 6.4vw, 76px);
+  font-weight: 400;
+  letter-spacing: .01em;
+}
+:root:is([data-font="titulos"], [data-font="tudo"]) .fx-entrada__row { grid-template-columns: 132px minmax(0, 1fr); }
+:root:is([data-font="titulos"], [data-font="tudo"]) .fx-entrada__row dt,
+:root:is([data-font="titulos"], [data-font="tudo"]) .fx-entrada__chip { letter-spacing: .02em; }
+/* Chips com a mesma medida dos cards de projeto na Zero Hour (22px: as maiúsculas dela são menores). */
+:root:is([data-font="titulos"], [data-font="tudo"]) .fx-entrada__chip { padding: 2px 8px; line-height: 16px; }
+/* "tudo": texto corrido todo em maiúsculas pede corpo menor, mais entrelinha e um pouco de ar. */
+:root[data-font="tudo"] .fx-entrada__text {
+  font-size: clamp(17px, 1.7vw, 21px);
+  line-height: 1.65;
+  letter-spacing: .02em;
+  word-spacing: .1em;
+}
+:root[data-font="tudo"] .fx-entrada__row dd {
+  font-size: 15px;
+  line-height: 1.65;
+  letter-spacing: .02em;
+  word-spacing: .1em;
+}
+/* Com a Zero Hour a coluna de fatos fica estreita demais ao lado do texto antes de 960px
+   ("Ferramentas" + valor em 4 linhas): empilha mais cedo, como a versão de celular. */
+@media (max-width: 960px) {
+  :root:is([data-font="titulos"], [data-font="tudo"]) .fx-entrada__grid { grid-template-columns: minmax(0, 1fr); }
+  :root:is([data-font="titulos"], [data-font="tudo"]) .fx-entrada__text { max-width: none; }
+}
+@media (max-width: 720px) {
+  :root:is([data-font="titulos"], [data-font="tudo"]) .fx-entrada__row {
+    grid-template-columns: 128px minmax(0, 1fr);
+    column-gap: 12px;
+  }
+}
+/* Celular: rótulo e botão de rever só cabem lado a lado com 11px e espaços mais curtos (a partir de
+   375px). Se ainda faltar espaço, o botão desce inteiro e fica à direita em vez de quebrar o texto. */
+@media (max-width: 480px) {
+  :root:is([data-font="titulos"], [data-font="tudo"]) .fx-entrada__top {
+    flex-wrap: wrap;
+    gap: 4px 8px;
+  }
+  :root:is([data-font="titulos"], [data-font="tudo"]) .fx-entrada__kicker,
+  :root:is([data-font="titulos"], [data-font="tudo"]) .fx-entrada__replay {
+    font-size: 11px;
+    letter-spacing: .02em;
+    word-spacing: normal;
+    white-space: nowrap;
+  }
+  :root:is([data-font="titulos"], [data-font="tudo"]) .fx-entrada__kicker { gap: 8px; }
+  :root:is([data-font="titulos"], [data-font="tudo"]) .fx-entrada__replay {
+    gap: 6px;
+    margin: 0 -8px 0 auto;
+    padding: 0 8px;
+  }
+  /* "tudo": valores em Zero Hour ficam estreitos ao lado do rótulo; o rótulo sobe para cima do valor. */
+  :root[data-font="tudo"] .fx-entrada__row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+  }
+}
+
 /* Movimento reduzido: nada se mexe. Sem JS ou ao carregar, tudo já aparece;
    o botão de rever só faz um fade curto. */
 @media (prefers-reduced-motion: reduce) {
@@ -1428,7 +1723,7 @@ body {
   --fx-terminal-lh: 1.75;
   max-width: 880px;
   color: var(--text);
-  font-family: var(--font-mono);
+  font-family: var(--font-code);
 }
 
 .fx-terminal__win {
@@ -1447,6 +1742,7 @@ body {
   height: 38px;
   padding: 0 var(--fx-terminal-px);
   border-bottom: 1px solid var(--line);
+  font-family: var(--font-label);
   font-size: 11px;
   letter-spacing: .02em;
   color: var(--muted);
@@ -1652,7 +1948,7 @@ body {
   border-radius: 0;
   background: transparent;
   color: var(--text);
-  font-family: var(--font-mono);
+  font-family: var(--font-code);
   font-size: 14px;
   caret-color: var(--accent);
   -webkit-appearance: none;
@@ -1672,6 +1968,7 @@ body {
 }
 .fx-terminal__chips-label {
   margin-right: 6px;
+  font-family: var(--font-label);
   font-size: 10px;
   letter-spacing: .08em;
   text-transform: uppercase;
@@ -1684,7 +1981,7 @@ body {
   border-radius: var(--radius);
   background: transparent;
   color: var(--text-2);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 12px;
   line-height: 1;
   cursor: pointer;
@@ -1722,6 +2019,26 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .fx-terminal__out { transition: none; }
   .fx-terminal__rain { transition: opacity 160ms linear; }
+}
+
+/* Fonte antiga (Zero Hour, data-font="titulos" ou "tudo"): só a moldura muda (título, estado, atalhos);
+   a tela continua em mono, como o terminal do site antigo. A Zero Hour já é larga, então os rótulos perdem o
+   espaçamento extra. line-height inteiro: com 15.5px o Chrome arredonda a meia-entrelinha para baixo e as
+   maiúsculas da Zero Hour sobem 1px. */
+:root[data-font="titulos"] .fx-terminal__status,
+:root[data-font="tudo"] .fx-terminal__status,
+:root[data-font="titulos"] .fx-terminal__chips-label,
+:root[data-font="tudo"] .fx-terminal__chips-label { letter-spacing: .03em; line-height: 16px; }
+@media (max-width: 560px) {
+  /* Título inteiro de 360px para cima (antes virava "CAUANZERA ~ TERMIN..."). */
+  :root[data-font="titulos"] .fx-terminal__bar,
+  :root[data-font="tudo"] .fx-terminal__bar { gap: 10px; }
+  :root[data-font="titulos"] .fx-terminal__title,
+  :root[data-font="tudo"] .fx-terminal__title { font-size: 10.5px; line-height: 17px; letter-spacing: 0; }
+  /* Os quatro atalhos continuam numa linha só de 360px para cima, como na fonte nova: corpo um pouco menor e
+     padding mínimo (o flex-grow devolve a folga quando sobra espaço). */
+  :root[data-font="titulos"] .fx-terminal__chip,
+  :root[data-font="tudo"] .fx-terminal__chip { font-size: 11px; padding: 0 4px; }
 }
 </style>
 <style>/* arco */
@@ -1805,7 +2122,7 @@ body {
 }
 .fx-arco__icon * { vector-effect: non-scaling-stroke; }
 .fx-arco__label {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 7.4px;
   font-weight: 500;
   letter-spacing: .06em;
@@ -1953,7 +2270,7 @@ body {
   gap: 10px;
   min-height: 20px;
   margin: 18px 0 0;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 12px;
   line-height: 20px;
   color: var(--text-2);
@@ -2006,6 +2323,26 @@ body {
 .fx-arco.fx-arco--init .fx-arco__g,
 .fx-arco.fx-arco--init .fx-arco__tema-icon,
 .fx-arco.fx-arco--init .fx-arco__status { transition: none; }
+
+/* Fonte antiga (Zero Hour, data-font="titulos" ou "tudo"). Ela é ~25% mais larga que a Martian Mono no mesmo
+   corpo: os rótulos encolhem e perdem o espaçamento extra para PROJETOS caber na fatia com a mesma folga.
+   geometricPrecision: sem ela o Chrome ajusta o avanço das letras ao pixel no corpo pequeno e, no celular,
+   aparecem buracos ("S OBRE"). Só que aí a linha "central" sai do lugar; então a base volta a ser a alfabética
+   e o texto desce meia altura de maiúscula (0,749 x 0,86 / 2 = .322em): as maiúsculas ficam centradas no y. */
+:root[data-font="titulos"] .fx-arco__label,
+:root[data-font="tudo"] .fx-arco__label {
+  font-size: 6.6px;
+  letter-spacing: .02em;
+  text-rendering: geometricPrecision;
+  dominant-baseline: alphabetic;
+  transform: translateY(.322em);
+}
+/* Traço fino e corpo menor: um tom acima do --muted para ler igual. :where() mantém a especificidade baixa,
+   então hover e foco (--text) continuam ganhando. */
+:where(:root[data-font="titulos"], :root[data-font="tudo"]) .fx-arco__label { fill: var(--text-2); }
+/* Retorno: um corpo abaixo, para não competir com as fatias; entrelinha ímpar centra as maiúsculas no quadrado. */
+:root[data-font="titulos"] .fx-arco__status,
+:root[data-font="tudo"] .fx-arco__status { font-size: 11px; line-height: 21px; letter-spacing: .03em; }
 </style>
 <style>/* contato */
 /* Contato: e-mail em destaque, botão magnético que copia e links com sublinhado que entra e sai. */
@@ -2015,7 +2352,7 @@ body {
   max-width: 1072px;
 }
 
-/* Rótulo em mono acima do e-mail. Vira a dica "Selecionei o e-mail..." quando a cópia falha. */
+/* Rótulo pequeno (papel --font-label) acima do e-mail. Vira a dica "Selecionei o e-mail..." quando a cópia falha. */
 .fx-contato__label {
   display: grid;
   margin: 0 0 14px;
@@ -2036,7 +2373,7 @@ body {
 /* O e-mail em si. Texto, não link: um clique seleciona o endereço inteiro. */
 .fx-contato__email {
   margin: 0;
-  font-family: var(--font-sans);
+  font-family: var(--font-text);
   font-size: clamp(24px, 4.4vw, 52px);
   font-weight: 500;
   line-height: 1.08;
@@ -2081,7 +2418,7 @@ body {
   border-radius: var(--radius);
   background: var(--surface);
   color: var(--text);
-  font: 500 15px/1 var(--font-sans);
+  font: 500 15px/1 var(--font-head);
   letter-spacing: -.005em;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
@@ -2171,6 +2508,7 @@ body {
   min-height: 44px;
   border-radius: var(--radius); /* anel de foco com o mesmo canto do botão */
   color: var(--text);
+  font-family: var(--font-head);
   font-size: 17px;
   font-weight: 500;
   text-decoration: none;
@@ -2242,6 +2580,37 @@ body {
   .fx-contato__bar { gap: 12px 24px; }
 }
 
+/* Fonte antiga (Zero Hour), nos modos "titulos" e "tudo". Ela é toda em maiúsculas e bem mais larga:
+   rótulo, botão e links pedem corpo menor e pouco espaço entre letras. Sem descendentes, a folga
+   embaixo do link sobrava: a entrelinha fecha e o fio fica a uns 6px das letras, como na Schibsted. */
+:root:is([data-font="titulos"], [data-font="tudo"]) .fx-contato__label {
+  font-size: 13px;
+  letter-spacing: .03em;
+  word-spacing: .15em;
+}
+:root:is([data-font="titulos"], [data-font="tudo"]) .fx-contato__btn {
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: .03em;
+}
+:root:is([data-font="titulos"], [data-font="tudo"]) .fx-contato__link {
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: .03em;
+}
+:root:is([data-font="titulos"], [data-font="tudo"]) .fx-contato__link-text {
+  line-height: 16px;
+  padding-bottom: 4px;
+}
+/* A seta centraliza com as letras (não com letras + folga do fio). */
+:root:is([data-font="titulos"], [data-font="tudo"]) .fx-contato__arrow { margin-bottom: 4px; }
+/* "tudo": o e-mail também vira Zero Hour. Corpo mínimo menor para caber numa linha em 390px. */
+:root[data-font="tudo"] .fx-contato__email {
+  font-size: clamp(21px, 4.4vw, 52px);
+  line-height: 1.15;
+  letter-spacing: .01em;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .fx-contato__label-text,
   .fx-contato__hint {
@@ -2274,6 +2643,10 @@ body {
 @keyframes fx-contato-fade-in { from { opacity: 0; } to { opacity: 1; } }
 @keyframes fx-contato-fade-out { from { opacity: 1; } to { opacity: 0; } }
 </style>
+<script>
+/* fonte escolhida: "titulos" por padrao; lembrada so neste navegador */
+(() => { let f = "titulos"; try { const v = localStorage.getItem("g-font"); if (v === "titulos" || v === "tudo" || v === "nova") f = v; } catch (e) {} if (f !== "nova") document.documentElement.dataset.font = f; })();
+</script>
 </head>
 <body>
 <div class="g-progress" aria-hidden="true"></div>
@@ -2283,16 +2656,24 @@ body {
   <p class="fx-label g-kicker"><span class="g-square" aria-hidden="true"></span>Cauanzera · galeria</p>
   <h1 class="g-title">Componentes com efeito</h1>
   <p class="g-lede">Os efeitos do site antigo, refeitos no visual novo. Todos animam só transform e opacity, param quando saem da tela e respeitam quem pede menos movimento no sistema.</p>
+  <div class="g-font" role="group" aria-labelledby="g-font-t">
+    <span class="fx-label" id="g-font-t">Fonte</span>
+    <div class="g-font__opts">
+      <button type="button" class="g-font__opt g-font__opt--zh" data-font-set="titulos" aria-pressed="false">Antiga nos títulos</button>
+      <button type="button" class="g-font__opt g-font__opt--zh" data-font-set="tudo" aria-pressed="false">Antiga em tudo</button>
+      <button type="button" class="g-font__opt g-font__opt--nova" data-font-set="nova" aria-pressed="false">Nova</button>
+    </div>
+  </div>
   <nav class="g-index" aria-label="Componentes">
     <ol>
-      <li><a href="#g-ceu"><span class="g-index__n">01</span>Céu do hero</a></li>
-      <li><a href="#g-tema"><span class="g-index__n">02</span>Troca de tema</a></li>
-      <li><a href="#g-card"><span class="g-index__n">03</span>Card de projeto</a></li>
-      <li><a href="#g-flip"><span class="g-index__n">04</span>Card que vira</a></li>
-      <li><a href="#g-entrada"><span class="g-index__n">05</span>Entrada no scroll</a></li>
-      <li><a href="#g-terminal"><span class="g-index__n">06</span>Terminal</a></li>
-      <li><a href="#g-arco"><span class="g-index__n">07</span>Menu em meio-arco</a></li>
-      <li><a href="#g-contato"><span class="g-index__n">08</span>Contato</a></li>
+      <li><a href="#g-ceu"><span class="g-index__n">0<span class="g-one">1</span></span><span>Céu do hero</span></a></li>
+      <li><a href="#g-tema"><span class="g-index__n">02</span><span>Troca de tema</span></a></li>
+      <li><a href="#g-card"><span class="g-index__n">03</span><span>Card de projeto</span></a></li>
+      <li><a href="#g-flip"><span class="g-index__n">04</span><span>Card que vira</span></a></li>
+      <li><a href="#g-entrada"><span class="g-index__n">05</span><span>Entrada no scroll</span></a></li>
+      <li><a href="#g-terminal"><span class="g-index__n">06</span><span>Terminal</span></a></li>
+      <li><a href="#g-arco"><span class="g-index__n">07</span><span>Menu em <span class="g-nobr">meio-arco</span></span></a></li>
+      <li><a href="#g-contato"><span class="g-index__n">08</span><span>Contato</span></a></li>
     </ol>
   </nav>
 </header>
@@ -2300,7 +2681,7 @@ body {
 <main id="g-lista" class="g-main">
   <section class="g-sec" id="g-ceu" aria-labelledby="g-ceu-t">
     <div class="g-sec__head">
-      <p class="fx-label g-sec__n"><span class="g-square" aria-hidden="true"></span>01</p>
+      <p class="fx-label g-sec__n"><span class="g-square" aria-hidden="true"></span><span>0<span class="g-one">1</span></span></p>
       <h2 class="g-sec__t" id="g-ceu-t">Céu do hero</h2>
       <p class="g-sec__d">Estrelas em canvas que piscam devagar e se ligam em constelação perto do cursor. No celular, a constelação vai até onde você toca. &quot;Repetir entrada&quot; mostra a abertura de novo.</p>
       <p class="g-sec__old"><span class="fx-label">No site antigo</span> A constelação do topo, que desenhava cada estrela com sombra borrada e era a maior causa do travamento.</p>
@@ -2333,7 +2714,7 @@ body {
 
   <section class="g-sec" id="g-tema" aria-labelledby="g-tema-t">
     <div class="g-sec__head">
-      <p class="fx-label g-sec__n"><span class="g-square" aria-hidden="true"></span>02</p>
+      <p class="fx-label g-sec__n"><span class="g-square" aria-hidden="true"></span><span>02</span></p>
       <h2 class="g-sec__t" id="g-tema-t">Troca de tema</h2>
       <p class="g-sec__d">A lua vira sol e o tema novo cresce num círculo a partir do botão. Troca a galeria inteira, então dá para ver todos os outros componentes no claro.</p>
       <p class="g-sec__old"><span class="fx-label">No site antigo</span> O ícone de lua e sol que ficava dentro do menu em arco.</p>
@@ -2380,7 +2761,7 @@ body {
 
   <section class="g-sec" id="g-card" aria-labelledby="g-card-t">
     <div class="g-sec__head">
-      <p class="fx-label g-sec__n"><span class="g-square" aria-hidden="true"></span>03</p>
+      <p class="fx-label g-sec__n"><span class="g-square" aria-hidden="true"></span><span>03</span></p>
       <h2 class="g-sec__t" id="g-card-t">Card de projeto</h2>
       <p class="g-sec__d">Passe o mouse: uma luz segue o cursor e acende a borda, o card inclina de leve e o print desliza dentro da moldura. O card inteiro é clicável.</p>
       <p class="g-sec__old"><span class="fx-label">No site antigo</span> Os cards eram vazios e passavam sozinhos num letreiro infinito.</p>
@@ -2417,12 +2798,12 @@ body {
       <article class="fx-card__card">
         <span class="fx-card__bg" aria-hidden="true"></span>
         <div class="fx-card__media">
-          <span class="fx-card__img fx-card__ph" role="img" aria-label="Espaço para o print do Portfólio v1">[Print do portfólio v1]</span>
+          <span class="fx-card__img fx-card__ph" role="img" aria-label="Espaço para o print do Portfólio v1"><span>[Print do portfólio v<span class="fx-card__one">1</span>]</span></span>
         </div>
         <div class="fx-card__body">
           <p class="fx-card__tag">Site · Canvas</p>
           <h3 class="fx-card__title">
-            <a class="fx-card__link" href="https://github.com/cauapbritto/portif-lio" target="_blank" rel="noopener noreferrer">Portfólio v1</a>
+            <a class="fx-card__link" href="https://github.com/cauapbritto/portif-lio" target="_blank" rel="noopener noreferrer">Portfólio v<span class="fx-card__one">1</span></a>
             <svg class="fx-card__arrow" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path d="M5 11 11 5M6 5h5v5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </h3>
           <p class="fx-card__desc">A primeira versão deste site, escrita à mão e sem framework: campo de estrelas em canvas 2D, um terminal para navegar pelas seções e tema claro e escuro.</p>
@@ -2445,7 +2826,7 @@ body {
 
   <section class="g-sec" id="g-flip" aria-labelledby="g-flip-t">
     <div class="g-sec__head">
-      <p class="fx-label g-sec__n"><span class="g-square" aria-hidden="true"></span>04</p>
+      <p class="fx-label g-sec__n"><span class="g-square" aria-hidden="true"></span><span>04</span></p>
       <h2 class="g-sec__t" id="g-flip-t">Card que vira</h2>
       <p class="g-sec__d">Clique em &quot;Ver detalhes&quot;: o card gira em 3D com uma mola curta e mostra no verso o que você fez, as tecnologias e os links.</p>
       <p class="g-sec__old"><span class="fx-label">No site antigo</span> Os cards viravam em 3D quando o mouse passava por cima.</p>
@@ -2500,11 +2881,11 @@ body {
         <div class="fx-flip__inner">
           <div class="fx-flip__face fx-flip__front" id="fx-flip-v1-front">
             <div class="fx-flip__media">
-              <span class="fx-flip__ph" role="img" aria-label="Espaço para o print do Portfólio v1">[Print do portfólio v1]</span>
+              <span class="fx-flip__ph" role="img" aria-label="Espaço para o print do Portfólio v1"><span>[Print do portfólio v<span class="fx-flip__one">1</span>]</span></span>
             </div>
             <div class="fx-flip__body">
               <p class="fx-flip__tag">Site · Canvas</p>
-              <h3 class="fx-flip__name">Portfólio v1</h3>
+              <h3 class="fx-flip__name">Portfólio v<span class="fx-flip__one">1</span></h3>
               <button class="fx-flip__btn" type="button" data-flip="open" aria-expanded="false" aria-controls="fx-flip-v1-back">
                 <span>Ver detalhes<span class="fx-sr"> do Portfólio v1</span></span>
                 <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M13 8a5 5 0 1 1-1.6-3.7M13 2.5v2.8h-2.8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -2515,7 +2896,7 @@ body {
           </div>
           <div class="fx-flip__face fx-flip__back" id="fx-flip-v1-back" role="group" aria-label="Detalhes do Portfólio v1">
             <p class="fx-flip__tag">Site · Canvas</p>
-            <h3 class="fx-flip__name">Portfólio v1</h3>
+            <h3 class="fx-flip__name">Portfólio v<span class="fx-flip__one">1</span></h3>
             <p class="fx-flip__label">O que eu fiz</p>
             <p class="fx-flip__text">[O que você quis testar com esse site e o que aprendeu fazendo ele]</p>
             <ul class="fx-flip__chips" role="list" aria-label="Tecnologias">
@@ -2556,7 +2937,7 @@ body {
 
   <section class="g-sec" id="g-entrada" aria-labelledby="g-entrada-t">
     <div class="g-sec__head">
-      <p class="fx-label g-sec__n"><span class="g-square" aria-hidden="true"></span>05</p>
+      <p class="fx-label g-sec__n"><span class="g-square" aria-hidden="true"></span><span>05</span></p>
       <h2 class="g-sec__t" id="g-entrada-t">Entrada no scroll</h2>
       <p class="g-sec__d">Role até ela: o título sobe de trás de uma máscara, os fios se desenham e o resto entra em sequência. &quot;Rever animação&quot; toca de novo.</p>
       <p class="g-sec__old"><span class="fx-label">No site antigo</span> Os textos entravam desfocados com blur, um efeito caro de desenhar.</p>
@@ -2608,7 +2989,7 @@ body {
 
   <section class="g-sec" id="g-terminal" aria-labelledby="g-terminal-t">
     <div class="g-sec__head">
-      <p class="fx-label g-sec__n"><span class="g-square" aria-hidden="true"></span>06</p>
+      <p class="fx-label g-sec__n"><span class="g-square" aria-hidden="true"></span><span>06</span></p>
       <h2 class="g-sec__t" id="g-terminal-t">Terminal</h2>
       <p class="g-sec__d">Digite help ou toque nos atalhos. Responde projetos, sobre, contato e tema, e guarda os segredos matrix, scan e cauanzera.</p>
       <p class="g-sec__old"><span class="fx-label">No site antigo</span> Uma janela estilo Windows antigo com os segredos matrix, scan, rose e cauanzera.</p>
@@ -2648,8 +3029,8 @@ body {
 
   <section class="g-sec" id="g-arco" aria-labelledby="g-arco-t">
     <div class="g-sec__head">
-      <p class="fx-label g-sec__n"><span class="g-square" aria-hidden="true"></span>07</p>
-      <h2 class="g-sec__t" id="g-arco-t">Menu em meio-arco</h2>
+      <p class="fx-label g-sec__n"><span class="g-square" aria-hidden="true"></span><span>07</span></p>
+      <h2 class="g-sec__t" id="g-arco-t">Menu em <span class="g-nobr">meio-arco</span></h2>
       <p class="g-sec__d">Clique no botão do meio e as cinco fatias abrem em leque. Funciona com as setas e Esc no teclado, e a fatia Tema troca o tema da página.</p>
       <p class="g-sec__old"><span class="fx-label">No site antigo</span> O menu principal, preso no topo da tela, com brilho e desfoque de fundo.</p>
     </div>
@@ -2733,10 +3114,10 @@ body {
 
   <section class="g-sec" id="g-contato" aria-labelledby="g-contato-t">
     <div class="g-sec__head">
-      <p class="fx-label g-sec__n"><span class="g-square" aria-hidden="true"></span>08</p>
+      <p class="fx-label g-sec__n"><span class="g-square" aria-hidden="true"></span><span>08</span></p>
       <h2 class="g-sec__t" id="g-contato-t">Contato</h2>
-      <p class="g-sec__d">Chegue perto do botão com o mouse e ele é puxado pelo cursor. Ao clicar, copia o e-mail e confirma com um check que se desenha.</p>
-      <p class="g-sec__old"><span class="fx-label">No site antigo</span> O e-mail era um link mailto e GitHub e LinkedIn ficavam em cards com desfoque de fundo.</p>
+      <p class="g-sec__d">Chegue perto do botão com o mouse e ele é puxado pelo cursor. Ao clicar, copia o <span class="g-nobr">e-mail</span> e confirma com um check que se desenha.</p>
+      <p class="g-sec__old"><span class="fx-label">No site antigo</span> O <span class="g-nobr">e-mail</span> era um link mailto e GitHub e LinkedIn ficavam em cards com desfoque de fundo.</p>
     </div>
     <div class="g-demo">
 <div class="fx-contato" data-fx="contato">
@@ -2779,6 +3160,21 @@ body {
   <p>Textos entre colchetes são espaços para o seu conteúdo.</p>
 </footer>
 
+<script>
+/* troca de fonte da galeria */
+(() => {
+  const root = document.documentElement;
+  const opts = [...document.querySelectorAll(".g-font__opt")];
+  const sync = () => { const cur = root.dataset.font || "nova"; opts.forEach(b => b.setAttribute("aria-pressed", String(b.dataset.fontSet === cur))); };
+  opts.forEach(b => b.addEventListener("click", () => {
+    const f = b.dataset.fontSet;
+    if (f === "nova") delete root.dataset.font; else root.dataset.font = f;
+    try { localStorage.setItem("g-font", f); } catch (e) {}
+    sync();
+  }));
+  sync();
+})();
+</script>
 <script>/* ceu */
 (() => {
   const root = document.querySelector('[data-fx="ceu"]');

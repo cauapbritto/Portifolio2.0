@@ -83,7 +83,7 @@
 
 .fx-card__tag {
   margin: 0;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 12px;
   letter-spacing: .06em;
   text-transform: uppercase;
@@ -95,6 +95,7 @@
   align-items: center;
   gap: 8px;
   margin: 8px 0 0;
+  font-family: var(--font-head);
   font-size: 24px;
   font-weight: 600;
   line-height: 1.2;
@@ -126,6 +127,7 @@
   margin: 10px 0 0;
   max-width: 48ch;
   color: var(--text-2);
+  font-family: var(--font-text);
   font-size: 16px;
   line-height: 1.55;
   text-wrap: pretty;
@@ -144,7 +146,7 @@
   padding: 3px 8px;
   border: 1px solid var(--line);
   border-radius: 4px;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 12px;
   line-height: 1.5;
   color: var(--text-2);
@@ -175,7 +177,7 @@
   gap: 6px;
   min-height: 44px;
   padding: 0 8px;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 12px;
   letter-spacing: .06em;
   text-transform: uppercase;
@@ -291,6 +293,41 @@
   }
 }
 
+/* Fonte antiga (Zero Hour): modos "titulos" e "tudo". No modo novo nada daqui se aplica.
+   A Zero Hour tem um peso so e ja e larga: titulo sem negrito sintetico e sem tracking negativo,
+   rotulos com bem menos espacamento entre letras. */
+:root[data-font="titulos"] .fx-card__title,
+:root[data-font="tudo"] .fx-card__title {
+  font-weight: 400;
+  letter-spacing: .01em;
+}
+:root[data-font="titulos"] .fx-card__tag,
+:root[data-font="tudo"] .fx-card__tag,
+:root[data-font="titulos"] .fx-card__sub,
+:root[data-font="tudo"] .fx-card__sub {
+  letter-spacing: .02em;
+}
+:root[data-font="titulos"] .fx-card__chips li,
+:root[data-font="tudo"] .fx-card__chips li {
+  padding: 2px 7px;
+  line-height: 16px;
+  letter-spacing: .02em;
+}
+/* Na Zero Hour o "1" e o "I" sao o mesmo traco ("v1" leria "VI"). Uma bandeirinha no topo,
+   com a espessura e a altura de maiuscula da propria fonte (Zero Hour UI = 86%), devolve o 1.
+   E fundo do proprio span: nada posicionado, nada a mais para pintar. */
+:root[data-font="titulos"] .fx-card__one,
+:root[data-font="tudo"] .fx-card__one {
+  margin-left: .075em;
+  padding-left: .15em;
+  background: linear-gradient(currentColor, currentColor) 0 calc((.968 - .749) * .86em) / .21em calc(.118 * .86em) no-repeat;
+}
+/* Texto corrido todo em maiusculas: um pouco mais de entrelinha e de ar entre as letras */
+:root[data-font="tudo"] .fx-card__desc {
+  line-height: 1.65;
+  letter-spacing: .02em;
+}
+
 /* Espaço reservado enquanto o print do projeto não existe */
 .fx-card__ph {
   display: grid;
@@ -298,10 +335,12 @@
   padding: 16px;
   border: 1px dashed var(--line-2);
   border-radius: inherit;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 12px;
   letter-spacing: .06em;
   text-transform: uppercase;
   text-align: center;
   color: var(--muted);
 }
+:root[data-font="titulos"] .fx-card__ph,
+:root[data-font="tudo"] .fx-card__ph { letter-spacing: .02em; }

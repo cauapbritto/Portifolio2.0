@@ -32,6 +32,24 @@ node build.js
 
 Esse comando reescreve o `index.html`.
 
+## Fontes
+
+No topo da página dá para escolher a fonte:
+
+- **Antiga nos títulos** (padrão): Zero Hour, a fonte do site antigo, nos títulos, nomes, botões e rótulos, e Schibsted Grotesk no texto corrido.
+- **Antiga em tudo**: Zero Hour também no texto corrido, como no site antigo.
+- **Nova**: Schibsted Grotesk e Martian Mono.
+
+A escolha fica salva no navegador. Os componentes usam fontes por papel, definidas em `src/tokens.css`:
+
+| Papel | Uso |
+| --- | --- |
+| `--font-head` | títulos, nomes de projeto, itens de menu |
+| `--font-text` | texto corrido e o e-mail |
+| `--font-label` | rótulos pequenos, tags, chips e botões |
+| `--font-code` | o terminal |
+| `--font-display` | o nome Cauanzera |
+
 ## Componentes
 
 | Pasta | Componente | O que faz |

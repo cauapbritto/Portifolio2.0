@@ -93,7 +93,7 @@
 .fx-tema__label {
   margin: 0;
   min-width: 12ch;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 12px;
   line-height: 1.4;
   letter-spacing: .06em;
@@ -132,14 +132,21 @@
 
 .fx-tema__name,
 .fx-tema__hex {
-  font-family: var(--font-mono);
   font-size: 11px;
   line-height: 1.35;
   letter-spacing: .04em;
   white-space: nowrap;
 }
-.fx-tema__name { color: var(--muted); text-transform: uppercase; }
-.fx-tema__hex { color: var(--text-2); min-height: 1.35em; }
+/* nome da cor = rótulo; valor hex = código (largura fixa: não pula quando o tema troca) */
+.fx-tema__name { font-family: var(--font-label); color: var(--muted); text-transform: uppercase; }
+.fx-tema__hex { font-family: var(--font-code); color: var(--text-2); min-height: 1.35em; }
+
+/* Fonte antiga (Zero Hour) nos rótulos: caixa-alta menor e mais larga, então +1px, menos espaço entre letras
+   e mais entre palavras. O hex continua mono. */
+:root[data-font="titulos"] .fx-tema__label,
+:root[data-font="tudo"] .fx-tema__label { font-size: 13px; letter-spacing: .03em; word-spacing: .15em; }
+:root[data-font="titulos"] .fx-tema__name,
+:root[data-font="tudo"] .fx-tema__name { font-size: 12px; letter-spacing: .03em; }
 
 @container (max-width: 640px) {
   .fx-tema__strip { padding: 12px; }

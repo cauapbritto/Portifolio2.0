@@ -13,21 +13,21 @@
 .g-head { padding-top: clamp(56px, 9vw, 120px); padding-bottom: clamp(40px, 6vw, 72px); border-bottom: 1px solid var(--line); }
 .g-square { display: inline-block; width: 8px; height: 8px; background: var(--accent); }
 .g-kicker { display: flex; align-items: center; gap: 10px; margin: 0; }
-.g-title { margin: 20px 0 0; font-size: clamp(40px, 7vw, 84px); font-weight: 600; line-height: .98; letter-spacing: -.03em; text-wrap: balance; }
+.g-title { margin: 20px 0 0; font-family: var(--font-head); font-size: clamp(40px, 7vw, 84px); font-weight: 600; line-height: .98; letter-spacing: -.03em; text-wrap: balance; }
 .g-lede { max-width: 620px; margin: 24px 0 0; font-size: clamp(18px, 1.6vw, 21px); line-height: 1.5; color: var(--text-2); text-wrap: pretty; }
 
 .g-index { margin-top: clamp(32px, 5vw, 56px); }
 .g-index ol { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); gap: 0 32px; margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
 .g-index li { border-bottom: 1px solid var(--line); }
-.g-index a { display: flex; align-items: baseline; gap: 14px; min-height: 48px; padding: 13px 0; color: var(--text); text-decoration: none; }
+.g-index a { font-family: var(--font-head); display: flex; align-items: baseline; gap: 14px; min-height: 48px; padding: 13px 0; color: var(--text); text-decoration: none; }
 .g-index a:hover { color: var(--text); }
 .g-index a:hover .g-index__n { color: var(--accent); }
-.g-index__n { font-family: var(--font-mono); font-size: 12px; color: var(--muted); transition: color var(--dur-1) var(--ease-out); }
+.g-index__n { font-family: var(--font-label); font-size: 12px; color: var(--muted); transition: color var(--dur-1) var(--ease-out); }
 
 .g-sec { padding-top: clamp(72px, 10vw, 128px); scroll-margin-top: 24px; }
 .g-sec__head { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; max-width: 760px; margin-bottom: clamp(24px, 4vw, 40px); }
 .g-sec__n { display: flex; align-items: center; gap: 10px; margin: 0; }
-.g-sec__t { margin: 0; font-size: clamp(30px, 4vw, 44px); font-weight: 600; line-height: 1.05; letter-spacing: -.02em; }
+.g-sec__t { margin: 0; font-family: var(--font-head); font-size: clamp(30px, 4vw, 44px); font-weight: 600; line-height: 1.05; letter-spacing: -.02em; }
 .g-sec__d { margin: 0; color: var(--text-2); text-wrap: pretty; }
 .g-sec__old { margin: 0; font-size: 15px; color: var(--muted); }
 .g-sec__old .fx-label { margin-right: 8px; }
@@ -35,5 +35,44 @@
 
 .g-foot { margin-top: clamp(96px, 12vw, 160px); padding-top: 28px; padding-bottom: 48px; border-top: 1px solid var(--line); }
 .g-foot p { max-width: 720px; margin: 0; font-size: 15px; color: var(--muted); }
+
+/* Troca de fonte (nova / antiga nos titulos / antiga em tudo). Cada opcao aparece escrita na propria fonte. */
+.g-font { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin-top: clamp(28px, 4vw, 40px); }
+.g-font__opts { display: inline-flex; gap: 4px; padding: 4px; border: 1px solid var(--line); border-radius: 999px; }
+.g-font__opt { min-height: 40px; padding: 8px 16px; border: 0; border-radius: 999px; background: transparent; color: var(--muted); font-size: 15px; line-height: 1.2; cursor: pointer; transition: color var(--dur-1) var(--ease-out), background-color var(--dur-1) var(--ease-out); }
+.g-font__opt:hover { color: var(--text); }
+.g-font__opt[aria-pressed="true"] { background: var(--surface-2); color: var(--text); box-shadow: inset 0 0 0 1px var(--line-2); }
+.g-font__opt--zh { font-family: "Zero Hour UI", var(--font-head); letter-spacing: .02em; }
+.g-font__opt--nova { font-family: "Schibsted Grotesk", system-ui, sans-serif; }
+@media (pointer: coarse) { .g-font__opt { min-height: 44px; } }
+@media (max-width: 560px) {
+  .g-font { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .g-font__opts { display: grid; grid-template-columns: minmax(0, 1fr); border-radius: var(--radius); }
+  .g-font__opt { border-radius: 4px; text-align: left; }
+}
+
+/* Zero Hour so tem um peso e ja e larga: sem tracking negativo nos titulos. */
+:root[data-font="titulos"] .g-title, :root[data-font="tudo"] .g-title { font-size: clamp(30px, 6.4vw, 76px); letter-spacing: 0; line-height: 1.04; }
+:root[data-font="titulos"] .g-sec__t, :root[data-font="tudo"] .g-sec__t { font-size: clamp(24px, 3.4vw, 38px); letter-spacing: .01em; line-height: 1.1; }
+:root[data-font="titulos"] .g-index__n, :root[data-font="tudo"] .g-index__n { letter-spacing: .02em; }
+:root[data-font="titulos"] .g-index a, :root[data-font="tudo"] .g-index a { font-size: 14px; letter-spacing: .03em; align-items: center; }
+:root[data-font="tudo"] .g-lede, :root[data-font="tudo"] .g-sec__d { line-height: 1.6; letter-spacing: .02em; }
+:root[data-font="tudo"] .g-sec__old, :root[data-font="tudo"] .g-foot p { line-height: 1.6; letter-spacing: .02em; }
+/* Rotulos da moldura na mesma escala dos componentes: kicker 13px, rotulo em linha 12px, pouco tracking
+   e um pouco mais de espaco entre palavras (o espaco da Zero Hour e curto). */
+:root:is([data-font="titulos"], [data-font="tudo"]) :is(.g-head, .g-sec__head) .fx-label { font-size: 13px; letter-spacing: .03em; word-spacing: .15em; }
+:root:is([data-font="titulos"], [data-font="tudo"]) .g-sec__old .fx-label { font-size: 12px; }
+/* Numeros do indice com largura fixa: na Zero Hour o "01" e mais estreito e os nomes nao alinhavam. */
+:root:is([data-font="titulos"], [data-font="tudo"]) .g-index__n { flex: none; min-width: 1.9em; }
+/* Na Zero Hour o "1" e o mesmo traco do "I" ("01" lia "OI"): a mesma bandeirinha dos cards de projeto. */
+:root:is([data-font="titulos"], [data-font="tudo"]) .g-one {
+  margin-left: .075em;
+  padding-left: .15em;
+  background: linear-gradient(currentColor, currentColor) 0 calc((.968 - .749) * .86em) / .21em calc(.118 * .86em) no-repeat;
+}
+/* Palavras com hifen ("e-mail") nao quebram no meio: em caixa alta larga "E-" sozinho no fim da linha le mal. */
+:root:is([data-font="titulos"], [data-font="tudo"]) .g-nobr { white-space: nowrap; }
+/* "tudo": rotulo e frase ficam na mesma fonte; o rotulo sobe para a propria linha para nao virar parte da frase. */
+:root[data-font="tudo"] .g-sec__old .fx-label { display: block; margin: 0 0 4px; }
 
 @media (prefers-reduced-motion: reduce) { .g-progress { display: none; } }
