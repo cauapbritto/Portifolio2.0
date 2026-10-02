@@ -216,3 +216,6 @@
 .calmo .inicio__conteudo { transform: none; opacity: 1; }
 .calmo .inicio__planeta { transform: translateX(-50%); }
 .calmo .inicio__dica { opacity: 1; }
+
+/* Sem JS não há céu interativo para tocar. */
+html:not(.js) .inicio__dica { display: none; }

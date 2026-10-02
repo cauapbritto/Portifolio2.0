@@ -52,8 +52,13 @@
 }
 
 /* ---------- Trilha horizontal ---------- */
+/* Lista empilhada com o trilho de capítulos na tela: espaço à direita para ele, como no Sobre e no Contato. */
+@media (min-width: 761px) {
+  .projetos:not(.projetos--trilha) .projetos__palco { padding-right: calc(var(--gutter) + 96px); }
+}
 .projetos--trilha {
-  --slide: min(1080px, max(68vw, 900px));
+  /* O slide do centro nunca chega ao trilho de capítulos (uns 100px na borda direita). */
+  --slide: min(1080px, max(68vw, 900px), calc(100vw - 220px));
   --vao: 8vw;
 }
 .projetos--trilha .projetos__palco {
@@ -295,6 +300,8 @@
    Nomes sem negrito sintético nem tracking negativo, e um corpo maior para compensar os 86% da Zero Hour UI. */
 :root:is([data-font="titulos"], [data-font="tudo"]) .projeto__nome { font-size: clamp(40px, 4.9vw, 74px); font-weight: 400; line-height: 1; letter-spacing: .01em; }
 :root:is([data-font="titulos"], [data-font="tudo"]) .projeto__fim-titulo { font-size: clamp(24px, 3.7vw, 53px); font-weight: 400; letter-spacing: .01em; }
+/* Na trilha o card final é estreito, e "EXPERIMENTOS" na Zero Hour não caberia: título menor. */
+:root:is([data-font="titulos"], [data-font="tudo"]) .projetos--trilha .projeto__fim-titulo { font-size: clamp(22px, 2.2vw, 32px); }
 :root:is([data-font="titulos"], [data-font="tudo"]) .projeto__meta,
 :root:is([data-font="titulos"], [data-font="tudo"]) .projeto__link,
 :root:is([data-font="titulos"], [data-font="tudo"]) .projeto__github { font-size: 13px; letter-spacing: .03em; word-spacing: .15em; }
@@ -321,3 +328,6 @@
   :root .projetos--trilha .projeto__chips { margin-top: 0; }
   :root .projetos--trilha .projeto__links { margin-top: 0; padding-top: 8px; }
 }
+
+/* Sem JS a lista fica empilhada e o contador não teria o que contar. */
+html:not(.js) .projetos__contador { display: none; }

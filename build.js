@@ -3,7 +3,7 @@
 //   <!-- @css -->   tokens, base e o style.css de cada parte (na ordem de PARTES)
 //   <!-- @nome -->  o part.html da parte src/partes/<nome>/
 //   <!-- @js -->    o núcleo e o script.js de cada parte (na ordem de PARTES)
-// O resultado é um index.html único, pronto para o GitHub Pages.
+// O resultado é um index.html único, pronto para o GitHub Pages, e o en.html, a versão em inglês.
 const fs = require('fs');
 const path = require('path');
 
@@ -50,3 +50,21 @@ partes.forEach((p) => {
 
 fs.writeFileSync(path.join(ROOT, 'index.html'), `${html}\n`);
 console.log('index.html gerado:', (Buffer.byteLength(html) / 1024).toFixed(0), 'KB,', partes.length, 'partes');
+
+// en.html: a mesma página com o <head> já em inglês (título, descrição, canonical, og:*), para buscadores e
+// prévias de link, que não rodam JavaScript. O corpo troca para o inglês no navegador, pelos data-en.
+// O português do <head> fica guardado em data-pt e data-pt-*, para o botão PT voltar.
+const fim = html.indexOf('</head>');
+let cabeca = html.slice(0, fim);
+cabeca = cabeca.replace(/<html\b/, '<html data-pagina="en"');
+cabeca = cabeca.replace(/<(meta|link)\b[^>]*\sdata-en-[a-z-]+="[^"]*"[^>]*>/g, (tag) => {
+  let novo = tag;
+  for (const [, attr, en] of tag.matchAll(/\sdata-en-([a-z-]+)="([^"]*)"/g)) {
+    novo = novo.replace(new RegExp(`(\\s)${attr}="([^"]*)"`), (m, esp, pt) => `${esp}${attr}="${en}" data-pt-${attr}="${pt}"`);
+  }
+  return novo;
+});
+cabeca = cabeca.replace(/<title data-en="([^"]*)">([^<]*)<\/title>/, (m, en, pt) => `<title data-en="${en}" data-pt="${pt}">${en}</title>`);
+const en = cabeca + html.slice(fim);
+fs.writeFileSync(path.join(ROOT, 'en.html'), `${en}\n`);
+console.log('en.html gerado');

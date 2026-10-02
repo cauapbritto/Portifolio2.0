@@ -9,6 +9,8 @@ html {
   overscroll-behavior-x: none;
   scroll-padding: calc(var(--hud) + 64px) 0 calc(var(--hud) + 110px);
 }
+/* Zoom de 400%: o HUD rola com a página e o menu sai (ver hud e arco), então quase não há o que desviar. */
+@media (max-height: 300px) { html { scroll-padding: 8px 0; } }
 body {
   margin: 0;
   min-height: 100vh;
@@ -177,6 +179,9 @@ main { position: relative; z-index: 2; }
   .email__email { font-size: 22px !important; }
   .rodape { padding: 12px 0 0 !important; }
   .botao, .projeto__chips li { background: #fff !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+  .projeto__links { display: grid !important; gap: 4px !important; }
+  .projeto__link { display: block !important; }
+  .projeto__link svg { display: none !important; }
   a[href^="http"]::after { content: " (" attr(href) ")"; font-family: var(--font-code); font-size: 9px; letter-spacing: 0; text-transform: none; color: #555; word-break: break-all; }
   a.email__email::after, .email__link[download]::after { content: none; }
   h2, h3 { break-after: avoid; }

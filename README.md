@@ -18,7 +18,7 @@ Sempre na tela:
 
 - **Topo**: `EN`/`PT` troca o idioma, Currículo baixa o PDF, Ajustes escolhe a fonte e o movimento, e Terminal abre o terminal.
 - **Menu em meio-arco** (embaixo, no centro): Sobre, Projetos, Contato, Som e Tema.
-- **Trilho de capítulos** (à direita): mostra onde você está e leva a qualquer capítulo.
+- **Trilho de capítulos** (à direita): mostra onde você está e leva a qualquer capítulo; o nome aparece ao passar o mouse ou no foco.
 - **Terminal** (botão no topo ou tecla `/`): `help`, `sobre`, `projetos`, `contato`, `cv`, `ir <capítulo>`, `tema`, `som`, `fonte`, `movimento`, `idioma`, `atalhos`, `limpar` e `sair`, e os segredos `matrix`, `scan`, `warp` e `cauanzera`. Em inglês os mesmos comandos aparecem como `about`, `projects`, `go`, `lang` etc.; os dois nomes sempre funcionam.
 - **Som** (desligado no começo): um ambiente grave gerado na hora com Web Audio, um vento que cresce com a velocidade da rolagem e cliques curtos na interface.
 - **Atalhos**: `/` abre o terminal (`atalhos off` no terminal desliga), `Alt+0` a `Alt+3` levam aos capítulos, `Esc` fecha o terminal e o menu.
@@ -31,7 +31,7 @@ Abra o `index.html` no navegador. Para testar como num servidor:
 python3 -m http.server
 ```
 
-Depois acesse http://localhost:8000 (ou http://localhost:8000/?lang=en para ver em inglês).
+Depois acesse http://localhost:8000 (ou http://localhost:8000/en.html para ver em inglês).
 
 ## Como editar
 
@@ -61,11 +61,13 @@ Depois de editar, gere a página de novo com Node.js:
 node build.js
 ```
 
-Esse comando reescreve o `index.html`, que junta tudo num arquivo só, pronto para o GitHub Pages.
+Esse comando reescreve o `index.html`, que junta tudo num arquivo só, pronto para o GitHub Pages, e o `en.html`, a versão em inglês (a mesma página, com o `<head>` já em inglês).
 
 ## Idiomas
 
-O português é o padrão. O inglês aparece quando a pessoa escolhe `EN` no topo (ou `idioma en` no terminal), quando o endereço tem `?lang=en`, ou quando o navegador não tem português entre os idiomas preferidos. A escolha fica salva no navegador e o endereço acompanha a troca, para quem copiar o link ver o mesmo idioma. O currículo em PDF continua em português.
+O português é o padrão, em `cauabrito.com.br`. A versão em inglês fica em `cauabrito.com.br/en.html` e também aparece quando a pessoa escolhe `EN` no topo (ou `idioma en` no terminal), ou quando o navegador não tem português entre os idiomas preferidos. A escolha fica salva no navegador e o endereço acompanha a troca, para quem copiar o link ver o mesmo idioma. O currículo em PDF continua em português.
+
+O `en.html` é gerado pelo `build.js`: título, descrição, canonical e as tags de compartilhamento (`og:*`, com a imagem `assets/og-en.jpg`) já vêm em inglês, porque buscadores e prévias de link (LinkedIn, WhatsApp) não rodam JavaScript. O português desses campos fica em `data-pt` e `data-pt-*`, para o botão PT voltar.
 
 O texto em inglês fica no próprio HTML, ao lado do português:
 
@@ -106,7 +108,7 @@ Na Zero Hour o "1" é o mesmo traço do "I": nos rótulos, o número ganha `<spa
 
 ## Domínio
 
-O arquivo `CNAME` aponta o GitHub Pages para `cauabrito.com.br`. A imagem de compartilhamento (`assets/og.jpg`), o `sitemap.xml` (com as duas versões de idioma) e o `robots.txt` usam esse endereço.
+O arquivo `CNAME` aponta o GitHub Pages para `cauabrito.com.br`. As imagens de compartilhamento (`assets/og.jpg` e `assets/og-en.jpg`), o `sitemap.xml` (com as duas versões de idioma) e o `robots.txt` usam esse endereço.
 
 ## Créditos
 

@@ -347,3 +347,9 @@ html:not(.js) .arco { display: none; }
   .arco__toggle { width: 44px; height: 44px; margin: -22px 0 0 -22px; }
   .arco__rotulo { display: none; }
 }
+
+/* Tela muito baixa (zoom de 400% num notebook): o botão fixo cobriria boa parte do conteúdo. Navegação pela
+   rolagem, pelo topo e pelo terminal (que também troca tema e som). */
+@media (max-height: 300px) {
+  .arco { display: none; }
+}

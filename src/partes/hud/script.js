@@ -124,7 +124,7 @@
   /* ---------- terminal e atalhos ---------- */
   if (btnTerminal) btnTerminal.addEventListener('click', () => CZ.emit('terminal:abrir', btnTerminal));
 
-  /* ---------- idioma: o link leva a ?lang=; com JS a troca é na hora, sem recarregar ---------- */
+  /* ---------- idioma: o link leva ao en.html (ou de volta à página inicial); com JS a troca é na hora, sem recarregar ---------- */
   const btnIdioma = document.querySelector('[data-idioma]');
   if (btnIdioma) btnIdioma.addEventListener('click', (e) => {
     if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;

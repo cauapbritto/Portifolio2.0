@@ -379,3 +379,9 @@
   :root:is([data-font="titulos"], [data-font="tudo"]) .term__title { font-size: 10.5px; line-height: 17px; letter-spacing: 0; }
   :root:is([data-font="titulos"], [data-font="tudo"]) .term__chip { font-size: 11px; padding: 0 4px; }
 }
+
+/* Tela baixa (zoom grande): a janela começa no topo e o terminal rola, para a barra com o botão de fechar
+   nunca ficar acima da tela. */
+@media (max-height: 420px) {
+  .term { place-items: start center; overflow-y: auto; padding-top: 8px; padding-bottom: 8px; }
+}

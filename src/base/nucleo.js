@@ -114,18 +114,20 @@ window.CZ = (() => {
 
   /* ---------- idioma ---------- */
 
-  // "pt" (padrão) ou "en". O script do <head> já escolheu: ?lang= no endereço, a escolha salva ou os idiomas do navegador.
+  // "pt" (padrão) ou "en". O script do <head> já escolheu: en.html, ?lang= no endereço, a escolha salva ou os idiomas do navegador.
   // O inglês fica no próprio HTML, ao lado do português: data-en troca o conteúdo do elemento e
   // data-en-aria-label, data-en-alt etc. trocam o atributo. Textos montados por script usam CZ.t('pt', 'en').
+  // No en.html o <head> já vem em inglês (feito pelo build.js) e o português fica em data-pt e data-pt-*.
   const ATRIBUTOS = ['aria-label', 'alt', 'title', 'placeholder', 'content', 'href', 'hreflang', 'lang', 'data-cmd'];
   const SELETOR_EN = ['[data-en]'].concat(ATRIBUTOS.map((a) => `[data-en-${a}]`)).join(',');
   let idioma = html.lang === 'en' ? 'en' : 'pt';
   const t = (pt, en) => (idioma === 'en' ? en : pt);
   // O português original de cada elemento, guardado antes de qualquer parte mexer nele.
   const originais = new Map();
+  const pt = (el, a) => (el.hasAttribute(`data-pt${a}`) ? el.getAttribute(`data-pt${a}`) : null);
   document.querySelectorAll(SELETOR_EN).forEach((el) => {
-    const o = { html: el.hasAttribute('data-en') ? el.innerHTML : null, attrs: {} };
-    ATRIBUTOS.forEach((a) => { if (el.hasAttribute(`data-en-${a}`)) o.attrs[a] = el.getAttribute(a); });
+    const o = { html: el.hasAttribute('data-en') ? (pt(el, '') ?? el.innerHTML) : null, attrs: {} };
+    ATRIBUTOS.forEach((a) => { if (el.hasAttribute(`data-en-${a}`)) o.attrs[a] = pt(el, `-${a}`) ?? el.getAttribute(a); });
     originais.set(el, o);
   });
   function traduzir() {
@@ -145,19 +147,24 @@ window.CZ = (() => {
     html.lang = t('pt-BR', 'en');
     store.set('cz-idioma', l);
     traduzir();
-    // O endereço acompanha (?lang=en), para quem copiar o link ver o mesmo idioma.
-    if (history.replaceState) {
-      const q = new URLSearchParams(location.search);
-      if (l === 'en') q.set('lang', 'en');
-      else q.delete('lang');
-      const s = q.toString();
-      history.replaceState(null, '', location.pathname + (s ? `?${s}` : '') + location.hash);
-    }
+    acertarEndereco();
     emit('idioma', l);
     medir();
     agendar();
   }
+  // O endereço acompanha o idioma (en.html ou a página inicial), para quem copiar o link ver o mesmo idioma.
+  function acertarEndereco() {
+    const q = new URLSearchParams(location.search);
+    q.delete('lang');
+    const s = q.toString();
+    const pagina = idioma === 'en' ? 'en.html' : (location.protocol === 'file:' ? 'index.html' : '');
+    const alvo = location.pathname.replace(/[^/]*$/, '') + pagina + (s ? `?${s}` : '') + location.hash;
+    if (alvo !== location.pathname + location.search + location.hash) {
+      try { history.replaceState(history.state, '', alvo); } catch (e) { /* file:// pode recusar: o endereço só não muda */ }
+    }
+  }
   if (idioma === 'en') traduzir();
+  acertarEndereco();
   html.classList.remove('traduzindo');
 
   /* ---------- capítulos e rolagem ---------- */
@@ -211,7 +218,8 @@ window.CZ = (() => {
     emit('voo', false);
   }
   ['wheel', 'touchstart', 'keydown'].forEach((t) => addEventListener(t, (e) => {
-    if (t === 'keydown' && !['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '].includes(e.key)) return;
+    // Tab também para: o foco pode sair para longe, e o navegador precisa poder rolar até ele.
+    if (t === 'keydown' && !['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' ', 'Tab'].includes(e.key)) return;
     pararVoo();
   }, { passive: true }));
 
