@@ -355,7 +355,7 @@
     { name: 'cv', aliases: ['curriculo', 'resume', 'curriculum'], desc: ['baixa o currículo em PDF', 'downloads my résumé (PDF, in Portuguese)'], run: cv },
     { name: 'ir', en: 'go', aliases: ['cd', 'go', 'voar'], desc: ['voa até um capítulo: ir projetos', 'flies to a chapter: go projects'], run: ir },
     { name: 'tema', en: 'theme', aliases: ['theme'], desc: ['alterna claro e escuro', 'toggles light and dark'], run: tema },
-    { name: 'som', en: 'sound', aliases: ['sound', 'audio', 'música'], desc: ['liga ou desliga o som', 'turns the sound on or off'], run: som },
+    { name: 'som', en: 'sound', aliases: ['sound', 'audio', 'musica'], desc: ['liga ou desliga o som', 'turns the sound on or off'], run: som },
     { name: 'fonte', en: 'font', aliases: ['font', 'fontes'], desc: ['troca a fonte: fonte titulos, tudo ou nova', 'changes the font: font headings, all or new'], run: fonte },
     { name: 'movimento', en: 'motion', aliases: ['motion', 'calmo', 'animacoes'], desc: ['movimento calmo ou normal', 'calm or normal motion'], run: movimentoCmd },
     { name: 'idioma', en: 'lang', aliases: ['lang', 'language', 'lingua'], desc: ['troca o idioma: idioma en ou pt', 'switches the language: lang pt or en'], run: idiomaCmd },
@@ -405,7 +405,7 @@
       link(CODIGO(), LINKS.ecoCode, CZ.t('EcoPontos: código no GitHub', 'EcoPontos: code on GitHub') + NOVA_ABA()),
     ]), 'indent');
     print(CZ.t('Portfólio 2.0', 'Portfolio 2.0'), 'strong gap');
-    print(CZ.t('Este site: um céu 3D que a rolagem atravessa, sem framework. Evolução do v1.', 'This site: a 3D sky you travel through as you scroll, no framework. The next step after v1.'), 'indent');
+    print(CZ.t('Este site: um céu 3D que a rolagem atravessa, sem framework. Evolução do v1.', 'This site: a 3D starfield you travel through as you scroll, with no frameworks. The next step after v1.'), 'indent');
     print('HTML, CSS, JavaScript, Canvas 2D, Web Audio', 'muted indent');
     print(fill(node('span', 'term__links'), [
       link(CODIGO(), LINKS.v2Code, CZ.t('Portfólio 2.0: código no GitHub', 'Portfolio 2.0: code on GitHub') + NOVA_ABA()),
@@ -415,15 +415,15 @@
   }
   function sobre() {
     print('Cauã Pedrozo Brito', 'strong');
-    print(CZ.t('Desenvolvedor front-end em formação. Aberto a oportunidades em front-end, em Cuiabá, MT, ou remoto.', 'Front-end developer in training. Open to front-end roles, in Cuiabá, Brazil, or remote.'));
-    print(CZ.t('Analista de TI na Casa Civil do Governo de Mato Grosso. Estuda Análise e Desenvolvimento de Sistemas na FASIPE.', 'IT Analyst at the Casa Civil of the Mato Grosso State Government. Studies Systems Analysis and Development at FASIPE.'), 'muted');
-    print([botaoIr(CZ.t('ler o capítulo sobre ↘', 'read the about chapter ↘'), 'sobre')], 'gap');
+    print(CZ.t('Desenvolvedor front-end em formação. Aberto a oportunidades em front-end, em Cuiabá, MT, ou remoto.', 'Front-end developer in training. Open to front-end roles in Cuiabá, Brazil, or remote.'));
+    print(CZ.t('Analista de TI na Casa Civil do Governo de Mato Grosso. Estuda Análise e Desenvolvimento de Sistemas na FASIPE.', 'IT Analyst at the Casa Civil (Chief of Staff’s Office) of the Mato Grosso State Government. Systems Analysis and Development student at FASIPE.'), 'muted');
+    print([botaoIr(CZ.t('ler o capítulo sobre ↘', 'read the About chapter ↘'), 'sobre')], 'gap');
   }
   function contato() {
     row(CZ.t('e-mail', 'email'), link('caua.pbritto@gmail.com', LINKS.email, CZ.t('Enviar e-mail para caua.pbritto@gmail.com', 'Send an email to caua.pbritto@gmail.com')));
     row('github', link('cauapbritto ↗', LINKS.github, 'GitHub: cauapbritto' + NOVA_ABA()));
     row('linkedin', link('cauã-pedrozo-brito ↗', LINKS.linkedin, CZ.t('LinkedIn de Cauã Pedrozo Brito', 'Cauã Pedrozo Brito on LinkedIn') + NOVA_ABA()));
-    row(CZ.t('currículo', 'résumé'), baixar(CZ.t('PDF ↓', 'PDF, in Portuguese ↓'), LINKS.cv, CZ.t('Baixar o currículo em PDF', 'Download the résumé in PDF (in Portuguese)')));
+    row(CZ.t('currículo', 'résumé'), baixar(CZ.t('PDF ↓', 'PDF, in Portuguese ↓'), LINKS.cv, CZ.t('Baixar o currículo em PDF', 'Download résumé (PDF, in Portuguese)')));
   }
   function baixar(text, href, label) {
     const a = node('a', '', text);
@@ -433,7 +433,7 @@
     return a;
   }
   function cv() {
-    print([CZ.t('currículo de Cauã Pedrozo Brito: ', 'Cauã Pedrozo Brito’s résumé (in Portuguese): '), baixar(CZ.t('baixar PDF ↓', 'download PDF ↓'), LINKS.cv, CZ.t('Baixar o currículo em PDF', 'Download the résumé in PDF (in Portuguese)'))]);
+    print([CZ.t('currículo de Cauã Pedrozo Brito: ', 'Cauã Pedrozo Brito’s résumé (in Portuguese): '), baixar(CZ.t('baixar PDF ↓', 'download PDF ↓'), LINKS.cv, CZ.t('Baixar o currículo em PDF', 'Download résumé (PDF, in Portuguese)'))]);
   }
   function ir(args) {
     const alvo = SECOES[normalize(args[0] || '')];
@@ -442,7 +442,7 @@
       print([CZ.t('para onde? ', 'where to? '), k('ir inicio', 'go home'), ', ', k('ir sobre', 'go about'), ', ', k('ir projetos', 'go projects'), CZ.t(' ou ', ' or '), k('ir contato', 'go contact')], 'muted');
       return;
     }
-    const DESTINOS = { inicio: ['o início', 'the top'], sobre: ['sobre', 'about'], projetos: ['projetos', 'projects'], contato: ['contato', 'contact'] };
+    const DESTINOS = { inicio: ['o início', 'Home'], sobre: ['sobre', 'About'], projetos: ['projetos', 'Projects'], contato: ['contato', 'Contact'] };
     print(CZ.t(`voando até ${DESTINOS[alvo][0]}...`, `flying to ${DESTINOS[alvo][1]}...`), 'muted');
     fecharE(() => CZ.ir(alvo));
   }
@@ -455,7 +455,7 @@
   CZ.on('som:estado', (on) => { somLigado = on; });
   function som() {
     CZ.emit('som:alternar');
-    print(somLigado ? CZ.t('som ligado. use fones para a melhor viagem.', 'sound on. headphones make the best trip.') : CZ.t('som desligado.', 'sound off.'), 'muted');
+    print(somLigado ? CZ.t('som ligado. use fones para a melhor viagem.', 'sound on. put on headphones for the best trip.') : CZ.t('som desligado.', 'sound off.'), 'muted');
   }
   const FONTES = { titulos: 'titulos', titulo: 'titulos', antiga: 'titulos', headings: 'titulos', classic: 'titulos', tudo: 'tudo', all: 'tudo', nova: 'nova', new: 'nova' };
   const NOMES_FONTE = { titulos: ['antiga nos títulos', 'classic in headings'], tudo: ['antiga em tudo', 'classic everywhere'], nova: ['nova', 'new'] };
@@ -483,7 +483,7 @@
       print([CZ.t('opções: ', 'options: '), k('movimento calmo', 'motion calm'), CZ.t(' ou ', ' or '), k('movimento normal', 'motion normal')], 'muted');
       return;
     }
-    if (CZ.sistemaReduz && pedido !== 'calmo' && pedido !== 'calm') print(CZ.t('o sistema pede menos movimento, então o site continua calmo.', 'your system asks for less motion, so the site stays calm.'), 'muted');
+    if (CZ.sistemaReduz && pedido !== 'calmo' && pedido !== 'calm') print(CZ.t('o sistema pede menos movimento, então o site continua calmo.', 'your system is set to reduce motion, so the site stays calm.'), 'muted');
     else print(CZ.movimento() === 'calmo' ? CZ.t('movimento calmo: nada se mexe sozinho.', 'calm motion: nothing moves on its own.') : CZ.t('céu em movimento de novo.', 'the sky is moving again.'), 'muted');
   }
   const IDIOMAS = { en: 'en', english: 'en', ingles: 'en', pt: 'pt', 'pt-br': 'pt', portugues: 'pt', portuguese: 'pt' };
@@ -498,13 +498,13 @@
   }
   function atalhos(args) {
     const pedido = normalize(args[0] || '');
-    if (pedido === 'off' || pedido === 'desligar') { CZ.store.set('cz-atalhos', 'off'); print(CZ.t('atalho / desligado. o terminal continua no botão do topo.', 'shortcut / disabled. the terminal is still in the button at the top.'), 'muted'); return; }
+    if (pedido === 'off' || pedido === 'desligar') { CZ.store.set('cz-atalhos', 'off'); print(CZ.t('atalho / desligado. o terminal continua no botão do topo.', 'shortcut / disabled. the terminal is still available from the button at the top.'), 'muted'); return; }
     if (pedido === 'on' || pedido === 'ligar') { CZ.store.set('cz-atalhos', 'on'); print(CZ.t('atalho / ligado.', 'shortcut / enabled.'), 'muted'); return; }
     const off = CZ.store.get('cz-atalhos') === 'off';
     print(CZ.t('atalhos', 'shortcuts'), 'strong');
     row('/', CZ.t(`abre o terminal${off ? ' (desligado)' : ''}`, `opens the terminal${off ? ' (disabled)' : ''}`), 'indent');
-    row('alt+0..3', CZ.t('vai para início, sobre, projetos e contato', 'goes to home, about, projects and contact'), 'indent');
-    row('← →', CZ.t('na trilha de projetos, anterior e próximo', 'on the projects track, previous and next'), 'indent');
+    row('alt+0..3', CZ.t('vai para início, sobre, projetos e contato', 'jumps to Home, About, Projects and Contact'), 'indent');
+    row('← →', CZ.t('na trilha de projetos, anterior e próximo', 'previous / next project (on the projects track)'), 'indent');
     row('esc', CZ.t('fecha o terminal e o menu', 'closes the terminal and the menu'), 'indent');
     print([CZ.t('para desligar o /: ', 'to disable /: '), node('span', 'term__k', CZ.t('atalhos off', 'shortcuts off'))], 'muted gap');
   }
@@ -512,8 +512,8 @@
     fechar();
   }
   function warp() {
-    print(CZ.t('segure firme...', 'hold on tight...'), 'muted');
     if (CZ.reduzido()) { print(CZ.t('o movimento reduzido está ligado; a viagem fica para outra hora.', 'reduced motion is on; the trip will have to wait.'), 'muted'); return; }
+    print(CZ.t('segure firme...', 'hold on tight...'), 'muted');
     fecharE(() => CZ.emit('warp'));
   }
   function limpar() {
