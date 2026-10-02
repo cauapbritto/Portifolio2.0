@@ -1,0 +1,300 @@
+.fx-terminal {
+  --fx-terminal-px: 20px;
+  --fx-terminal-lh: 1.75;
+  max-width: 880px;
+  color: var(--text);
+  font-family: var(--font-mono);
+}
+
+.fx-terminal__win {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+/* Barra de título: discreta, só identifica a janela e o processo em curso. */
+.fx-terminal__bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 38px;
+  padding: 0 var(--fx-terminal-px);
+  border-bottom: 1px solid var(--line);
+  font-size: 11px;
+  letter-spacing: .02em;
+  color: var(--muted);
+}
+.fx-terminal__dots { display: flex; gap: 6px; }
+.fx-terminal__dots i {
+  display: block;
+  width: 7px;
+  height: 7px;
+  border: 1px solid var(--line-2);
+  border-radius: 50%;
+}
+.fx-terminal__title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fx-terminal__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  font-size: 10px;
+}
+.fx-terminal__status::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--line-2);
+  transition: background-color var(--dur-1) var(--ease-out);
+}
+.fx-terminal--busy .fx-terminal__status::before { background: var(--accent); }
+
+/* Tela: a saída rola sozinha; canvas e linha de varredura ficam por cima, sem capturar o ponteiro. */
+.fx-terminal__screen { position: relative; overflow: hidden; }
+
+.fx-terminal__out {
+  position: relative;
+  height: 320px;
+  max-height: 320px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 16px var(--fx-terminal-px) 18px;
+  font-size: 13px;
+  line-height: var(--fx-terminal-lh);
+  color: var(--text-2);
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-2) transparent;
+  container-type: inline-size;
+  transition: opacity var(--dur-2) var(--ease-out);
+}
+.fx-terminal__out:focus-visible { outline-offset: -2px; }
+
+.fx-terminal__line {
+  position: relative;
+  min-height: calc(1em * var(--fx-terminal-lh));
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  text-wrap: pretty;
+}
+.fx-terminal__line--muted { color: var(--muted); }
+.fx-terminal__line--strong { color: var(--text); }
+.fx-terminal__line--cmd { margin-top: 12px; color: var(--text); }
+.fx-terminal__line--cmd:first-child { margin-top: 0; }
+.fx-terminal__line--gap { margin-top: 10px; }
+
+.fx-terminal__p { color: var(--accent); margin-right: 1ch; }
+.fx-terminal__k { color: var(--accent); }
+.fx-terminal__ph { color: var(--muted); }
+
+.fx-terminal__row {
+  display: grid;
+  grid-template-columns: 10ch minmax(0, 1fr);
+  column-gap: 2ch;
+}
+.fx-terminal__row > :first-child { color: var(--text); }
+.fx-terminal__row > :last-child { color: var(--muted); }
+.fx-terminal__line--indent { padding-left: 2ch; }
+
+.fx-terminal__out a {
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: var(--line-2);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  transition: color var(--dur-1) var(--ease-out), text-decoration-color var(--dur-1) var(--ease-out);
+}
+.fx-terminal__links { display: flex; flex-wrap: wrap; column-gap: 3ch; }
+
+/* Nome na fonte da marca, revelado letra a letra por uma máscara. */
+.fx-terminal__name {
+  display: inline-block;
+  position: relative;
+  margin: 6px 0 4px;
+  font-family: var(--font-display);
+  font-size: clamp(22px, 8.4cqi, 60px);
+  line-height: 1.05;
+  letter-spacing: .02em;
+  color: var(--text);
+  white-space: nowrap;
+}
+.fx-terminal__letters { display: inline-flex; overflow: hidden; padding: .06em 0 .1em; vertical-align: top; }
+.fx-terminal__letters > span { display: block; }
+.fx-terminal__rule {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--accent);
+  transform-origin: 0 50%;
+}
+
+/* Linhas que chegam: aparecem com um corte da esquerda para a direita, em sequência curta. */
+@media (prefers-reduced-motion: no-preference) {
+  .fx-terminal__line--in {
+    animation: fx-terminal-type 200ms steps(8, end) backwards;
+    animation-delay: calc(var(--d, 0) * 26ms);
+  }
+  .fx-terminal__letters > span {
+    animation: fx-terminal-rise 520ms var(--ease-out) backwards;
+    animation-delay: calc(120ms + var(--i, 0) * 55ms);
+  }
+  .fx-terminal__rule {
+    animation: fx-terminal-rule 640ms var(--ease-out) backwards;
+    animation-delay: 640ms;
+  }
+  .fx-terminal__line--gone {
+    opacity: 0;
+    transition: opacity 140ms var(--ease-out);
+  }
+}
+@keyframes fx-terminal-type {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+@keyframes fx-terminal-rise {
+  from { transform: translateY(105%); }
+  to { transform: translateY(0); }
+}
+@keyframes fx-terminal-rule {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+/* Destaque passageiro de cada linha durante o scan (só opacidade de uma camada). */
+.fx-terminal--scanning .fx-terminal__line::before {
+  content: "";
+  position: absolute;
+  inset: 0 calc(-1 * var(--fx-terminal-px));
+  background: rgba(var(--glow), .1);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.fx-terminal__rain {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 280ms var(--ease-out);
+}
+.fx-terminal--matrix .fx-terminal__rain { opacity: 1; }
+.fx-terminal--matrix .fx-terminal__out { opacity: .05; }
+
+.fx-terminal__scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 72px;
+  pointer-events: none;
+  opacity: 0;
+  border-bottom: 1px solid var(--accent);
+  background: linear-gradient(to bottom, rgba(var(--glow), 0), rgba(var(--glow), .07));
+  transform: translateY(-72px);
+}
+
+/* Linha de entrada: o input ocupa a linha toda, então o foco desenha a moldura inteira. */
+.fx-terminal__form {
+  position: relative;
+  display: flex;
+  border-top: 1px solid var(--line);
+}
+.fx-terminal__prompt {
+  position: absolute;
+  left: var(--fx-terminal-px);
+  top: 50%;
+  transform: translateY(-52%);
+  color: var(--accent);
+  font-size: 15px;
+  line-height: 1;
+  pointer-events: none;
+}
+.fx-terminal__input {
+  flex: 1;
+  min-width: 0;
+  height: 50px;
+  margin: 0;
+  padding: 0 var(--fx-terminal-px) 0 calc(var(--fx-terminal-px) + 22px);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  caret-color: var(--accent);
+  -webkit-appearance: none;
+  appearance: none;
+}
+.fx-terminal__input::placeholder { color: var(--muted); opacity: 1; }
+/* Foco do input: a mesma cor do sistema, em linha de 1px como o resto da janela. */
+.fx-terminal__input:focus-visible { outline-width: 1px; outline-offset: -1px; }
+
+.fx-terminal__chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 12px var(--fx-terminal-px);
+  border-top: 1px solid var(--line);
+}
+.fx-terminal__chips-label {
+  margin-right: 6px;
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.fx-terminal__chip {
+  min-height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--text-2);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    color var(--dur-1) var(--ease-out),
+    border-color var(--dur-1) var(--ease-out),
+    background-color var(--dur-1) var(--ease-out),
+    transform var(--dur-1) var(--ease-out);
+}
+.fx-terminal__chip::before { content: "› "; color: var(--muted); transition: color var(--dur-1) var(--ease-out); }
+@media (hover: hover) {
+  .fx-terminal__chip:hover { color: var(--text); border-color: var(--line-2); background: var(--surface-2); }
+  .fx-terminal__chip:hover::before { color: var(--accent); }
+  .fx-terminal__out a:hover { color: var(--accent); text-decoration-color: currentColor; }
+}
+.fx-terminal__chip:active { transform: translateY(1px); }
+
+@media (max-width: 560px) {
+  .fx-terminal { --fx-terminal-px: 14px; }
+  .fx-terminal__out { height: 280px; max-height: 280px; font-size: 12px; padding-top: 14px; }
+  .fx-terminal__row { grid-template-columns: 9ch minmax(0, 1fr); column-gap: 1.5ch; }
+  .fx-terminal__chips { gap: 6px; padding: 10px 10px 12px; }
+  .fx-terminal__chips-label { display: none; }
+  .fx-terminal__chip { flex: 1 1 auto; padding: 0 8px; }
+  .fx-terminal__chip::before { content: none; }
+}
+
+/* Toque: alvos de 44px e fonte de 16px no input (evita o zoom automático do iOS). */
+@media (pointer: coarse) {
+  .fx-terminal__chip { min-height: 44px; }
+  .fx-terminal__input { font-size: 16px; height: 52px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fx-terminal__out { transition: none; }
+  .fx-terminal__rain { transition: opacity 160ms linear; }
+}

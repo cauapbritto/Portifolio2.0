@@ -1,0 +1,178 @@
+.fx-tema {
+  container-type: inline-size;
+  color: var(--text);
+}
+
+.fx-tema__strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px 32px;
+  padding: 12px 24px 12px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.fx-tema__control {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.fx-tema__btn {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 1px solid var(--line-2);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color var(--dur-1) var(--ease-out),
+    border-color var(--dur-1) var(--ease-out),
+    transform var(--dur-1) var(--ease-out);
+}
+.fx-tema__btn:hover { background: var(--surface-2); border-color: var(--muted); }
+.fx-tema__btn:active { transform: scale(.94); }
+
+.fx-tema__icon { display: block; overflow: visible; }
+
+.fx-tema__disc,
+.fx-tema__bite,
+.fx-tema__rays,
+.fx-tema__ray {
+  transform-box: view-box;
+  transform-origin: 12px 12px;
+}
+
+/* Estado padrão: lua (tema escuro). As transições ficam no estado de destino. */
+.fx-tema__disc {
+  transition: transform 460ms var(--ease-spring);
+}
+.fx-tema__bite {
+  transition: transform 380ms var(--ease-out) 60ms;
+}
+.fx-tema__rays {
+  transform: rotate(-50deg);
+  transition: transform 260ms var(--ease-out);
+}
+.fx-tema__ray {
+  opacity: 0;
+  transform: scale(.35);
+  transition: opacity 140ms var(--ease-out), transform 240ms var(--ease-out);
+}
+
+/* Sol (tema claro): o disco encolhe, a mordida da lua sai e os raios entram girando. */
+.fx-tema[data-state="light"] .fx-tema__disc {
+  transform: scale(.56);
+  transition: transform 420ms var(--ease-spring);
+}
+.fx-tema[data-state="light"] .fx-tema__bite {
+  transform: translate(9px, -9px);
+  transition: transform 300ms var(--ease-out);
+}
+.fx-tema[data-state="light"] .fx-tema__rays {
+  transform: none;
+  transition: transform 520ms var(--ease-out);
+}
+.fx-tema[data-state="light"] .fx-tema__ray {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 200ms var(--ease-out) calc(40ms + var(--i) * 14ms),
+    transform 420ms var(--ease-spring) calc(40ms + var(--i) * 14ms);
+}
+
+.fx-tema__label {
+  margin: 0;
+  min-width: 12ch;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.4;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+
+.fx-tema__swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 28px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fx-tema__swatch {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  column-gap: 10px;
+  min-width: 0;
+}
+
+.fx-tema__chip {
+  grid-row: span 2;
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--line-2);
+  border-radius: 4px;
+}
+.fx-tema__chip--bg { background: var(--bg); }
+.fx-tema__chip--surface { background: var(--surface); }
+.fx-tema__chip--text { background: var(--text); }
+.fx-tema__chip--accent { background: var(--accent); }
+
+.fx-tema__name,
+.fx-tema__hex {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.35;
+  letter-spacing: .04em;
+  white-space: nowrap;
+}
+.fx-tema__name { color: var(--muted); text-transform: uppercase; }
+.fx-tema__hex { color: var(--text-2); min-height: 1.35em; }
+
+@container (max-width: 640px) {
+  .fx-tema__strip { padding: 12px; }
+  .fx-tema__swatches {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+  }
+}
+
+.fx-tema--init .fx-tema__disc,
+.fx-tema--init .fx-tema__bite,
+.fx-tema--init .fx-tema__rays,
+.fx-tema--init .fx-tema__ray { transition: none !important; }
+
+/* Troca de tema com View Transitions: a classe só existe em <html> durante a troca feita por este botão. */
+.fx-tema-vt::view-transition-old(root),
+.fx-tema-vt::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fx-tema__btn,
+  .fx-tema__disc,
+  .fx-tema__bite,
+  .fx-tema__rays,
+  .fx-tema[data-state="light"] .fx-tema__disc,
+  .fx-tema[data-state="light"] .fx-tema__bite,
+  .fx-tema[data-state="light"] .fx-tema__rays { transition: none; }
+  .fx-tema__ray,
+  .fx-tema[data-state="light"] .fx-tema__ray { transition: opacity 120ms linear; }
+  .fx-tema__btn:active { transform: none; }
+}

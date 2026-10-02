@@ -1,0 +1,155 @@
+.fx-ceu {
+  position: relative;
+  container-type: inline-size;
+  height: clamp(480px, 52vw, 640px);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg);
+  overflow: hidden;
+  isolation: isolate;
+  touch-action: pan-y;
+  color: var(--text);
+}
+
+.fx-ceu__sky {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 0;
+  touch-action: pan-y;
+}
+
+.fx-ceu__content {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: clamp(20px, 4.5cqi, 48px);
+}
+
+.fx-ceu__top,
+.fx-ceu__row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.fx-ceu__label,
+.fx-ceu__hint {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.4;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.fx-ceu__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-2);
+  white-space: nowrap;
+}
+
+.fx-ceu__square {
+  width: 8px;
+  height: 8px;
+  flex: none;
+  background: var(--accent);
+}
+
+.fx-ceu__hint {
+  display: none;
+  color: var(--muted);
+  font-size: 11px;
+  text-align: right;
+}
+.fx-ceu--js .fx-ceu__hint { display: block; }
+.fx-ceu__hint-touch { display: none; }
+@media (hover: none), (pointer: coarse) {
+  .fx-ceu__hint-mouse { display: none; }
+  .fx-ceu__hint-touch { display: inline; }
+}
+
+.fx-ceu__wordmark {
+  margin: 0 0 clamp(14px, 2.2cqi, 24px);
+  font-family: var(--font-display);
+  font-weight: 400;
+  /* Zero Hour mede ~9.17em em "Cauanzera": 8.5cqi + 2px cabe de 320px a 1440px (sobra >= 4px no menor). */
+  font-size: clamp(22px, 7vw, 92px);
+  font-size: clamp(22px, calc(8.5cqi + 2px), 100px);
+  line-height: 1;
+  letter-spacing: 0;
+  white-space: nowrap;
+  color: var(--text);
+}
+
+.fx-ceu__word { display: inline-block; }
+.fx-ceu__char { display: inline-block; }
+
+.fx-ceu__row { align-items: flex-end; }
+
+.fx-ceu__tagline {
+  margin: 0;
+  max-width: 36ch;
+  font-size: clamp(15px, 1.75cqi, 19px);
+  line-height: 1.5;
+  color: var(--text-2);
+  text-wrap: pretty;
+}
+
+.fx-ceu__replay {
+  display: none;
+  flex: none;
+  align-items: center;
+  gap: 8px;
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--text-2);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color var(--dur-1) var(--ease-out), border-color var(--dur-1) var(--ease-out);
+}
+.fx-ceu--js .fx-ceu__replay { display: inline-flex; }
+.fx-ceu__replay:hover { color: var(--text); border-color: var(--line-2); }
+.fx-ceu__replay:active .fx-ceu__replay-icon { transform: rotate(-90deg); }
+.fx-ceu__replay-icon { transition: transform var(--dur-2) var(--ease-out); }
+
+/* Estado antes da entrada (só com JS e com movimento liberado). */
+.fx-ceu--pre .fx-ceu__char,
+.fx-ceu--pre .fx-ceu__label,
+.fx-ceu--pre .fx-ceu__hint,
+.fx-ceu--pre .fx-ceu__tagline,
+.fx-ceu--pre .fx-ceu__replay { opacity: 0; }
+.fx-ceu--pre .fx-ceu__replay:focus { opacity: 1; }
+
+@container (max-width: 560px) {
+  .fx-ceu__row { flex-direction: column; align-items: flex-start; gap: 18px; }
+  .fx-ceu__replay { align-self: flex-end; }
+}
+@container (max-width: 340px) {
+  .fx-ceu--js .fx-ceu__hint { display: none; }
+}
+
+@media (pointer: coarse) {
+  /* No toque o botão continua discreto (36px) e a área de toque passa de 44px. */
+  .fx-ceu__replay { position: relative; min-height: 36px; padding: 0 14px; }
+  .fx-ceu__replay::before { content: ""; position: absolute; inset: -5px -4px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fx-ceu--js .fx-ceu__replay { display: none; }
+  .fx-ceu__replay-icon { transition: none; }
+}

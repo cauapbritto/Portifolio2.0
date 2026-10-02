@@ -1,0 +1,29 @@
+<div class="fx-terminal" data-fx="terminal">
+  <section class="fx-terminal__win" aria-label="Terminal do portfólio">
+    <div class="fx-terminal__bar">
+      <span class="fx-terminal__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="fx-terminal__title">cauanzera ~ terminal</span>
+      <span class="fx-terminal__status" aria-hidden="true">pronto</span>
+    </div>
+    <div class="fx-terminal__screen">
+      <div class="fx-terminal__out" id="fx-terminal-out" role="log" aria-live="polite" aria-label="Saída do terminal" tabindex="0">
+        <div class="fx-terminal__line">Olá. Este é o portfólio do Cauã, em linha de comando.</div>
+        <div class="fx-terminal__line fx-terminal__line--muted">Digite <span class="fx-terminal__k">help</span> para ver os comandos.</div>
+      </div>
+      <canvas class="fx-terminal__rain" width="0" height="0" aria-hidden="true"></canvas>
+      <div class="fx-terminal__scan" aria-hidden="true"></div>
+    </div>
+    <form class="fx-terminal__form" action="#" autocomplete="off">
+      <label class="fx-sr" for="fx-terminal-input">Comando</label>
+      <span class="fx-terminal__prompt" aria-hidden="true">›</span>
+      <input class="fx-terminal__input" id="fx-terminal-input" name="cmd" type="text" placeholder="digite help" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go" aria-controls="fx-terminal-out">
+    </form>
+    <div class="fx-terminal__chips" role="group" aria-label="Atalhos">
+      <span class="fx-terminal__chips-label" aria-hidden="true">Atalhos</span>
+      <button class="fx-terminal__chip" type="button" data-cmd="help">help</button>
+      <button class="fx-terminal__chip" type="button" data-cmd="projetos">projetos</button>
+      <button class="fx-terminal__chip" type="button" data-cmd="contato">contato</button>
+      <button class="fx-terminal__chip" type="button" data-cmd="matrix">matrix</button>
+    </div>
+  </section>
+</div>

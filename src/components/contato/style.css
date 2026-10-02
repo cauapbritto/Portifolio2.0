@@ -1,0 +1,265 @@
+/* Contato: e-mail em destaque, botão magnético que copia e links com sublinhado que entra e sai. */
+
+.fx-contato {
+  position: relative;
+  max-width: 1072px;
+}
+
+/* Rótulo em mono acima do e-mail. Vira a dica "Selecionei o e-mail..." quando a cópia falha. */
+.fx-contato__label {
+  display: grid;
+  margin: 0 0 14px;
+}
+.fx-contato__label-text,
+.fx-contato__hint {
+  grid-area: 1 / 1;
+  transition: opacity var(--dur-2) var(--ease-out), transform var(--dur-2) var(--ease-out);
+}
+.fx-contato__hint {
+  color: var(--text-2);
+  opacity: 0;
+  transform: translateY(6px);
+}
+.fx-contato.is-hint .fx-contato__label-text { opacity: 0; transform: translateY(-6px); }
+.fx-contato.is-hint .fx-contato__hint { opacity: 1; transform: none; }
+
+/* O e-mail em si. Texto, não link: um clique seleciona o endereço inteiro. */
+.fx-contato__email {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: clamp(24px, 4.4vw, 52px);
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -.025em;
+  color: var(--text);
+  overflow-wrap: break-word;
+  -webkit-user-select: all;
+  user-select: all;
+}
+.fx-contato__domain { color: var(--muted); }
+.fx-contato__email::selection,
+.fx-contato__email ::selection {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+/* Linha de 1px e a barra com o botão à esquerda e os links à direita. */
+.fx-contato__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px 32px;
+  margin-top: clamp(24px, 3.2vw, 36px);
+  padding-top: clamp(20px, 2.6vw, 28px);
+  border-top: 1px solid var(--line);
+}
+
+/* O invólucro não se mexe: é dele que o JS lê a posição. Quem anda é o botão. */
+.fx-contato__magnet {
+  display: inline-flex;
+}
+
+.fx-contato__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  margin: 0;
+  padding: 0 20px 0 18px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  font: 500 15px/1 var(--font-sans);
+  letter-spacing: -.005em;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    border-color var(--dur-2) var(--ease-out),
+    background-color var(--dur-2) var(--ease-out),
+    scale var(--dur-1) var(--ease-out);
+}
+.fx-contato__btn:active { scale: .97; }
+.fx-contato.is-copied .fx-contato__btn {
+  border-color: color-mix(in srgb, var(--accent) 70%, var(--line-2));
+}
+@media (hover: hover) {
+  .fx-contato__btn:hover {
+    border-color: var(--muted);
+    background: var(--surface-2);
+  }
+  .fx-contato.is-copied .fx-contato__btn:hover {
+    border-color: var(--accent);
+  }
+}
+
+/* Os dois estados (copiar / copiado) dividem a mesma célula: a largura do botão não muda.
+   A máscara é a própria linha de texto: o rótulo velho sobe e some, o novo sobe de baixo. */
+.fx-contato__face {
+  display: grid;
+  overflow: hidden;
+  line-height: 20px;
+}
+.fx-contato__state {
+  grid-area: 1 / 1;
+  justify-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+}
+.fx-contato__state--done {
+  opacity: 0;
+  transform: translateY(100%);
+}
+.fx-contato__icon {
+  display: block;
+  flex: none;
+}
+.fx-contato__copy { color: var(--text-2); }
+.fx-contato__check { color: var(--accent); }
+.fx-contato__check path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+
+.fx-contato.is-copied .fx-contato__state--idle { animation: fx-contato-out var(--dur-2) var(--ease-out) both; }
+.fx-contato.is-copied .fx-contato__state--done { animation: fx-contato-in var(--dur-2) var(--ease-out) 40ms both; }
+.fx-contato.is-copied .fx-contato__check path { animation: fx-contato-draw 440ms cubic-bezier(.65, 0, .35, 1) 140ms both; }
+/* Volta continuando para cima: "Copiado" sai pelo topo e "Copiar e-mail" sobe de baixo. */
+.fx-contato.is-back .fx-contato__state--done { animation: fx-contato-out var(--dur-2) var(--ease-out) both; }
+.fx-contato.is-back .fx-contato__state--idle { animation: fx-contato-in var(--dur-2) var(--ease-out) 40ms both; }
+.fx-contato.is-back .fx-contato__check path { stroke-dashoffset: 0; }
+
+@keyframes fx-contato-out {
+  from { opacity: 1; transform: none; }
+  to { opacity: 0; transform: translateY(-100%); }
+}
+@keyframes fx-contato-in {
+  from { opacity: 0; transform: translateY(100%); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes fx-contato-draw {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+
+/* Links */
+.fx-contato__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 28px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.fx-contato__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 44px;
+  border-radius: var(--radius); /* anel de foco com o mesmo canto do botão */
+  color: var(--text);
+  font-size: 17px;
+  font-weight: 500;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.fx-contato__link-text {
+  position: relative;
+  padding-bottom: 3px;
+}
+/* Fio de repouso (para o link parecer link sem hover) e o fio accent que cresce por cima. */
+.fx-contato__link-text::before,
+.fx-contato__link-text::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+}
+.fx-contato__link-text::before {
+  background: var(--line-2);
+}
+.fx-contato__link-text::after {
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: 100% 50%;
+  transition: transform var(--dur-2) var(--ease-out);
+}
+.fx-contato__arrow {
+  display: block;
+  flex: none;
+  color: var(--muted);
+  transition: transform var(--dur-2) var(--ease-out), color var(--dur-2) var(--ease-out);
+}
+.fx-contato__link:focus-visible .fx-contato__link-text::after {
+  transform: scaleX(1);
+  transform-origin: 0 50%;
+}
+.fx-contato__link:focus-visible .fx-contato__arrow {
+  color: var(--accent);
+  transform: translate(2px, -2px);
+}
+@media (hover: hover) {
+  .fx-contato__link:hover .fx-contato__link-text::after {
+    transform: scaleX(1);
+    transform-origin: 0 50%;
+  }
+  .fx-contato__link:hover .fx-contato__arrow {
+    color: var(--accent);
+    transform: translate(2px, -2px);
+  }
+}
+
+/* Textarea temporária do plano B de cópia: fora da vista, sem roubar layout. */
+.fx-contato__ta {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  border: 0;
+  font-size: 16px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (max-width: 520px) {
+  .fx-contato__bar { gap: 12px 24px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fx-contato__label-text,
+  .fx-contato__hint {
+    transform: none !important;
+    transition: opacity var(--dur-1) linear;
+  }
+  .fx-contato__state--done { transform: none; }
+  .fx-contato.is-copied .fx-contato__state--idle,
+  .fx-contato.is-back .fx-contato__state--done { animation: fx-contato-fade-out var(--dur-1) linear both; }
+  .fx-contato.is-copied .fx-contato__state--done,
+  .fx-contato.is-back .fx-contato__state--idle { animation: fx-contato-fade-in var(--dur-1) linear both; }
+  .fx-contato.is-copied .fx-contato__check path,
+  .fx-contato__check path { animation: none; stroke-dashoffset: 0; }
+  .fx-contato__btn { transition: border-color var(--dur-1) linear, background-color var(--dur-1) linear; }
+  .fx-contato__btn:active { scale: none; }
+  /* Sublinhado aparece sem deslizar */
+  .fx-contato__link-text::after {
+    transform: none;
+    opacity: 0;
+    transition: opacity var(--dur-1) linear;
+  }
+  .fx-contato__link:focus-visible .fx-contato__link-text::after { opacity: 1; }
+  .fx-contato__arrow { transition: color var(--dur-1) linear; }
+  .fx-contato__link:focus-visible .fx-contato__arrow { transform: none; }
+  @media (hover: hover) {
+    .fx-contato__link:hover .fx-contato__link-text::after { opacity: 1; }
+    .fx-contato__link:hover .fx-contato__arrow { transform: none; }
+  }
+}
+@keyframes fx-contato-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fx-contato-fade-out { from { opacity: 1; } to { opacity: 0; } }

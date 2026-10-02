@@ -1,0 +1,36 @@
+<div class="fx-tema" data-fx="tema">
+  <div class="fx-tema__strip">
+    <div class="fx-tema__control">
+      <button class="fx-tema__btn" type="button" aria-label="Mudar para o tema claro">
+        <svg class="fx-tema__icon" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
+          <defs>
+            <mask id="fx-tema-mask" maskUnits="userSpaceOnUse" x="-6" y="-6" width="36" height="36">
+              <rect x="-6" y="-6" width="36" height="36" fill="#fff"/>
+              <circle class="fx-tema__bite" cx="17" cy="7.5" r="6.4" fill="#000"/>
+            </mask>
+          </defs>
+          <g mask="url(#fx-tema-mask)">
+            <circle class="fx-tema__disc" cx="12" cy="12" r="8.2" fill="currentColor"/>
+          </g>
+          <g class="fx-tema__rays" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+            <g transform="rotate(0 12 12)"><line class="fx-tema__ray" style="--i:0" x1="12" y1="4.6" x2="12" y2="2.2"/></g>
+            <g transform="rotate(45 12 12)"><line class="fx-tema__ray" style="--i:1" x1="12" y1="4.6" x2="12" y2="2.2"/></g>
+            <g transform="rotate(90 12 12)"><line class="fx-tema__ray" style="--i:2" x1="12" y1="4.6" x2="12" y2="2.2"/></g>
+            <g transform="rotate(135 12 12)"><line class="fx-tema__ray" style="--i:3" x1="12" y1="4.6" x2="12" y2="2.2"/></g>
+            <g transform="rotate(180 12 12)"><line class="fx-tema__ray" style="--i:4" x1="12" y1="4.6" x2="12" y2="2.2"/></g>
+            <g transform="rotate(225 12 12)"><line class="fx-tema__ray" style="--i:5" x1="12" y1="4.6" x2="12" y2="2.2"/></g>
+            <g transform="rotate(270 12 12)"><line class="fx-tema__ray" style="--i:6" x1="12" y1="4.6" x2="12" y2="2.2"/></g>
+            <g transform="rotate(315 12 12)"><line class="fx-tema__ray" style="--i:7" x1="12" y1="4.6" x2="12" y2="2.2"/></g>
+          </g>
+        </svg>
+      </button>
+      <p class="fx-tema__label">Tema escuro</p>
+    </div>
+    <ul class="fx-tema__swatches" aria-label="Cores do tema atual">
+      <li class="fx-tema__swatch"><span class="fx-tema__chip fx-tema__chip--bg" aria-hidden="true"></span><span class="fx-tema__name">Fundo</span><span class="fx-tema__hex" data-token="--bg"></span></li>
+      <li class="fx-tema__swatch"><span class="fx-tema__chip fx-tema__chip--surface" aria-hidden="true"></span><span class="fx-tema__name">Superfície</span><span class="fx-tema__hex" data-token="--surface"></span></li>
+      <li class="fx-tema__swatch"><span class="fx-tema__chip fx-tema__chip--text" aria-hidden="true"></span><span class="fx-tema__name">Texto</span><span class="fx-tema__hex" data-token="--text"></span></li>
+      <li class="fx-tema__swatch"><span class="fx-tema__chip fx-tema__chip--accent" aria-hidden="true"></span><span class="fx-tema__name">Destaque</span><span class="fx-tema__hex" data-token="--accent"></span></li>
+    </ul>
+  </div>
+</div>
