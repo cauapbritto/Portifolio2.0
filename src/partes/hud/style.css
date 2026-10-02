@@ -1,0 +1,271 @@
+/* HUD: a interface fixa por cima do céu, como um visor. */
+.hud {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: var(--hud) calc(var(--hud) + 2px) 0;
+  pointer-events: none;
+}
+.hud > * { pointer-events: auto; }
+
+.hud__marca {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  padding: 0 4px;
+  border-radius: 4px;
+  font-family: var(--font-label);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--text);
+  text-decoration: none;
+}
+.hud__marca .quadrado { transition: transform var(--dur-2) var(--ease-spring); }
+@media (hover: hover) { .hud__marca:hover .quadrado { transform: rotate(45deg); } }
+
+.hud__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  padding: 0 8px 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  color: var(--text-2);
+  font-family: var(--font-label);
+  font-size: 11px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color var(--dur-1) var(--ease-out), border-color var(--dur-1) var(--ease-out);
+}
+.hud__btn svg { color: var(--accent); }
+.hud__btn kbd {
+  display: inline-grid;
+  place-items: center;
+  min-width: 24px;
+  height: 24px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  font-family: var(--font-code);
+  font-size: 11px;
+  color: var(--muted);
+}
+@media (hover: hover) {
+  .hud__btn:hover { color: var(--text); border-color: var(--line-2); }
+}
+@media (hover: none), (pointer: coarse) {
+  .hud__btn kbd { display: none; }
+  .hud__btn { min-height: 44px; padding-right: 14px; }
+}
+
+.hud__acoes { display: flex; align-items: center; gap: 10px; }
+
+/* Troca de fonte: um botão "Aa" que abre as três opções, cada uma escrita na própria fonte. */
+.fonte { position: relative; }
+.fonte__btn { justify-content: center; width: 40px; padding: 0; }
+.fonte__aa { font-family: "Schibsted Grotesk", system-ui, sans-serif; font-size: 15px; font-weight: 500; letter-spacing: 0; text-transform: none; color: var(--text); }
+.fonte__btn[aria-expanded="true"] { border-color: var(--accent); }
+.fonte__painel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  display: grid;
+  gap: 4px;
+  min-width: 230px;
+  padding: 8px;
+  border: 1px solid var(--line-2);
+  border-radius: 12px;
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  box-shadow: var(--shadow), 0 24px 60px -20px rgba(0, 0, 0, .6);
+  animation: fonte-abre 220ms var(--ease-out);
+}
+.fonte__painel[hidden] { display: none; }
+@keyframes fonte-abre { from { opacity: 0; transform: translateY(-6px); } }
+.fonte__titulo {
+  padding: 4px 10px 6px;
+  font-family: var(--font-label);
+  font-size: 11px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.fonte__opcao {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-2);
+  font-size: 15px;
+  line-height: 1.2;
+  text-align: left;
+  cursor: pointer;
+  transition: color var(--dur-1) var(--ease-out), background-color var(--dur-1) var(--ease-out);
+}
+.fonte__opcao::before { content: ""; flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--line-2); transition: background-color var(--dur-1) var(--ease-out); }
+.fonte__opcao[aria-pressed="true"] { background: var(--surface-2); color: var(--text); box-shadow: inset 0 0 0 1px var(--line-2); }
+.fonte__opcao[aria-pressed="true"]::before { background: var(--accent); }
+.fonte__opcao--zh { font-family: "Zero Hour UI", "Schibsted Grotesk", sans-serif; letter-spacing: .02em; }
+.fonte__opcao--nova { font-family: "Schibsted Grotesk", system-ui, sans-serif; }
+@media (hover: hover) { .fonte__opcao:hover { color: var(--text); background: var(--surface-2); } }
+@media (pointer: coarse) { .fonte__opcao { min-height: 44px; } .fonte__btn { width: 44px; } }
+
+/* Trilho de capítulos, na lateral direita. */
+.trilho {
+  position: fixed;
+  right: calc(var(--hud) + 2px);
+  top: 50%;
+  z-index: 40;
+  transform: translateY(-50%);
+}
+.trilho ol { display: grid; gap: 4px; margin: 0; padding: 0; }
+.trilho__item {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  min-height: 34px;
+  padding: 0 0 0 10px;
+  font-family: var(--font-label);
+  font-size: 11px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  border-radius: 4px;
+}
+.trilho__n { position: relative; display: inline-flex; align-items: center; gap: 10px; }
+.trilho__n::after {
+  content: "";
+  width: 14px;
+  height: 1px;
+  background: currentColor;
+  transform-origin: 100% 50%;
+  transition: transform var(--dur-2) var(--ease-out), background-color var(--dur-2) var(--ease-out);
+}
+.trilho__nome {
+  opacity: 0;
+  transform: translateX(6px);
+  transition: opacity var(--dur-2) var(--ease-out), transform var(--dur-2) var(--ease-out);
+}
+.trilho__item[aria-current="true"] { color: var(--text); }
+.trilho__item[aria-current="true"] .trilho__n { color: var(--accent); }
+.trilho__item[aria-current="true"] .trilho__n::after { transform: scaleX(2); background: var(--accent); }
+.trilho__item[aria-current="true"] .trilho__nome,
+.trilho__item:focus-visible .trilho__nome { opacity: 1; transform: none; }
+@media (hover: hover) {
+  .trilho__item:hover { color: var(--text); }
+  .trilho__item:hover .trilho__nome { opacity: 1; transform: none; }
+}
+.trilho__fio {
+  position: absolute;
+  right: -10px;
+  top: 6px;
+  bottom: 6px;
+  width: 1px;
+  background: var(--line);
+}
+.trilho__cheio {
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  transform-origin: 50% 0;
+  transform: scaleY(var(--p, 0));
+}
+
+/* Linha de baixo: setor atual, tempo de viagem, hora e quanto já rolou. */
+.hud-base {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 0 calc(var(--hud) + 6px) calc(var(--hud) + 6px);
+  pointer-events: none;
+  font-family: var(--font-code);
+  font-size: 10px;
+  line-height: 1.6;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.hud-base p { display: grid; gap: 2px; }
+.hud-base__dir { text-align: right; }
+.hud-base__setor { color: var(--text-2); }
+.hud-base__setor::before { content: "● "; color: var(--accent); }
+.hud-base__hora, .hud-base__tempo, .hud-base__pct { font-variant-numeric: tabular-nums; }
+
+/* Cantos do visor. */
+.hud-cantos i {
+  position: fixed;
+  z-index: 39;
+  width: 14px;
+  height: 14px;
+  border: 0 solid var(--line-2);
+  pointer-events: none;
+}
+.hud-cantos i:nth-child(1) { top: 8px; left: 8px; border-top-width: 1px; border-left-width: 1px; }
+.hud-cantos i:nth-child(2) { top: 8px; right: 8px; border-top-width: 1px; border-right-width: 1px; }
+.hud-cantos i:nth-child(3) { bottom: 8px; left: 8px; border-bottom-width: 1px; border-left-width: 1px; }
+.hud-cantos i:nth-child(4) { bottom: 8px; right: 8px; border-bottom-width: 1px; border-right-width: 1px; }
+
+/* Degradês atrás do HUD: o conteúdo some suave por baixo dele em vez de bater nas letras. */
+.hud-veu i {
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 35;
+  pointer-events: none;
+}
+.hud-veu i:first-child { top: 0; height: calc(var(--hud) + 70px); background: linear-gradient(var(--bg-2), color-mix(in srgb, var(--bg-2) 0%, transparent)); opacity: .85; }
+.hud-veu i:last-child { bottom: 0; height: calc(var(--hud) + 96px); background: linear-gradient(color-mix(in srgb, var(--bg-2) 0%, transparent), var(--bg-2)); opacity: .9; }
+
+/* Entrada do HUD depois da abertura. */
+.js .hud, .js .trilho, .js .hud-base, .js .hud-cantos {
+  transition: opacity 700ms var(--ease-out) 500ms;
+}
+.abrindo .hud, .abrindo .trilho, .abrindo .hud-base, .abrindo .hud-cantos { opacity: 0; transition: none; }
+
+/* Sem JS: o terminal, o relógio e os degradês não têm o que fazer. */
+html:not(.js) .hud__btn,
+html:not(.js) .fonte,
+html:not(.js) .hud-base { display: none; }
+
+@media (max-width: 760px) {
+  .trilho { display: none; }
+  .hud-base__tempo, .hud-base__pct { display: none; }
+}
+@media (max-width: 420px) {
+  .hud__btn:not(.fonte__btn) span { display: none; }
+  .hud__btn { padding: 0 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .trilho__nome, .trilho__n::after, .hud__marca .quadrado { transition: none; }
+  .fonte__painel { animation: none; }
+}
+
+/* Fonte antiga: rótulos do HUD com menos espaço entre letras. */
+:root:is([data-font="titulos"], [data-font="tudo"]) .hud__marca { font-size: 14px; letter-spacing: .06em; }
+:root:is([data-font="titulos"], [data-font="tudo"]) .hud__btn { font-size: 12px; letter-spacing: .04em; }
+:root:is([data-font="titulos"], [data-font="tudo"]) .trilho__item { font-size: 11px; letter-spacing: .03em; }

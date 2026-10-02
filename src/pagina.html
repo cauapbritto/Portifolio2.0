@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="pt-BR" data-font="titulos">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cauanzera · Cauã Pedrozo Brito</title>
+<meta name="description" content="Portfólio de Cauã Pedrozo Brito, desenvolvedor front-end em formação focado em experiências visuais e interfaces imersivas.">
+<meta name="theme-color" content="#0D0E10">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Cauanzera">
+<meta property="og:title" content="Cauanzera · Cauã Pedrozo Brito">
+<meta property="og:description" content="Desenvolvedor front-end em formação, focado em experiências visuais e interfaces imersivas.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Cauã Pedrozo Brito",
+  "alternateName": "Cauanzera",
+  "jobTitle": "Desenvolvedor front-end em formação",
+  "email": "mailto:caua.pbritto@gmail.com",
+  "sameAs": [
+    "https://github.com/cauapbritto",
+    "https://www.linkedin.com/in/cau%C3%A3-pedrozo-brito-8a685b358"
+  ]
+}
+</script>
+<script>
+  // Antes de pintar: marca que há JS e aplica o tema e a fonte salvos, para a página não piscar.
+  // Fonte: "titulos" (antiga nos títulos) por padrão, "tudo" ou "nova" (sem data-font).
+  (function () {
+    var d = document.documentElement;
+    var f = 'titulos';
+    d.classList.add('js');
+    try {
+      var t = localStorage.getItem('cz-tema');
+      if (t === 'light' || t === 'dark') d.setAttribute('data-theme', t);
+      var v = localStorage.getItem('cz-fonte') || localStorage.getItem('g-font');
+      if (v === 'titulos' || v === 'tudo' || v === 'nova') f = v;
+    } catch (e) {}
+    if (f === 'nova') d.removeAttribute('data-font');
+    else d.setAttribute('data-font', f);
+  })();
+</script>
+<link rel="preload" href="assets/ZeroHour.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Martian+Mono:wght@400;500&family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+/* Zero Hour, a fonte do site antigo, em três tamanhos do mesmo arquivo:
+   "Zero Hour" no nome Cauanzera, "Zero Hour UI" (86%) em títulos, botões e rótulos e "Zero Hour Texto" (80%)
+   no texto corrido, porque ela é toda em maiúsculas e bem mais larga. font-weight 100 900: ela só tem um peso,
+   assim o navegador não inventa um negrito falso. Sem o "~" (U+007E), que nela é um traço reto. */
+@font-face { font-family: "Zero Hour"; src: url("assets/ZeroHour.woff2") format("woff2"); font-display: swap; font-weight: 100 900; }
+@font-face { font-family: "Zero Hour UI"; src: url("assets/ZeroHour.woff2") format("woff2"); font-display: swap; size-adjust: 86%; font-weight: 100 900; unicode-range: U+0000-007D, U+007F-10FFFF; }
+@font-face { font-family: "Zero Hour Texto"; src: url("assets/ZeroHour.woff2") format("woff2"); font-display: swap; size-adjust: 80%; font-weight: 100 900; unicode-range: U+0000-007D, U+007F-10FFFF; }
+</style>
+<!-- @css -->
+</head>
+<body>
+<a class="pular" href="#sobre">Pular para o conteúdo</a>
+
+<!-- @universo -->
+<!-- @abertura -->
+<!-- @hud -->
+
+<main id="conteudo">
+<!-- @inicio -->
+<!-- @sobre -->
+<!-- @projetos -->
+<!-- @contato -->
+</main>
+
+<!-- @arco -->
+<!-- @terminal -->
+<!-- @cursor -->
+
+<!-- @js -->
+</body>
+</html>

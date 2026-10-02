@@ -1,0 +1,293 @@
+/* Projetos: em tela larga, a rolagem vertical atravessa uma trilha horizontal de projetos.
+   Em tela estreita (ou com movimento reduzido) os projetos ficam um embaixo do outro. */
+.projetos { position: relative; }
+.projetos__palco {
+  position: relative;
+  padding: 120px var(--gutter) 160px;
+}
+.projetos__topo {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  max-width: 1180px;
+  margin: 0 auto clamp(40px, 6vw, 72px);
+}
+.projetos__contador {
+  margin-left: auto;
+  font-family: var(--font-code);
+  font-size: 12px;
+  letter-spacing: .1em;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.projetos__atual { color: var(--text); }
+.projetos__progresso { display: none; }
+
+.projetos__trilha {
+  display: grid;
+  gap: clamp(88px, 12vw, 140px);
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+}
+
+/* ---------- Trilha horizontal ---------- */
+.projetos--trilha {
+  --slide: min(1080px, 72vw);
+  --vao: 8vw;
+}
+.projetos--trilha .projetos__palco {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0;
+  overflow: hidden;
+}
+.projetos--trilha .projetos__topo {
+  position: absolute;
+  top: calc(var(--hud) + 74px);
+  left: var(--gutter);
+  right: calc(var(--gutter) + 96px);
+  max-width: none;
+  margin: 0;
+}
+.projetos--trilha .projetos__progresso {
+  display: block;
+  position: relative;
+  flex: 1;
+  max-width: 320px;
+  height: 1px;
+  margin-left: auto;
+  background: var(--line);
+}
+.projetos--trilha .projetos__contador { margin-left: 0; }
+.projetos__progresso span {
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  transform-origin: 0 50%;
+  transform: scaleX(var(--p, 0));
+}
+.projetos--trilha .projetos__trilha {
+  display: flex;
+  align-items: center;
+  gap: var(--vao);
+  width: max-content;
+  max-width: none;
+  margin: 0;
+  padding: 40px calc((100vw - var(--slide)) / 2) 0;
+  transform: translate3d(var(--x, 0px), 0, 0);
+  will-change: transform;
+}
+.projetos--trilha .projeto { flex: none; width: var(--slide); }
+.projetos--trilha .projeto--fim { width: min(520px, 46vw); }
+.projetos--trilha .projeto[data-revelar] { opacity: 1; transform: none; transition: none; }
+/* Profundidade: o JS gira e apaga os projetos dos lados (transform e opacity do card). */
+.projetos--trilha .projeto__card,
+.projetos--trilha .projeto__fim { will-change: transform, opacity; }
+
+/* ---------- Card ---------- */
+.projeto__card {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(28px, 4.4vw, 72px);
+}
+
+.projeto__midia {
+  position: relative;
+  isolation: isolate;
+  padding: 10px;
+  border-radius: 16px;
+  box-shadow: var(--shadow), 0 40px 80px -40px rgba(var(--glow), .25);
+}
+/* Fundo com luz que segue o cursor (--x/--y) e acende a borda (--a). O JS escreve só aqui. */
+.projeto__luz {
+  --x: 50%;
+  --y: 50%;
+  --a: 0;
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border: 1px solid transparent;
+  border-radius: inherit;
+  background:
+    radial-gradient(380px circle at var(--x) var(--y), rgba(var(--glow), calc(var(--a) * .12)), rgba(var(--glow), 0) 70%) padding-box,
+    linear-gradient(var(--surface), var(--surface)) padding-box,
+    radial-gradient(240px circle at var(--x) var(--y), rgba(var(--glow), calc(var(--a) * .9)), rgba(var(--glow), 0) 100%) border-box,
+    linear-gradient(var(--line-2), var(--line)) border-box;
+  pointer-events: none;
+}
+.projeto__quadro {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #0A0B0D;
+}
+.projeto__quadro::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .08);
+  pointer-events: none;
+}
+.projeto__img,
+.projeto__quadro svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  translate: calc(var(--nx, 0) * -6px) calc(var(--ny, 0) * -6px);
+  scale: 1.04;
+}
+.projeto__img { object-fit: cover; object-position: top center; }
+
+.projeto__info { display: grid; align-content: center; gap: 14px; }
+.projeto__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-family: var(--font-label);
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.projeto__n { color: var(--accent); }
+.projeto__nome {
+  font-family: var(--font-head);
+  font-size: clamp(34px, 4.2vw, 62px);
+  font-weight: 600;
+  line-height: 1.02;
+  letter-spacing: -.03em;
+  color: var(--text);
+}
+.projeto__versao { font-family: var(--font-code); font-size: .5em; letter-spacing: 0; color: var(--accent); vertical-align: .55em; }
+.projeto__sub { font-size: clamp(17px, 1.4vw, 20px); font-weight: 500; color: var(--text); }
+.projeto__desc { max-width: 48ch; font-size: 15.5px; line-height: 1.62; color: var(--text-2); text-wrap: pretty; }
+.projeto__chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 0; }
+.projeto__chips li {
+  padding: 3px 9px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--glass);
+  font-family: var(--font-label);
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--text-2);
+}
+.projeto__links { display: flex; flex-wrap: wrap; gap: 6px 22px; margin-top: 6px; padding-top: 14px; border-top: 1px solid var(--line); }
+.projeto__link,
+.projeto__github {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  font-family: var(--font-label);
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text);
+  text-decoration: none;
+  border-radius: 4px;
+}
+.projeto__link svg,
+.projeto__github svg { color: var(--accent); transition: translate var(--dur-2) var(--ease-out); }
+@media (hover: hover) {
+  .projeto__link:hover svg, .projeto__github:hover svg { translate: 2px -2px; }
+  .projeto__link:hover, .projeto__github:hover { color: var(--accent); }
+}
+
+/* Último slide */
+.projeto__fim {
+  display: grid;
+  gap: 16px;
+  padding: clamp(28px, 4vw, 48px);
+  border: 1px dashed var(--line-2);
+  border-radius: 16px;
+  background: var(--glass);
+}
+.projeto__fim-titulo {
+  font-family: var(--font-head);
+  font-size: clamp(28px, 3.2vw, 46px);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -.025em;
+  color: var(--text);
+}
+.projeto__github {
+  justify-self: start;
+  padding: 0 18px;
+  min-height: 46px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  background: var(--surface);
+}
+
+/* ---------- Librahin: a mão em constelação ---------- */
+.lib__fundo { fill: #0A0B0D; }
+.lib__grade { stroke: rgba(255, 255, 255, .045); stroke-width: .5; }
+.lib__mira path { fill: none; stroke: rgba(255, 255, 255, .28); stroke-width: 1; }
+.lib__txt { font-family: var(--font-code); font-size: 7px; letter-spacing: .1em; fill: #9C9A93; }
+.lib__txt--fim { text-anchor: end; }
+.lib__rec { fill: #FF7A45; }
+.lib__osso { stroke: rgba(255, 122, 69, .78); stroke-width: 1.3; stroke-linecap: round; }
+.lib__ponto { fill: #ECEAE4; }
+.lib__ponta { fill: #FF7A45; }
+.lib__sinal rect { fill: rgba(255, 255, 255, .04); stroke: rgba(255, 255, 255, .2); stroke-width: .8; }
+.lib__sinal text { font-family: var(--font-code); font-size: 8px; letter-spacing: .06em; fill: #ECEAE4; text-anchor: middle; }
+.lib__barra { fill: rgba(255, 255, 255, .1); }
+.lib__nivel { fill: #FF7A45; transform-box: fill-box; transform-origin: 0 50%; transform: scaleX(var(--c, 1)); transition: transform 600ms var(--ease-out); }
+.lib__limite { stroke: #ECEAE4; stroke-width: 1; }
+.lib__frase { font-family: "Schibsted Grotesk", system-ui, sans-serif; font-size: 11px; font-weight: 600; fill: #ECEAE4; }
+.lib--js .lib__sinal,
+.lib--js .lib__frase { opacity: 0; transition: opacity 360ms var(--ease-out), transform 420ms var(--ease-out); }
+.lib--js .lib__sinal { transform: translateX(-6px); }
+.lib--js .lib__sinal.is-on { opacity: 1; transform: none; }
+.lib--js.is-frase .lib__frase { opacity: 1; }
+.lib__sinal.is-novo rect { stroke: #FF7A45; }
+
+/* ---------- Portfólio v1: o céu ciano ---------- */
+.v1__fundo { fill: #04080A; }
+.v1__estrelas circle { fill: #A8FFFF; }
+.v1__pisca { animation: v1-pisca 2.6s ease-in-out infinite alternate; }
+.v1__arco path { fill: rgba(0, 255, 255, .06); stroke: #00E5E5; stroke-width: .8; }
+.v1__botao { fill: #04080A; stroke: #00E5E5; stroke-width: .8; }
+.v1__marca { font-family: var(--font-display); font-size: 25px; letter-spacing: 1px; text-anchor: middle; fill: none; stroke: rgba(0, 255, 255, .7); stroke-width: .55; }
+.v1__hud { font-family: var(--font-code); font-size: 7px; letter-spacing: .1em; fill: rgba(0, 255, 255, .7); }
+.v1__term rect { fill: rgba(0, 22, 26, .9); stroke: rgba(0, 255, 255, .5); stroke-width: .6; }
+.v1__term line { stroke: rgba(0, 255, 255, .35); stroke-width: .5; }
+.v1__term text { font-family: var(--font-code); font-size: 5px; fill: #7FFFFF; }
+.v1__cursor { animation: v1-cursor 1.1s steps(2, jump-none) infinite; }
+@keyframes v1-pisca { from { opacity: .15; } to { opacity: 1; } }
+@keyframes v1-cursor { 0% { opacity: 1; } 100% { opacity: .2; } }
+
+/* ---------- Tela estreita ---------- */
+@media (max-width: 899px) {
+  .projeto__card { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .projeto__midia { padding: 8px; border-radius: 12px; }
+  .projeto__desc { font-size: 15px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .projeto__img, .projeto__quadro svg { translate: none; scale: none; }
+  .v1__pisca, .v1__cursor { animation: none; }
+  .lib__nivel { transition: none; }
+}
+
+/* ---------- Fonte antiga (Zero Hour) ----------
+   Nomes sem negrito sintético nem tracking negativo, e um corpo maior para compensar os 86% da Zero Hour UI. */
+:root:is([data-font="titulos"], [data-font="tudo"]) .projeto__nome { font-size: clamp(40px, 4.9vw, 74px); font-weight: 400; line-height: 1; letter-spacing: .01em; }
+:root:is([data-font="titulos"], [data-font="tudo"]) .projeto__fim-titulo { font-size: clamp(32px, 3.7vw, 53px); font-weight: 400; letter-spacing: .01em; }
+:root:is([data-font="titulos"], [data-font="tudo"]) .projeto__meta,
+:root:is([data-font="titulos"], [data-font="tudo"]) .projeto__link,
+:root:is([data-font="titulos"], [data-font="tudo"]) .projeto__github { font-size: 13px; letter-spacing: .03em; word-spacing: .15em; }
+:root:is([data-font="titulos"], [data-font="tudo"]) .projeto__chips li { padding: 2px 8px; line-height: 18px; font-size: 12px; letter-spacing: .02em; }
+/* Texto corrido em maiúsculas: um pouco mais de entrelinha e de ar entre as letras. */
+:root[data-font="tudo"] .projeto__desc { line-height: 1.65; letter-spacing: .02em; }
+:root[data-font="tudo"] .projeto__sub { letter-spacing: .02em; }

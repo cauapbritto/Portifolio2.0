@@ -1,0 +1,381 @@
+/* Terminal: abre por cima de tudo (tecla /, botão do topo), como um console da nave. */
+.term {
+  --term-px: 20px;
+  --term-lh: 1.75;
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
+  color: var(--text);
+  font-family: var(--font-code);
+}
+.term[hidden] { display: none; }
+.term__fundo {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--bg-2) 72%, transparent);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  opacity: 0;
+  transition: opacity 240ms var(--ease-out);
+}
+.term.is-aberto .term__fundo { opacity: 1; }
+.term__win {
+  position: relative;
+  width: min(880px, 100%);
+  opacity: 0;
+  transform: translateY(12px) scale(.98);
+  transition: opacity 200ms var(--ease-out), transform 240ms var(--ease-out);
+}
+/* Ao abrir, a janela liga como um monitor de tubo: uma linha que se abre em tela. */
+.term.is-aberto .term__win {
+  opacity: 1;
+  transform: none;
+  animation: term-liga 460ms var(--ease-out);
+}
+@keyframes term-liga {
+  0% { transform: scale(.94, .012); opacity: .3; }
+  38% { transform: scale(1, .012); opacity: 1; }
+  100% { transform: none; opacity: 1; }
+}
+.term__title { margin: 0; font: inherit; }
+.term__fechar {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  margin-right: -8px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color var(--dur-1) var(--ease-out), background-color var(--dur-1) var(--ease-out);
+}
+@media (hover: hover) { .term__fechar:hover { color: var(--text); background: var(--surface-2); } }
+.term__ir {
+  min-height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-code);
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color var(--dur-1) var(--ease-out), color var(--dur-1) var(--ease-out);
+}
+@media (hover: hover) { .term__ir:hover { border-color: var(--accent); color: var(--accent); } }
+
+.term__win {
+  border: 1px solid var(--line-2);
+  border-radius: 10px;
+  background: var(--surface);
+  box-shadow: var(--shadow), 0 40px 120px -30px rgba(0, 0, 0, .7), 0 0 0 1px rgba(var(--glow), .06);
+  overflow: hidden;
+}
+
+/* Barra de título: discreta, só identifica a janela e o processo em curso. */
+.term__bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 38px;
+  padding: 0 var(--term-px);
+  border-bottom: 1px solid var(--line);
+  font-family: var(--font-label);
+  font-size: 11px;
+  letter-spacing: .02em;
+  color: var(--muted);
+}
+.term__dots { display: flex; gap: 6px; }
+.term__dots i {
+  display: block;
+  width: 7px;
+  height: 7px;
+  border: 1px solid var(--line-2);
+  border-radius: 50%;
+}
+.term__title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.term__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  font-size: 10px;
+}
+.term__status::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--line-2);
+  transition: background-color var(--dur-1) var(--ease-out);
+}
+.term--busy .term__status::before { background: var(--accent); }
+
+/* Tela: a saída rola sozinha; canvas e linha de varredura ficam por cima, sem capturar o ponteiro. */
+.term__screen { position: relative; overflow: hidden; }
+
+.term__out {
+  position: relative;
+  height: min(48vh, 420px);
+  max-height: min(48vh, 420px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 16px var(--term-px) 18px;
+  font-size: 13px;
+  line-height: var(--term-lh);
+  color: var(--text-2);
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-2) transparent;
+  container-type: inline-size;
+  transition: opacity var(--dur-2) var(--ease-out);
+}
+.term__out:focus-visible { outline-offset: -2px; }
+
+.term__line {
+  position: relative;
+  min-height: calc(1em * var(--term-lh));
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  text-wrap: pretty;
+}
+.term__line--muted { color: var(--muted); }
+.term__line--strong { color: var(--text); }
+.term__line--cmd { margin-top: 12px; color: var(--text); }
+.term__line--cmd:first-child { margin-top: 0; }
+.term__line--gap { margin-top: 10px; }
+
+.term__p { color: var(--accent); margin-right: 1ch; }
+.term__k { color: var(--accent); }
+.term__ph { color: var(--muted); }
+
+.term__row {
+  display: grid;
+  grid-template-columns: 10ch minmax(0, 1fr);
+  column-gap: 2ch;
+}
+.term__row > :first-child { color: var(--text); }
+.term__row > :last-child { color: var(--muted); }
+.term__line--indent { padding-left: 2ch; }
+
+.term__out a {
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: var(--line-2);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  transition: color var(--dur-1) var(--ease-out), text-decoration-color var(--dur-1) var(--ease-out);
+}
+.term__links { display: flex; flex-wrap: wrap; column-gap: 3ch; }
+
+/* Nome na fonte da marca, revelado letra a letra por uma máscara. */
+.term__name {
+  display: inline-block;
+  position: relative;
+  margin: 6px 0 4px;
+  font-family: var(--font-display);
+  font-size: clamp(22px, 8.4cqi, 60px);
+  line-height: 1.05;
+  letter-spacing: .02em;
+  color: var(--text);
+  white-space: nowrap;
+}
+.term__letters { display: inline-flex; overflow: hidden; padding: .06em 0 .1em; vertical-align: top; }
+.term__letters > span { display: block; }
+.term__rule {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--accent);
+  transform-origin: 0 50%;
+}
+
+/* Linhas que chegam: aparecem com um corte da esquerda para a direita, em sequência curta. */
+@media (prefers-reduced-motion: no-preference) {
+  .term__line--in {
+    animation: term-type 200ms steps(8, end) backwards;
+    animation-delay: calc(var(--d, 0) * 26ms);
+  }
+  .term__letters > span {
+    animation: term-rise 520ms var(--ease-out) backwards;
+    animation-delay: calc(120ms + var(--i, 0) * 55ms);
+  }
+  .term__rule {
+    animation: term-rule 640ms var(--ease-out) backwards;
+    animation-delay: 640ms;
+  }
+  .term__line--gone {
+    opacity: 0;
+    transition: opacity 140ms var(--ease-out);
+  }
+}
+@keyframes term-type {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+@keyframes term-rise {
+  from { transform: translateY(105%); }
+  to { transform: translateY(0); }
+}
+@keyframes term-rule {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+/* Destaque passageiro de cada linha durante o scan (só opacidade de uma camada). */
+.term--scanning .term__line::before {
+  content: "";
+  position: absolute;
+  inset: 0 calc(-1 * var(--term-px));
+  background: rgba(var(--glow), .1);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.term__rain {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 280ms var(--ease-out);
+}
+.term--matrix .term__rain { opacity: 1; }
+.term--matrix .term__out { opacity: .05; }
+
+.term__scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 72px;
+  pointer-events: none;
+  opacity: 0;
+  border-bottom: 1px solid var(--accent);
+  background: linear-gradient(to bottom, rgba(var(--glow), 0), rgba(var(--glow), .07));
+  transform: translateY(-72px);
+}
+
+/* Linha de entrada: o input ocupa a linha toda, então o foco desenha a moldura inteira. */
+.term__form {
+  position: relative;
+  display: flex;
+  border-top: 1px solid var(--line);
+}
+.term__prompt {
+  position: absolute;
+  left: var(--term-px);
+  top: 50%;
+  transform: translateY(-52%);
+  color: var(--accent);
+  font-size: 15px;
+  line-height: 1;
+  pointer-events: none;
+}
+.term__input {
+  flex: 1;
+  min-width: 0;
+  height: 50px;
+  margin: 0;
+  padding: 0 var(--term-px) 0 calc(var(--term-px) + 22px);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-code);
+  font-size: 14px;
+  caret-color: var(--accent);
+  -webkit-appearance: none;
+  appearance: none;
+}
+.term__input::placeholder { color: var(--muted); opacity: 1; }
+/* Foco do input: a mesma cor do sistema, em linha de 1px como o resto da janela. */
+.term__input:focus-visible { outline-width: 1px; outline-offset: -1px; }
+
+.term__chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 12px var(--term-px);
+  border-top: 1px solid var(--line);
+}
+.term__chips-label {
+  margin-right: 6px;
+  font-family: var(--font-label);
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.term__chip {
+  min-height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--text-2);
+  font-family: var(--font-label);
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    color var(--dur-1) var(--ease-out),
+    border-color var(--dur-1) var(--ease-out),
+    background-color var(--dur-1) var(--ease-out),
+    transform var(--dur-1) var(--ease-out);
+}
+.term__chip::before { content: "› "; color: var(--muted); transition: color var(--dur-1) var(--ease-out); }
+@media (hover: hover) {
+  .term__chip:hover { color: var(--text); border-color: var(--line-2); background: var(--surface-2); }
+  .term__chip:hover::before { color: var(--accent); }
+  .term__out a:hover { color: var(--accent); text-decoration-color: currentColor; }
+}
+.term__chip:active { transform: translateY(1px); }
+
+@media (max-width: 560px) {
+  .term { --term-px: 14px; }
+  .term__out { height: min(44vh, 340px); max-height: min(44vh, 340px); font-size: 12px; padding-top: 14px; }
+  .term__row { grid-template-columns: 9ch minmax(0, 1fr); column-gap: 1.5ch; }
+  .term__chips { gap: 6px; padding: 10px 10px 12px; }
+  .term__chips-label { display: none; }
+  .term__chip { flex: 1 1 auto; padding: 0 8px; }
+  .term__chip::before { content: none; }
+}
+
+/* Toque: alvos de 44px e fonte de 16px no input (evita o zoom automático do iOS). */
+@media (pointer: coarse) {
+  .term__chip { min-height: 44px; }
+  .term__input { font-size: 16px; height: 52px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .term__win, .term.is-aberto .term__win { transform: none; animation: none; transition: opacity 120ms linear; }
+  .term__fundo { transition: opacity 120ms linear; }
+  .term__out { transition: none; }
+  .term__rain { transition: opacity 160ms linear; }
+}
+
+/* Fonte antiga (Zero Hour): só a moldura muda (título, estado, atalhos); a tela continua em mono, como o
+   terminal do site antigo. line-height inteiro: com 15.5px o Chrome arredonda a meia-entrelinha para baixo e as
+   maiúsculas da Zero Hour sobem 1px. */
+:root:is([data-font="titulos"], [data-font="tudo"]) .term__bar { font-size: 12px; letter-spacing: .03em; }
+:root:is([data-font="titulos"], [data-font="tudo"]) .term__status,
+:root:is([data-font="titulos"], [data-font="tudo"]) .term__chips-label { letter-spacing: .03em; line-height: 16px; }
+:root:is([data-font="titulos"], [data-font="tudo"]) .term__chip { letter-spacing: .02em; }
+@media (max-width: 560px) {
+  :root:is([data-font="titulos"], [data-font="tudo"]) .term__bar { gap: 10px; }
+  :root:is([data-font="titulos"], [data-font="tudo"]) .term__title { font-size: 10.5px; line-height: 17px; letter-spacing: 0; }
+  :root:is([data-font="titulos"], [data-font="tudo"]) .term__chip { font-size: 11px; padding: 0 4px; }
+}

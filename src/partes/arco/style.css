@@ -1,0 +1,330 @@
+/* Menu em meio-arco: fixo embaixo, no centro. Fechado, só o botão aparece; aberto, as fatias abrem em leque. */
+.arco {
+  --arco-out: cubic-bezier(.22, 1.18, .4, 1);
+  position: fixed;
+  left: 50%;
+  bottom: 0;
+  z-index: 45;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(380px, 94vw);
+  padding-bottom: calc(var(--hud) + 30px);
+  transform: translateX(-50%);
+  color: var(--text);
+  pointer-events: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Véu atrás do leque, para as fatias se destacarem do conteúdo. */
+.arco__veu {
+  position: fixed;
+  left: 50%;
+  bottom: 0;
+  width: 200vw;
+  height: 100vh;
+  transform: translateX(-50%);
+  background: radial-gradient(34% 46% at 50% 100%, color-mix(in srgb, var(--bg-2) 92%, transparent), color-mix(in srgb, var(--bg-2) 0%, transparent) 100%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-3) var(--ease-out);
+}
+.arco.is-open .arco__veu { opacity: 1; }
+
+/* O mostrador: a largura manda, o arco ocupa metade da altura e o botão fica no centro do arco. */
+.arco__dial {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 2 / 1;
+}
+.arco__svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+/* Fatias */
+.arco__slice {
+  cursor: pointer;
+  outline: none; /* o foco é desenhado na forma da fatia (.arco__ring) */
+  transform-box: view-box;
+  transform-origin: 0 0;
+}
+.arco__shape {
+  fill: var(--surface);
+  stroke: var(--line-2);
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+}
+.arco__tint {
+  fill: rgba(var(--glow), .12);
+  opacity: 0;
+  transition: opacity var(--dur-1) var(--ease-out);
+}
+.arco__ring {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2px;
+  vector-effect: non-scaling-stroke;
+  opacity: 0;
+}
+.arco__icon {
+  fill: none;
+  stroke: var(--text-2);
+  stroke-width: 1.5px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+  transition: stroke var(--dur-1) var(--ease-out);
+}
+.arco__icon * { vector-effect: non-scaling-stroke; }
+.arco__label {
+  font-family: var(--font-label);
+  font-size: 7.4px;
+  font-weight: 500;
+  letter-spacing: .06em;
+  fill: var(--muted);
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+  transition: fill var(--dur-1) var(--ease-out);
+}
+
+.arco__slice:focus-visible .arco__tint { opacity: 1; }
+.arco__slice:focus-visible .arco__ring { opacity: 1; }
+.arco__slice:focus-visible .arco__label { fill: var(--text); }
+.arco__slice:focus-visible .arco__icon { stroke: var(--text); }
+@media (hover: hover) {
+  .arco__slice:hover .arco__tint { opacity: 1; }
+  .arco__slice:hover .arco__label { fill: var(--text); }
+  .arco__slice:hover .arco__icon { stroke: var(--text); }
+}
+.arco__slice:active .arco__tint { opacity: 1; }
+
+/* Som: o ícone troca de ondas para um x. */
+.arco__som-on,
+.arco__som-off { transition: opacity var(--dur-1) var(--ease-out); }
+.arco__som-off { opacity: 0; }
+.arco__slice[aria-pressed="false"] .arco__som-on { opacity: 0; }
+.arco__slice[aria-pressed="false"] .arco__som-off { opacity: 1; }
+
+/* Tema: a metade cheia vira para o outro lado quando o tema muda. */
+.arco__tema-half { fill: var(--text-2); stroke: none; transition: fill var(--dur-1) var(--ease-out); }
+.arco__tema-icon {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform var(--dur-3) var(--ease-spring);
+}
+.arco[data-mode="light"] .arco__tema-icon { transform: rotate(180deg); }
+@media (hover: hover) {
+  .arco__slice:hover .arco__tema-half { fill: var(--text); }
+}
+.arco__slice:focus-visible .arco__tema-half { fill: var(--text); }
+
+/* Ponteiro: um ponto pequeno numa trilha interna, que gira até a fatia em foco. */
+.arco__track {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+}
+.arco__pointer {
+  transform-box: view-box;
+  transform-origin: 0 0;
+  transform: rotate(var(--arco-a, 90deg));
+  opacity: 0;
+  transition: transform 420ms var(--ease-out), opacity var(--dur-1) var(--ease-out);
+}
+.arco__pointer circle { fill: var(--accent); }
+.arco[data-active] .arco__pointer { opacity: 1; }
+
+/* Estados com JS: fechado por padrão, abre em leque. Sem JS tudo fica visível. */
+.arco--js .arco__orbit {
+  opacity: 0;
+  transition: opacity var(--dur-1) var(--ease-out);
+}
+.arco--js.is-open .arco__orbit {
+  opacity: 1;
+  transition: opacity var(--dur-2) var(--ease-out) 160ms;
+}
+.arco--js .arco__slice {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: rotate(-30deg) scale(.56);
+  transition:
+    opacity 150ms var(--ease-out) calc((4 - var(--i, 0)) * 16ms),
+    transform 240ms cubic-bezier(.5, 0, .9, .4) calc((4 - var(--i, 0)) * 16ms),
+    visibility 0s linear 330ms;
+}
+.arco--js.is-open .arco__slice {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: none;
+  transition:
+    opacity 200ms var(--ease-out) calc(var(--i, 0) * 42ms),
+    transform 560ms var(--arco-out) calc(var(--i, 0) * 42ms),
+    visibility 0s;
+}
+
+/* Botão central */
+.arco__toggle {
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  margin: -28px 0 0 -28px;
+  padding: 0;
+  border: 1px solid var(--line-2);
+  border-radius: 50%;
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  color: var(--text);
+  cursor: pointer;
+  pointer-events: auto;
+  box-shadow: 0 0 0 6px rgba(var(--glow), .05), 0 10px 30px -10px rgba(0, 0, 0, .6);
+  transition:
+    border-color var(--dur-1) var(--ease-out),
+    background-color var(--dur-1) var(--ease-out),
+    transform var(--dur-1) var(--ease-out);
+}
+@media (hover: hover) {
+  .arco__toggle:hover { border-color: var(--muted); background: var(--surface-2); }
+}
+.arco__toggle:active { transform: scale(.95); }
+
+/* Órbita pontilhada em volta do botão, girando devagar. */
+.arco__toggle::after {
+  content: "";
+  position: absolute;
+  inset: -8px;
+  border: 1px dashed rgba(var(--glow), .45);
+  border-radius: 50%;
+  animation: arco-orbita 22s linear infinite;
+  transition: opacity var(--dur-2) var(--ease-out);
+  pointer-events: none;
+}
+.arco.is-open .arco__toggle::after { opacity: 0; }
+@keyframes arco-orbita { to { transform: rotate(1turn); } }
+
+.arco__glyphs {
+  display: grid;
+  transition: transform 520ms var(--ease-spring);
+}
+.arco.is-open .arco__glyphs { transform: rotate(90deg); }
+.arco__g {
+  grid-area: 1 / 1;
+  display: block;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0;
+  transform: scale(.5);
+  transition: opacity 180ms var(--ease-out), transform 420ms var(--ease-out);
+}
+.arco:not([data-mode]):not(.is-open) .arco__g--moon,
+.arco[data-mode="dark"]:not(.is-open) .arco__g--moon,
+.arco[data-mode="light"]:not(.is-open) .arco__g--sun,
+.arco.is-open .arco__g--x {
+  opacity: 1;
+  transform: none;
+}
+
+/* Retorno das ações */
+.arco__status {
+  order: -1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 20px;
+  margin: 0 0 10px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: var(--glass);
+  font-family: var(--font-label);
+  font-size: 12px;
+  line-height: 20px;
+  color: var(--text-2);
+}
+.arco__status::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
+}
+.arco--js .arco__status {
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity var(--dur-2) var(--ease-out), transform var(--dur-2) var(--ease-out);
+}
+.arco--js .arco__status.is-on { opacity: 1; transform: none; }
+.arco:not(.arco--js) .arco__status { visibility: hidden; }
+
+@media (max-width: 560px) {
+  .arco__label { font-size: 7.8px; letter-spacing: .02em; }
+}
+
+/* Sem JS o menu não abre nem navega: o trilho de capítulos (links comuns) faz esse papel. */
+html:not(.js) .arco { display: none; }
+
+/* Escondido durante a abertura. */
+.arco { transition: opacity 700ms var(--ease-out) 650ms; }
+.abrindo .arco { opacity: 0; transition: none; }
+
+/* Movimento reduzido: as fatias só aparecem, sem leque nem giro. */
+@media (prefers-reduced-motion: reduce) {
+  .arco--js .arco__slice,
+  .arco--js.is-open .arco__slice { transform: none; }
+  .arco--js .arco__slice { transition: opacity 140ms linear, visibility 0s linear 140ms; }
+  .arco--js.is-open .arco__slice { transition: opacity 140ms linear, visibility 0s; }
+  .arco.is-open .arco__glyphs { transform: none; }
+  .arco__glyphs { transition: none; }
+  .arco__g,
+  .arco:not([data-mode]):not(.is-open) .arco__g--moon,
+  .arco[data-mode="dark"]:not(.is-open) .arco__g--moon,
+  .arco[data-mode="light"]:not(.is-open) .arco__g--sun,
+  .arco.is-open .arco__g--x { transform: none; transition: opacity 120ms linear; }
+  .arco__pointer { transition: opacity 120ms linear; }
+  .arco__tema-icon { transition: none; }
+  .arco--js .arco__status { transform: none; transition: opacity 120ms linear; }
+  .arco__toggle:active { transform: none; }
+  .arco__toggle::after { animation: none; }
+  .arco__veu { transition: opacity 140ms linear; }
+}
+
+/* Estado inicial aplicado sem transição. */
+.arco.arco--init .arco__slice,
+.arco.arco--init .arco__orbit,
+.arco.arco--init .arco__glyphs,
+.arco.arco--init .arco__g,
+.arco.arco--init .arco__tema-icon,
+.arco.arco--init .arco__status { transition: none; }
+
+/* Fonte antiga (Zero Hour). Ela é ~25% mais larga que a Martian Mono no mesmo corpo: os rótulos encolhem e
+   perdem o espaçamento extra para PROJETOS caber na fatia com a mesma folga. geometricPrecision: sem ela o
+   Chrome ajusta o avanço das letras ao pixel no corpo pequeno e, no celular, aparecem buracos ("S OBRE").
+   Só que aí a linha "central" sai do lugar; então a base volta a ser a alfabética e o texto desce meia altura
+   de maiúscula (0,749 x 0,86 / 2 = .322em): as maiúsculas ficam centradas no y. */
+:root:is([data-font="titulos"], [data-font="tudo"]) .arco__label {
+  font-size: 6.6px;
+  letter-spacing: .02em;
+  text-rendering: geometricPrecision;
+  dominant-baseline: alphabetic;
+  transform: translateY(.322em);
+}
+/* Traço fino e corpo menor: um tom acima do --muted para ler igual. :where() mantém a especificidade baixa,
+   então hover e foco (--text) continuam ganhando. */
+:where(:root[data-font="titulos"], :root[data-font="tudo"]) .arco__label { fill: var(--text-2); }
+/* Retorno: um corpo abaixo, para não competir com as fatias; entrelinha ímpar centra as maiúsculas no quadrado. */
+:root:is([data-font="titulos"], [data-font="tudo"]) .arco__status { font-size: 11px; line-height: 21px; letter-spacing: .03em; }

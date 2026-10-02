@@ -1,0 +1,167 @@
+/* Início: o nome no meio do céu e a borda de um planeta embaixo. Ao rolar, a câmera decola. */
+.inicio {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: 104px var(--gutter) 21vh;
+  overflow: hidden;
+  text-align: center;
+  --sai: 0;
+}
+
+.inicio__conteudo {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  justify-items: center;
+  gap: clamp(16px, 2.2vw, 26px);
+  transform: translate3d(0, calc(var(--sai) * -16vh), 0) scale(calc(1 - var(--sai) * .08));
+  opacity: calc(1 - var(--sai) * 1.4);
+}
+
+.inicio__rotulo { display: inline-flex; align-items: center; gap: 10px; color: var(--text-2); }
+
+.inicio__marca {
+  font-family: var(--font-display);
+  font-weight: 400;
+  /* Zero Hour mede ~9,2em em "Cauanzera": 9,4vw ocupa ~86% da largura. */
+  font-size: clamp(30px, 9.4vw, 176px);
+  line-height: .95;
+  letter-spacing: 0;
+  white-space: nowrap;
+  color: var(--text);
+  text-shadow: 0 0 46px rgba(var(--glow), .22);
+}
+.inicio__palavra { display: inline-block; }
+.inicio__char { display: inline-block; }
+
+.inicio__frase {
+  max-width: 42ch;
+  font-size: clamp(16px, 1.45vw, 20px);
+  line-height: 1.55;
+  color: var(--text-2);
+  text-wrap: balance;
+}
+.inicio__nome { display: block; margin-bottom: 4px; font-family: var(--font-label); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--text); }
+
+.inicio__descer {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 44px;
+  margin-top: clamp(6px, 2vh, 22px);
+  padding: 0 6px;
+  border-radius: 4px;
+  font-family: var(--font-label);
+  font-size: 11px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color var(--dur-1) var(--ease-out);
+}
+@media (hover: hover) { .inicio__descer:hover { color: var(--text); } }
+.inicio__trilha {
+  position: relative;
+  width: 1px;
+  height: 34px;
+  overflow: hidden;
+  background: var(--line-2);
+}
+.inicio__trilha span {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1px;
+  height: 12px;
+  background: var(--accent);
+  animation: inicio-descer 1.8s var(--ease-in-out) infinite;
+}
+@keyframes inicio-descer {
+  from { transform: translateY(-14px); }
+  to { transform: translateY(36px); }
+}
+
+.inicio__dica {
+  position: absolute;
+  z-index: 2;
+  right: calc(var(--hud) + 6px);
+  top: calc(var(--hud) + 62px);
+  font-family: var(--font-label);
+  font-size: 10px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  opacity: calc(1 - var(--sai) * 3);
+}
+.inicio__dica-toque { display: none; }
+@media (hover: none), (pointer: coarse) {
+  .inicio__dica-mouse { display: none; }
+  .inicio__dica-toque { display: inline; }
+}
+
+/* Planeta: um disco enorme com a borda acesa. Só a calota de cima aparece. */
+.inicio__planeta {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  top: calc(100% - 17vh);
+  width: max(250vw, 1700px);
+  aspect-ratio: 1;
+  transform: translate3d(-50%, calc(var(--sai) * 10vh), 0);
+  pointer-events: none;
+}
+.inicio__atmosfera {
+  position: absolute;
+  inset: -4%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(var(--glow), 0) 91.6%, rgba(var(--glow), .3) 92.6%, rgba(var(--glow), .09) 94.6%, rgba(var(--glow), 0) 100%);
+}
+.inicio__disco {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--bg-2);
+  box-shadow:
+    inset 0 1px 0 rgba(var(--glow), .85),
+    inset 0 30px 70px -40px rgba(var(--glow), .55),
+    0 -2px 24px -6px rgba(var(--glow), .5);
+}
+/* O ponto mais claro da borda, bem no meio (o sol logo atrás do planeta). */
+.inicio__brilho {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 46%;
+  height: 7%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(closest-side, rgba(var(--glow), .5), rgba(var(--glow), 0));
+}
+
+/* Antes da abertura terminar, o conteúdo espera escondido. */
+.abrindo .inicio__rotulo,
+.abrindo .inicio__char,
+.abrindo .inicio__frase,
+.abrindo .inicio__descer,
+.abrindo .inicio__dica,
+.abrindo .inicio__planeta { opacity: 0; }
+
+@media (max-width: 640px) {
+  .inicio { padding-bottom: 24vh; }
+  .inicio__planeta { top: calc(100% - 15vh); width: 420vw; }
+  .inicio__dica { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .inicio__trilha span { animation: none; transform: translateY(11px); }
+  .inicio__conteudo { transform: none; opacity: 1; }
+  .inicio__planeta { transform: translateX(-50%); }
+}
+
+/* Fonte antiga */
+:root:is([data-font="titulos"], [data-font="tudo"]) .inicio__nome { font-size: 13px; letter-spacing: .08em; }
+:root:is([data-font="titulos"], [data-font="tudo"]) .inicio__descer,
+:root:is([data-font="titulos"], [data-font="tudo"]) .inicio__dica { font-size: 12px; letter-spacing: .06em; word-spacing: .15em; }
+:root[data-font="tudo"] .inicio__frase { letter-spacing: .02em; line-height: 1.6; }
