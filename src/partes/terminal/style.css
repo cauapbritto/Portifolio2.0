@@ -52,7 +52,6 @@
   border-radius: 4px;
   background: transparent;
   color: var(--muted);
-  cursor: pointer;
   transition: color var(--dur-1) var(--ease-out), background-color var(--dur-1) var(--ease-out);
 }
 @media (hover: hover) { .term__fechar:hover { color: var(--text); background: var(--surface-2); } }
@@ -65,7 +64,6 @@
   color: var(--text);
   font-family: var(--font-code);
   font-size: 12px;
-  cursor: pointer;
   transition: border-color var(--dur-1) var(--ease-out), color var(--dur-1) var(--ease-out);
 }
 @media (hover: hover) { .term__ir:hover { border-color: var(--accent); color: var(--accent); } }
@@ -328,7 +326,6 @@
   font-family: var(--font-label);
   font-size: 12px;
   line-height: 1;
-  cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   transition:
     color var(--dur-1) var(--ease-out),

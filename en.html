@@ -321,7 +321,7 @@ main { position: relative; z-index: 2; }
   }
   @page { margin: 14mm 16mm; }
   html, body { background: #fff !important; color: #111 !important; }
-  .uni, .abertura, .hud, .trilho, .hud-base, .hud-cantos, .hud-veu, .arco, .cursor, .term, .pular,
+  .uni, .abertura, .hud, .trilho, .hud-base, .hud-cantos, .hud-veu, .arco, .term, .pular,
   .inicio__planeta, .inicio__descer, .inicio__dica, .contato__orbitas, .email__magnet,
   .projetos__nav, .projetos__progresso, .projetos__contador, .sobre__numero, .rodape__topo { display: none !important; }
   [data-revelar], [data-revelar="mascara"] > span, .sobre__w { opacity: 1 !important; transform: none !important; }
@@ -580,7 +580,6 @@ main { position: relative; z-index: 2; }
   font-size: 11px;
   letter-spacing: .08em;
   text-transform: uppercase;
-  cursor: pointer;
   transition: color var(--dur-1) var(--ease-out), border-color var(--dur-1) var(--ease-out);
 }
 .hud__btn svg { color: var(--accent); }
@@ -646,7 +645,7 @@ html:not(.js) .hud__idioma { display: none; }
 .fonte__titulo + .fonte__grupo { margin-bottom: 6px; }
 .fonte__nota { margin: 2px 10px 4px; max-width: 26ch; font-size: 12px; line-height: 1.4; color: var(--muted); }
 .fonte__nota[hidden] { display: none; }
-.fonte__opcao[aria-disabled="true"] { opacity: .45; cursor: default; }
+.fonte__opcao[aria-disabled="true"] { opacity: .45; }
 .fonte__titulo {
   padding: 4px 10px 6px;
   font-family: var(--font-label);
@@ -668,7 +667,6 @@ html:not(.js) .hud__idioma { display: none; }
   font-size: 15px;
   line-height: 1.2;
   text-align: left;
-  cursor: pointer;
   transition: color var(--dur-1) var(--ease-out), background-color var(--dur-1) var(--ease-out);
 }
 .fonte__opcao::before { content: ""; flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--line-2); transition: background-color var(--dur-1) var(--ease-out); }
@@ -1236,11 +1234,10 @@ html:not(.js) .inicio__dica { display: none; }
   border-radius: 50%;
   background: var(--glass);
   color: var(--text);
-  cursor: pointer;
   transition: border-color var(--dur-1) var(--ease-out), opacity var(--dur-1) var(--ease-out);
 }
 @media (hover: hover) { .projetos__seta:hover { border-color: var(--accent); } }
-.projetos__seta[aria-disabled="true"] { opacity: .35; cursor: default; }
+.projetos__seta[aria-disabled="true"] { opacity: .35; }
 
 .projetos__trilha {
   display: grid;
@@ -1730,7 +1727,6 @@ html:not(.js) .email__magnet { display: none; }
   color: var(--text);
   font: 500 15px/1 var(--font-head);
   letter-spacing: -.005em;
-  cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   transition:
     border-color var(--dur-2) var(--ease-out),
@@ -1996,7 +1992,6 @@ html:not(.js) .email__magnet { display: none; }
 
 /* Fatias */
 .arco__slice {
-  cursor: pointer;
   outline: none; /* o foco é desenhado na forma da fatia (.arco__ring) */
   transform-box: view-box;
   transform-origin: 0 0;
@@ -2137,7 +2132,6 @@ html:not(.js) .email__magnet { display: none; }
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   color: var(--text);
-  cursor: pointer;
   pointer-events: auto;
   box-shadow: 0 0 0 6px rgba(var(--glow), .05), 0 10px 30px -10px rgba(0, 0, 0, .6);
   transition:
@@ -2357,7 +2351,6 @@ html:not(.js) .arco { display: none; }
   border-radius: 4px;
   background: transparent;
   color: var(--muted);
-  cursor: pointer;
   transition: color var(--dur-1) var(--ease-out), background-color var(--dur-1) var(--ease-out);
 }
 @media (hover: hover) { .term__fechar:hover { color: var(--text); background: var(--surface-2); } }
@@ -2370,7 +2363,6 @@ html:not(.js) .arco { display: none; }
   color: var(--text);
   font-family: var(--font-code);
   font-size: 12px;
-  cursor: pointer;
   transition: border-color var(--dur-1) var(--ease-out), color var(--dur-1) var(--ease-out);
 }
 @media (hover: hover) { .term__ir:hover { border-color: var(--accent); color: var(--accent); } }
@@ -2633,7 +2625,6 @@ html:not(.js) .arco { display: none; }
   font-family: var(--font-label);
   font-size: 12px;
   line-height: 1;
-  cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   transition:
     color var(--dur-1) var(--ease-out),
@@ -2719,12 +2710,12 @@ html:not(.js) .arco { display: none; }
     <a class="hud__btn hud__idioma" href="en.html" hreflang="en" lang="en" title="English version" data-en-href="./" data-en-hreflang="pt-BR" data-en-lang="pt-BR" data-en-title="Versão em português" data-idioma>
       <span class="hud__idioma-sigla" data-en="PT">EN</span><span class="sr" data-en=", versão em português">, English version</span>
     </a>
-    <a class="hud__btn hud__cv" href="assets/Curriculo_Caua_Pedrozo_Brito.pdf" download aria-label="Currículo em PDF" data-en-aria-label="Résumé (PDF, in Portuguese)" data-cursor="baixar">
+    <a class="hud__btn hud__cv" href="assets/Curriculo_Caua_Pedrozo_Brito.pdf" download aria-label="Currículo em PDF" data-en-aria-label="Résumé (PDF, in Portuguese)">
       <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M8 2.5v7.5M4.75 7 8 10.25 11.25 7M3 13.25h10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <span data-en="Résumé">Currículo</span>
     </a>
     <div class="fonte">
-      <button class="hud__btn fonte__btn" type="button" aria-expanded="false" aria-controls="fonte-painel" aria-label="Ajustes: fonte e movimento" data-en-aria-label="Settings: font and motion" data-cursor="ajustes">
+      <button class="hud__btn fonte__btn" type="button" aria-expanded="false" aria-controls="fonte-painel" aria-label="Ajustes: fonte e movimento" data-en-aria-label="Settings: font and motion">
         <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true" focusable="false"><path d="M2.5 4.5h6M11.5 4.5h2M2.5 11.5h2M7.5 11.5h6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="4.5" r="1.6" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="6" cy="11.5" r="1.6" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
       </button>
       <div class="fonte__painel" id="fonte-painel" role="group" aria-label="Ajustes" data-en-aria-label="Settings" hidden>
@@ -2769,7 +2760,7 @@ html:not(.js) .arco { display: none; }
 <nav class="arco" aria-label="Menu">
   <span class="arco__veu" aria-hidden="true"></span>
   <div class="arco__dial">
-    <button class="arco__toggle" type="button" aria-expanded="false" aria-controls="arco-menu" aria-label="Menu" data-cursor="menu">
+    <button class="arco__toggle" type="button" aria-expanded="false" aria-controls="arco-menu" aria-label="Menu">
       <span class="arco__glyphs" aria-hidden="true">
         <svg class="arco__g arco__g--menu" viewBox="0 0 24 24" width="22" height="22" focusable="false"><path d="M5 7.5h14M5 12h14M5 16.5h14"/></svg>
         <svg class="arco__g arco__g--x" viewBox="0 0 24 24" width="22" height="22" focusable="false"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg>
@@ -2849,7 +2840,7 @@ html:not(.js) .arco { display: none; }
   <div class="inicio__conteudo">
     <p class="inicio__marca" aria-hidden="true"><span class="inicio__palavra">Cauanzera</span></p>
     <h1 class="inicio__nome" id="inicio-t" data-foco>Cauã Pedrozo Brito</h1>
-    <a class="inicio__descer" href="#sobre" data-ir="sobre" data-cursor="descer">
+    <a class="inicio__descer" href="#sobre" data-ir="sobre">
       <span class="inicio__trilha" aria-hidden="true"><span></span></span>
       <span data-en="Scroll to explore">Role para explorar</span>
     </a>
@@ -2962,7 +2953,7 @@ html:not(.js) .arco { display: none; }
               <li>Python</li><li>OpenCV</li><li>MediaPipe</li><li>scikit-learn</li><li>CustomTkinter</li>
             </ul>
             <div class="projeto__links">
-              <a class="projeto__link" href="https://github.com/cauapbritto/Vis-oLibras" target="_blank" rel="noopener noreferrer" data-cursor="abrir"><span data-en="Code">Código</span><span class="sr" data-en=" for Librahin (opens in a new tab)"> do Librahin (abre em nova aba)</span><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M5 11 11 5M6 5h5v5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+              <a class="projeto__link" href="https://github.com/cauapbritto/Vis-oLibras" target="_blank" rel="noopener noreferrer"><span data-en="Code">Código</span><span class="sr" data-en=" for Librahin (opens in a new tab)"> do Librahin (abre em nova aba)</span><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M5 11 11 5M6 5h5v5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
             </div>
           </div>
         </article>
@@ -2985,8 +2976,8 @@ html:not(.js) .arco { display: none; }
               <li>HTML</li><li>CSS</li><li>JavaScript</li>
             </ul>
             <div class="projeto__links">
-              <a class="projeto__link" href="https://cauapbritto.github.io/lixo-eletronico/" target="_blank" rel="noopener noreferrer" data-cursor="visitar"><span data-en="Visit site">Ver site</span><span class="sr" data-en=" for EcoPontos (opens in a new tab)"> do EcoPontos (abre em nova aba)</span><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M5 11 11 5M6 5h5v5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-              <a class="projeto__link" href="https://github.com/cauapbritto/lixo-eletronico" target="_blank" rel="noopener noreferrer" data-cursor="abrir"><span data-en="Code">Código</span><span class="sr" data-en=" for EcoPontos (opens in a new tab)"> do EcoPontos (abre em nova aba)</span><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M5 11 11 5M6 5h5v5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+              <a class="projeto__link" href="https://cauapbritto.github.io/lixo-eletronico/" target="_blank" rel="noopener noreferrer"><span data-en="Visit site">Ver site</span><span class="sr" data-en=" for EcoPontos (opens in a new tab)"> do EcoPontos (abre em nova aba)</span><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M5 11 11 5M6 5h5v5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+              <a class="projeto__link" href="https://github.com/cauapbritto/lixo-eletronico" target="_blank" rel="noopener noreferrer"><span data-en="Code">Código</span><span class="sr" data-en=" for EcoPontos (opens in a new tab)"> do EcoPontos (abre em nova aba)</span><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M5 11 11 5M6 5h5v5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
             </div>
           </div>
         </article>
@@ -3009,8 +3000,8 @@ html:not(.js) .arco { display: none; }
               <li>HTML</li><li>CSS</li><li>JavaScript</li><li>Canvas 2D</li><li>Web Audio</li>
             </ul>
             <div class="projeto__links">
-              <a class="projeto__link" href="https://github.com/cauapbritto/Portifolio2.0" target="_blank" rel="noopener noreferrer" data-cursor="abrir"><span data-en="Code">Código</span><span class="sr" data-en=" for Portfolio 2.0 (opens in a new tab)"> do Portfólio 2.0 (abre em nova aba)</span><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M5 11 11 5M6 5h5v5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-              <a class="projeto__link" href="https://cauapbritto.github.io/portif-lio/" target="_blank" rel="noopener noreferrer" data-cursor="visitar"><span data-en='See <span class="projeto__versao-inline">v1</span>'>Ver o <span class="projeto__versao-inline">v1</span></span><span class="sr" data-en=", the first version of the portfolio (opens in a new tab)">, a primeira versão do portfólio (abre em nova aba)</span><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M5 11 11 5M6 5h5v5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+              <a class="projeto__link" href="https://github.com/cauapbritto/Portifolio2.0" target="_blank" rel="noopener noreferrer"><span data-en="Code">Código</span><span class="sr" data-en=" for Portfolio 2.0 (opens in a new tab)"> do Portfólio 2.0 (abre em nova aba)</span><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M5 11 11 5M6 5h5v5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+              <a class="projeto__link" href="https://cauapbritto.github.io/portif-lio/" target="_blank" rel="noopener noreferrer"><span data-en='See <span class="projeto__versao-inline">v1</span>'>Ver o <span class="projeto__versao-inline">v1</span></span><span class="sr" data-en=", the first version of the portfolio (opens in a new tab)">, a primeira versão do portfólio (abre em nova aba)</span><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M5 11 11 5M6 5h5v5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
             </div>
           </div>
         </article>
@@ -3020,7 +3011,7 @@ html:not(.js) .arco { display: none; }
         <div class="projeto__fim">
           <p class="rotulo" data-en="Other repositories">Outros repositórios</p>
           <p class="projeto__fim-titulo" data-en="Study projects and experiments on GitHub.">Estudos e experimentos no GitHub.</p>
-          <a class="projeto__github" href="https://github.com/cauapbritto" target="_blank" rel="noopener noreferrer" data-cursor="abrir"><span data-en="See everything on GitHub">Ver tudo no GitHub</span><span class="sr" data-en=" (opens in a new tab)"> (abre em nova aba)</span><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M5 11 11 5M6 5h5v5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          <a class="projeto__github" href="https://github.com/cauapbritto" target="_blank" rel="noopener noreferrer"><span data-en="See everything on GitHub">Ver tudo no GitHub</span><span class="sr" data-en=" (opens in a new tab)"> (abre em nova aba)</span><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M5 11 11 5M6 5h5v5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         </div>
       </li>
     </ol>
@@ -3042,10 +3033,10 @@ html:not(.js) .arco { display: none; }
         <span class="email__label-text" data-en="Email">E-mail</span>
         <span class="email__hint" aria-hidden="true"></span>
       </p>
-      <p class="email__linha"><a class="email__email" href="mailto:caua.pbritto@gmail.com?subject=Contato%20pelo%20portf%C3%B3lio" data-en-href="mailto:caua.pbritto@gmail.com?subject=Hello%20from%20your%20portfolio" data-cursor="escrever"><span class="email__user">caua.pbritto</span><wbr><span class="email__domain">@gmail.com</span></a></p>
+      <p class="email__linha"><a class="email__email" href="mailto:caua.pbritto@gmail.com?subject=Contato%20pelo%20portf%C3%B3lio" data-en-href="mailto:caua.pbritto@gmail.com?subject=Hello%20from%20your%20portfolio"><span class="email__user">caua.pbritto</span><wbr><span class="email__domain">@gmail.com</span></a></p>
       <div class="email__bar">
         <span class="email__magnet">
-          <button class="email__btn" type="button" data-cursor="copiar">
+          <button class="email__btn" type="button">
             <span class="email__face">
               <span class="email__state email__state--idle">
                 <svg class="email__icon email__copy" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><rect x="5.25" y="5.25" width="8.5" height="8.5" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10.25 2.75v-.25a.5.5 0 0 0-.5-.5H3a1 1 0 0 0-1 1v6.75a.5.5 0 0 0 .5.5h.25" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
@@ -3060,7 +3051,7 @@ html:not(.js) .arco { display: none; }
         </span>
         <ul class="email__links" role="list">
           <li>
-            <a class="email__link" href="assets/Curriculo_Caua_Pedrozo_Brito.pdf" download data-cursor="baixar"><span class="email__link-text" data-en='Résumé <span class="email__extra">PDF · PT</span>'>Currículo <span class="email__extra">PDF</span></span><svg class="email__arrow email__arrow--baixo" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path d="M8 3v8.5M4.5 8 8 11.5 11.5 8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            <a class="email__link" href="assets/Curriculo_Caua_Pedrozo_Brito.pdf" download><span class="email__link-text" data-en='Résumé <span class="email__extra">PDF · PT</span>'>Currículo <span class="email__extra">PDF</span></span><svg class="email__arrow email__arrow--baixo" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path d="M8 3v8.5M4.5 8 8 11.5 11.5 8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
           </li>
           <li>
             <a class="email__link" href="https://github.com/cauapbritto" target="_blank" rel="noopener noreferrer"><span class="email__link-text">GitHub</span><svg class="email__arrow" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path d="M4.5 11.5 11.5 4.5M5.5 4.5h6v6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="sr" data-en=" (opens in a new tab)"> (abre em nova aba)</span></a>
@@ -3077,7 +3068,7 @@ html:not(.js) .arco { display: none; }
   <footer class="rodape">
     <p>© 2026 Cauã Pedrozo Brito</p>
     <p class="rodape__feito" data-en="Built with HTML, CSS and JavaScript. No frameworks.">HTML, CSS e JavaScript, sem framework.</p>
-    <a class="rodape__topo" href="#inicio" data-ir="inicio" data-cursor="decolar"><span data-en="Back to the top">Voltar ao início</span><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M8 13V3M4 7l4-4 4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    <a class="rodape__topo" href="#inicio" data-ir="inicio"><span data-en="Back to the top">Voltar ao início</span><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M8 13V3M4 7l4-4 4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
   </footer>
 </section>
 </main>
@@ -3114,10 +3105,6 @@ html:not(.js) .arco { display: none; }
       <button class="term__chip" type="button" data-cmd="warp">warp</button>
     </div>
   </section>
-</div>
-<div class="cursor" aria-hidden="true">
-  <span class="cursor__anel"><span class="cursor__circulo"></span><span class="cursor__texto"></span></span>
-  <span class="cursor__ponto"></span>
 </div>
 
 <script>/* núcleo */
@@ -4317,78 +4304,6 @@ window.CZ = (() => {
       CZ.emit('terminal:abrir', btnTerminal);
     }
   });
-})();
-</script>
-<script>/* cursor */
-(() => {
-  const el = document.querySelector('.cursor');
-  if (!el) return;
-  const html = document.documentElement;
-  const ponto = el.querySelector('.cursor__ponto');
-  const anel = el.querySelector('.cursor__anel');
-  const texto = el.querySelector('.cursor__texto');
-  const ALVOS = 'a, button, [role="button"], [data-cursor], summary, label';
-  // O rótulo vem do data-cursor (em português); em inglês, a palavra equivalente.
-  const EN = { baixar: 'save', escrever: 'write', abrir: 'open', visitar: 'visit', copiar: 'copy', decolar: 'liftoff', descer: 'scroll', menu: 'menu', ajustes: 'settings' };
-
-  let ativo = false;
-  let x = -100, y = -100, ax = -100, ay = -100;
-  let raf = 0, last = 0;
-
-  function frame(now) {
-    raf = 0;
-    const dt = last ? Math.min(64, now - last) : 16.7;
-    last = now;
-    const k = 1 - Math.pow(1 - 0.2, dt / 16.7);
-    ax += (x - ax) * k;
-    ay += (y - ay) * k;
-    ponto.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-    anel.style.transform = `translate3d(${ax.toFixed(1)}px, ${ay.toFixed(1)}px, 0)`;
-    if (Math.abs(x - ax) > 0.1 || Math.abs(y - ay) > 0.1) raf = requestAnimationFrame(frame);
-    else last = 0;
-  }
-  const acordar = () => { if (!raf) raf = requestAnimationFrame(frame); };
-
-  function mover(e) {
-    if (e.pointerType !== 'mouse') return;
-    const primeira = x < -50;
-    x = e.clientX; y = e.clientY;
-    if (primeira) { ax = x; ay = y; }
-    el.classList.remove('is-fora');
-    acordar();
-  }
-  function sobre(e) {
-    const t = e.target instanceof Element ? e.target : null;
-    const input = t && t.closest('input, textarea, [contenteditable="true"]');
-    el.classList.toggle('is-input', !!input);
-    const alvo = t && !input ? t.closest(ALVOS) : null;
-    const rotulo = alvo && alvo.closest('[data-cursor]');
-    const pt = rotulo ? rotulo.dataset.cursor : '';
-    const txt = CZ.t(pt, EN[pt] || pt);
-    if (texto.textContent !== txt) texto.textContent = txt;
-    el.classList.toggle('is-rotulo', !!txt);
-    el.classList.toggle('is-alvo', !!alvo && !txt);
-  }
-  const fora = (e) => { if (!e.relatedTarget) el.classList.add('is-fora'); };
-  const apertar = () => el.classList.add('is-apertado');
-  const soltar = () => el.classList.remove('is-apertado');
-
-  function ligar(on) {
-    if (on === ativo) return;
-    ativo = on;
-    const m = on ? 'addEventListener' : 'removeEventListener';
-    document[m]('pointermove', mover, { passive: true });
-    document[m]('pointerover', sobre, { passive: true });
-    document[m]('pointerout', fora, { passive: true });
-    document[m]('pointerdown', apertar, { passive: true });
-    document[m]('pointerup', soltar, { passive: true });
-    html.classList.toggle('tem-cursor', on);
-    if (on) el.classList.add('is-fora');
-  }
-  const avaliar = () => ligar(CZ.mouse() && !CZ.reduzido());
-  CZ.ouvir(matchMedia('(hover: hover) and (pointer: fine)'), avaliar);
-  CZ.on('movimento', avaliar);
-  avaliar();
 })();
 </script>
 <script>/* inicio */
