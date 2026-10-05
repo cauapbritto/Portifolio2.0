@@ -126,7 +126,7 @@ main { position: relative; z-index: 2; }
   }
   @page { margin: 14mm 16mm; }
   html, body { background: #fff !important; color: #111 !important; }
-  .uni, .abertura, .hud, .trilho, .hud-base, .hud-cantos, .hud-veu, .arco, .cursor, .term, .pular,
+  .uni, .abertura, .hud, .trilho, .hud-base, .hud-cantos, .hud-veu, .arco, .term, .pular,
   .inicio__planeta, .inicio__descer, .inicio__dica, .contato__orbitas, .email__magnet,
   .projetos__nav, .projetos__progresso, .projetos__contador, .sobre__numero, .rodape__topo { display: none !important; }
   [data-revelar], [data-revelar="mascara"] > span, .sobre__w { opacity: 1 !important; transform: none !important; }

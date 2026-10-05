@@ -34,11 +34,10 @@
   border-radius: 50%;
   background: var(--glass);
   color: var(--text);
-  cursor: pointer;
   transition: border-color var(--dur-1) var(--ease-out), opacity var(--dur-1) var(--ease-out);
 }
 @media (hover: hover) { .projetos__seta:hover { border-color: var(--accent); } }
-.projetos__seta[aria-disabled="true"] { opacity: .35; cursor: default; }
+.projetos__seta[aria-disabled="true"] { opacity: .35; }
 
 .projetos__trilha {
   display: grid;
