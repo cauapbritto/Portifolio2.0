@@ -6,6 +6,8 @@
   const atualEl = root.querySelector('.projetos__atual');
   const progresso = root.querySelector('.projetos__progresso');
   const nProjetos = slides.filter((s) => !s.classList.contains('projeto--fim')).length;
+  const totalEl = root.querySelector('.projetos__total');
+  if (totalEl) totalEl.textContent = ` / ${String(nProjetos).padStart(2, '0')}`;
   // Trilha só com mouse/trackpad em tela larga e alta; no toque e em tela baixa, os projetos ficam empilhados.
   const mqLarga = matchMedia('(min-width: 900px) and (min-height: 600px) and (pointer: fine)');
   const palco = root.querySelector('.projetos__palco');

@@ -22,6 +22,8 @@
     linkedin: 'https://www.linkedin.com/in/cau%C3%A3-pedrozo-brito-8a685b358',
     ecoSite: 'https://cauapbritto.github.io/lixo-eletronico/',
     ecoCode: 'https://github.com/cauapbritto/lixo-eletronico',
+    golpeSite: 'https://cauapbritto.github.io/Golpe-ou-n-o/',
+    golpeCode: 'https://github.com/cauapbritto/Golpe-ou-n-o',
     v1Code: 'https://github.com/cauapbritto/portif-lio',
     v2Code: 'https://github.com/cauapbritto/Portifolio2.0',
     cv: 'assets/Curriculo_Caua_Pedrozo_Brito.pdf',
@@ -405,6 +407,13 @@
     print(fill(node('span', 'term__links'), [
       link('site ↗', LINKS.ecoSite, 'EcoPontos: site' + NOVA_ABA()),
       link(CODIGO(), LINKS.ecoCode, CZ.t('EcoPontos: código no GitHub', 'EcoPontos: code on GitHub') + NOVA_ABA()),
+    ]), 'indent');
+    print('Golpe ou não?', 'strong gap');
+    print(CZ.t('Ensina a reconhecer golpes por WhatsApp, SMS e ligação.', 'Teaches you to spot scams over WhatsApp, SMS and phone calls.'), 'indent');
+    print('HTML, CSS, JavaScript', 'muted indent');
+    print(fill(node('span', 'term__links'), [
+      link('site ↗', LINKS.golpeSite, 'Golpe ou não?: site' + NOVA_ABA()),
+      link(CODIGO(), LINKS.golpeCode, CZ.t('Golpe ou não?: código no GitHub', 'Golpe ou não?: code on GitHub') + NOVA_ABA()),
     ]), 'indent');
     print(CZ.t('Portfólio 2.0', 'Portfolio 2.0'), 'strong gap');
     print(CZ.t('Este site: um céu 3D que a rolagem atravessa, sem framework. Evolução do v1.', 'This site: a 3D starfield you travel through as you scroll, with no frameworks. The next step after v1.'), 'indent');
