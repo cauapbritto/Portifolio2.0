@@ -11,7 +11,7 @@ O site é uma viagem só, em tela cheia: um céu de estrelas em 3D fica atrás d
 | Abertura | Um contador curto liga o sistema; a tela se abre ao meio e as estrelas chegam como quem sai do hiperespaço. Quem volta em até 7 dias vê uma abertura mais curta, e qualquer clique ou tecla pula. |
 | 00 · Início | O nome Cauanzera e o nome real no meio do céu, com a borda de um planeta embaixo. Ao rolar, a câmera decola e o planeta fica para trás. |
 | 01 · Sobre | O texto fica preso na tela e acende palavra por palavra conforme a rolagem. |
-| 02 · Projetos | Em tela larga, a rolagem vertical atravessa uma trilha horizontal: Librahin, EcoPontos e este portfólio, cada um em poucas linhas. Setas, teclado (← →) e o trackpad também andam pela trilha. |
+| 02 · Projetos | Em tela larga, a rolagem vertical atravessa uma trilha horizontal: Librahin, EcoPontos, Golpe ou não? e este portfólio, cada um em poucas linhas. Setas, teclado (← →) e o trackpad também andam pela trilha. |
 | 03 · Contato | E-mail (link e botão que copia o endereço), currículo em PDF, GitHub, LinkedIn e o caminho de volta ao início. |
 
 Sempre na tela:
