@@ -49,7 +49,7 @@ Depois acesse http://localhost:8000 (ou http://localhost:8000/en.html para ver e
 | `universo` | O céu fixo: estrelas em 3D, rastros com a velocidade, constelação no cursor e hiperespaço. |
 | `abertura` | Contador e tela que se abre ao meio. |
 | `hud` | Marca, idioma, currículo, ajustes, terminal, trilho de capítulos, setor atual, tempo de viagem e hora. |
-| `cursor` | Anel que acompanha o mouse e diz o que um clique faz (o cursor do sistema continua visível). |
+| `cursor` | O ponteiro do site: uma seta em forma de dardo e, sobre o que é clicável, o mesmo dardo em laranja. |
 | `inicio`, `sobre`, `projetos`, `contato` | Os capítulos. |
 | `arco` | Menu em meio-arco. |
 | `terminal` | Terminal em janela, com comandos e segredos. |
@@ -62,6 +62,8 @@ node build.js
 ```
 
 Esse comando reescreve o `index.html`, que junta tudo num arquivo só, pronto para o GitHub Pages, e o `en.html`, a versão em inglês (a mesma página, com o `<head>` já em inglês).
+
+O ponteiro fica em `assets/cursor/` e é gerado, pixel a pixel, por `node ferramentas/ponteiro.js` (as cores estão no começo do arquivo).
 
 ## Idiomas
 
