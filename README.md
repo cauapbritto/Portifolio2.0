@@ -10,7 +10,7 @@ O site é uma viagem só, em tela cheia: um céu de estrelas em 3D fica atrás d
 | --- | --- |
 | Abertura | Um contador curto liga o sistema; a tela se abre ao meio e as estrelas chegam como quem sai do hiperespaço. Quem volta em até 7 dias vê uma abertura mais curta, e qualquer clique ou tecla pula. |
 | 00 · Início | O nome Cauanzera e o nome real no meio do céu, com a borda de um planeta embaixo. Ao rolar, a câmera decola e o planeta fica para trás. |
-| 01 · Sobre | O texto fica preso na tela e acende palavra por palavra conforme a rolagem. Ao lado, a foto do Cauã, recortada sem fundo, aparece junto com o texto, e no tema escuro a luz do céu acende a borda dela. |
+| 01 · Sobre | O texto fica preso na tela e acende palavra por palavra conforme a rolagem. Ao lado, a foto do Cauã num card, com o fundo, chega junto com o texto e acende a borda quando o mouse passa. |
 | 02 · Projetos | Em tela larga, a rolagem vertical atravessa uma trilha horizontal: Librahin, EcoPontos, Golpe ou não? e este portfólio, cada um em poucas linhas. Setas, teclado (← →) e o trackpad também andam pela trilha. |
 | 03 · Contato | E-mail com o rosto do Cauã ao lado (link e botão que copia o endereço), currículo em PDF, GitHub, LinkedIn e o caminho de volta ao início. |
 
@@ -65,7 +65,7 @@ Esse comando reescreve o `index.html`, que junta tudo num arquivo só, pronto pa
 
 O ponteiro fica em `assets/cursor/` e é gerado, pixel a pixel, por `node ferramentas/ponteiro.js` (as cores estão no começo do arquivo).
 
-A foto fica em `assets/foto/` e é gerada por `python3 ferramentas/foto.py <foto>` (precisa de `python3 -m pip install pillow numpy pillow-heif`). Ela aceita a foto do iPhone em HEIC, e tira o fundo pelo mapa de profundidade que vem junto, ou um recorte já sem fundo em PNG (no app Fotos: toque e segure em você e escolha Compartilhar). Os arquivos gerados saem sem nenhum metadado da foto original, nem a localização; por isso a foto original nunca vai para o repositório.
+A foto fica em `assets/foto/` e é gerada por `python3 ferramentas/foto.py <foto>` (precisa de `python3 -m pip install pillow numpy pillow-heif`). Ela aceita a foto do iPhone em HEIC: o card do Sobre usa a foto inteira, e o recorte sem fundo (para o rosto do e-mail e o comando `foto` do terminal) sai pelo mapa de profundidade que vem junto. Também aceita um recorte já sem fundo em PNG (no app Fotos: toque e segure em você e escolha Compartilhar), mas aí o card fica sem o fundo. Os arquivos gerados saem sem nenhum metadado da foto original, nem a localização; por isso a foto original nunca vai para o repositório.
 
 ## Idiomas
 
