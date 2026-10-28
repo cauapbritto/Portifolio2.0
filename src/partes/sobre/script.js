@@ -43,7 +43,10 @@
   }
   const miolo = root.querySelector('.sobre__miolo');
   // A cena prende o texto na tela: só vale se ele couber inteiro (com folga para o HUD).
-  const cabe = () => !miolo || miolo.offsetHeight + 200 <= innerHeight;
+  // A foto conta quando fica acima do texto (tela estreita); na tela larga ela fica ao lado, fora da conta.
+  const eu = root.querySelector('.sobre__eu');
+  const alturaFoto = () => (eu && getComputedStyle(eu).position !== 'absolute' ? eu.offsetHeight : 0);
+  const cabe = () => !miolo || miolo.offsetHeight + alturaFoto() + 200 <= innerHeight;
   function avaliar() {
     const quer = !CZ.reduzido() && mqAlta.matches && cabe();
     if (quer !== cena) {

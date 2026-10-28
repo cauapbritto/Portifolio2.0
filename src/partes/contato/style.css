@@ -141,7 +141,19 @@
   color: var(--text);
   overflow-wrap: break-word;
 }
-.email__linha { margin: 0; }
+.email__linha { display: flex; align-items: center; gap: clamp(10px, 1.4vw, 18px); margin: 0; }
+.email__linha > a { min-width: 0; }
+/* O rosto do Cauã, recortado sem fundo, num círculo do tamanho da letra do e-mail. */
+.email__rosto {
+  flex: none;
+  width: clamp(30px, 4.8vw, 58px);
+  height: auto;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--surface-2);
+  box-shadow: 0 0 0 1px var(--line-2);
+  object-fit: cover;
+}
 a.email__email {
   display: inline-block;
   color: var(--text);

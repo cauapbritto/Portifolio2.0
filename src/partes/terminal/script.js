@@ -347,6 +347,115 @@
     return wrap;
   }
 
+  /* ---------- foto: o Cauã desenhado com caracteres, a partir do recorte do capítulo Sobre ---------- */
+
+  const FOTO = 'assets/foto/eu-640.webp';
+  // Cabeça, pescoço e gola, em frações do recorte (que tem a pessoa centrada, da cabeça ao meio da coxa).
+  const ROSTO = { x: 0.18, y: 0.016, w: 0.64, h: 0.34 };
+  // Caracteres do vazio ao cheio.
+  const RAMPA = " .'`^,:;Il!i><~+_-?][}{1)(|/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$";
+  let fotoImg = null;
+  let fotoTimer = 0;
+  function carregarFoto() {
+    if (!fotoImg) {
+      fotoImg = new Image();
+      fotoImg.decoding = 'async';
+      fotoImg.src = FOTO;
+    }
+    if (fotoImg.complete && fotoImg.naturalWidth) return Promise.resolve(fotoImg);
+    return new Promise((ok, erro) => {
+      fotoImg.addEventListener('load', () => ok(fotoImg), { once: true });
+      fotoImg.addEventListener('error', erro, { once: true });
+    });
+  }
+  const claro = () => (html.dataset.theme ? html.dataset.theme === 'light' : mqLight.matches);
+  // Cada caractere vira um tom da pessoa (equalizado, para olhos, boca e cabelo se separarem).
+  // No tema escuro o claro da foto é caractere cheio; no claro, o contrário.
+  function retrato(img, cols, razao) {
+    const sx = img.naturalWidth * ROSTO.x;
+    const sy = img.naturalHeight * ROSTO.y;
+    const sw = img.naturalWidth * ROSTO.w;
+    const sh = img.naturalHeight * ROSTO.h;
+    const rows = Math.round(cols * (sh / sw) * razao);
+    const c = document.createElement('canvas');
+    c.width = cols;
+    c.height = rows;
+    const ctx = c.getContext('2d', { willReadFrequently: true });
+    ctx.drawImage(img, sx, sy, sw, sh, 0, 0, cols, rows);
+    const d = ctx.getImageData(0, 0, cols, rows).data;
+    const n = cols * rows;
+    const lum = new Float32Array(n);
+    const tons = [];
+    for (let i = 0; i < n; i++) {
+      const k = i * 4;
+      lum[i] = d[k + 3] < 115 ? -1 : (0.2126 * d[k] + 0.7152 * d[k + 1] + 0.0722 * d[k + 2]) / 255;
+      if (lum[i] >= 0) tons.push(lum[i]);
+    }
+    tons.sort((a, b) => a - b);
+    const posicao = (v) => {
+      let lo = 0;
+      let hi = tons.length;
+      while (lo < hi) { const m = (lo + hi) >> 1; if (tons[m] < v) lo = m + 1; else hi = m; }
+      return lo / Math.max(1, tons.length - 1);
+    };
+    const inverte = claro();
+    const topo = RAMPA.length - 1;
+    const linhas = [];
+    for (let y = 0; y < rows; y++) {
+      let l = '';
+      for (let x = 0; x < cols; x++) {
+        const v = lum[y * cols + x];
+        if (v < 0) { l += ' '; continue; }
+        // no escuro, os meios-tons sobem um pouco: o rosto não some entre o cabelo e a camisa
+        const t = inverte ? 1 - posicao(v) : Math.pow(posicao(v), 0.7);
+        l += RAMPA[Math.max(1, Math.min(topo, Math.round(t * topo)))];
+      }
+      linhas.push(l.replace(/\s+$/, ''));
+    }
+    return linhas;
+  }
+  function foto() {
+    clearTimeout(fotoTimer);
+    const arte = node('pre', 'term__arte');
+    arte.setAttribute('role', 'img');
+    arte.setAttribute('aria-label', CZ.t('Retrato do Cauã desenhado com caracteres', 'Portrait of Cauã drawn in characters'));
+    print(CZ.t('revelando...', 'developing...'), 'muted');
+    print(arte);
+    setBusy('foto', true);
+    const fim = (ok) => {
+      setBusy('foto', false);
+      if (ok) {
+        print(CZ.t('esse sou eu. a foto inteira está no capítulo sobre.', 'that’s me. the full photo is in the About chapter.'), 'muted gap');
+        print([botaoIr(CZ.t('ver a foto ↘', 'see the photo ↘'), 'sobre')]);
+      } else {
+        print(CZ.t('não deu para revelar a foto aqui.', 'couldn’t develop the photo here.'), 'muted');
+      }
+      scrollEnd();
+    };
+    carregarFoto().then((img) => {
+      // Largura do caractere / altura da linha (line-height 1), medida na própria fonte do terminal.
+      const sonda = node('span', '', 'M'.repeat(40));
+      sonda.style.cssText = 'position:absolute;visibility:hidden;white-space:pre;font-size:10px';
+      arte.appendChild(sonda);
+      const razao = sonda.getBoundingClientRect().width / 400 || 0.6;
+      sonda.remove();
+      const largura = arte.clientWidth || out.clientWidth;
+      const cols = largura < 360 ? 52 : 68;
+      arte.style.fontSize = `${Math.min(8, Math.max(3, largura / (cols * razao))).toFixed(2)}px`;
+      const linhas = retrato(img, cols, razao);
+      if (reduced()) { arte.textContent = linhas.join('\n'); fim(true); return; }
+      let n = 0;
+      const passo = () => {
+        n += 2;
+        arte.textContent = linhas.slice(0, n).join('\n');
+        scrollEnd();
+        if (n < linhas.length) fotoTimer = setTimeout(passo, 26);
+        else fim(true);
+      };
+      passo();
+    }).catch(() => { arte.remove(); fim(false); });
+  }
+
   /* ---------- comandos ---------- */
 
   const SECOES = { inicio: 'inicio', home: 'inicio', topo: 'inicio', top: 'inicio', '~': 'inicio', '..': 'inicio', sobre: 'sobre', about: 'sobre', projetos: 'projetos', projects: 'projetos', contato: 'contato', contact: 'contato' };
@@ -373,6 +482,7 @@
     { name: 'scan', aliases: ['scanner'], run: scan },
     { name: 'warp', aliases: ['hiperespaco', 'hyperspace', 'decolar'], run: warp },
     { name: 'cauanzera', aliases: ['caua'], run: cauanzera },
+    { name: 'foto', aliases: ['photo', 'eu', 'me', 'selfie', 'retrato'], run: foto },
     { name: 'rose', aliases: ['rosa'], hidden: true, run: rose },
   ];
   const ALL = COMMANDS.concat(SECRETS);
@@ -390,7 +500,7 @@
   function help() {
     print(CZ.t('comandos', 'commands'), 'strong');
     COMMANDS.forEach((c) => row(nomeDe(c), CZ.t(c.desc[0], c.desc[1]), 'indent'));
-    print([CZ.t('segredos: ', 'secrets: '), node('span', 'term__k', 'matrix'), ', ', node('span', 'term__k', 'scan'), ', ', node('span', 'term__k', 'warp'), ', ', node('span', 'term__k', 'cauanzera')], 'muted gap');
+    print([CZ.t('segredos: ', 'secrets: '), node('span', 'term__k', 'matrix'), ', ', node('span', 'term__k', 'scan'), ', ', node('span', 'term__k', 'warp'), ', ', node('span', 'term__k', 'cauanzera'), ', ', node('span', 'term__k', CZ.t('foto', 'photo'))], 'muted gap');
   }
   const NOVA_ABA = () => CZ.t(' (abre em nova aba)', ' (opens in a new tab)');
   const CODIGO = () => CZ.t('código ↗', 'code ↗');
@@ -529,6 +639,8 @@
   }
   function limpar() {
     stopRain(true);
+    clearTimeout(fotoTimer);
+    setBusy('foto', false);
     cancelScan();
     // Só some o que já estava na tela: um comando digitado logo em seguida não é apagado junto.
     const old = Array.from(out.children);

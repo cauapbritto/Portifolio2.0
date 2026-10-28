@@ -10,16 +10,16 @@ O site é uma viagem só, em tela cheia: um céu de estrelas em 3D fica atrás d
 | --- | --- |
 | Abertura | Um contador curto liga o sistema; a tela se abre ao meio e as estrelas chegam como quem sai do hiperespaço. Quem volta em até 7 dias vê uma abertura mais curta, e qualquer clique ou tecla pula. |
 | 00 · Início | O nome Cauanzera e o nome real no meio do céu, com a borda de um planeta embaixo. Ao rolar, a câmera decola e o planeta fica para trás. |
-| 01 · Sobre | O texto fica preso na tela e acende palavra por palavra conforme a rolagem. |
+| 01 · Sobre | O texto fica preso na tela e acende palavra por palavra conforme a rolagem. Ao lado, a foto do Cauã, recortada sem fundo, aparece junto com o texto, e no tema escuro a luz do céu acende a borda dela. |
 | 02 · Projetos | Em tela larga, a rolagem vertical atravessa uma trilha horizontal: Librahin, EcoPontos, Golpe ou não? e este portfólio, cada um em poucas linhas. Setas, teclado (← →) e o trackpad também andam pela trilha. |
-| 03 · Contato | E-mail (link e botão que copia o endereço), currículo em PDF, GitHub, LinkedIn e o caminho de volta ao início. |
+| 03 · Contato | E-mail com o rosto do Cauã ao lado (link e botão que copia o endereço), currículo em PDF, GitHub, LinkedIn e o caminho de volta ao início. |
 
 Sempre na tela:
 
 - **Topo**: `EN`/`PT` troca o idioma, Currículo baixa o PDF, Ajustes escolhe a fonte e o movimento, e Terminal abre o terminal.
 - **Menu em meio-arco** (embaixo, no centro): Sobre, Projetos, Contato, Som e Tema.
 - **Trilho de capítulos** (à direita): mostra onde você está e leva a qualquer capítulo; o nome aparece ao passar o mouse ou no foco.
-- **Terminal** (botão no topo ou tecla `/`): `help`, `sobre`, `projetos`, `contato`, `cv`, `ir <capítulo>`, `tema`, `som`, `fonte`, `movimento`, `idioma`, `atalhos`, `limpar` e `sair`, e os segredos `matrix`, `scan`, `warp` e `cauanzera`. Em inglês os mesmos comandos aparecem como `about`, `projects`, `go`, `lang` etc.; os dois nomes sempre funcionam.
+- **Terminal** (botão no topo ou tecla `/`): `help`, `sobre`, `projetos`, `contato`, `cv`, `ir <capítulo>`, `tema`, `som`, `fonte`, `movimento`, `idioma`, `atalhos`, `limpar` e `sair`, e os segredos `matrix`, `scan`, `warp`, `cauanzera` e `foto` (o Cauã desenhado com caracteres). Em inglês os mesmos comandos aparecem como `about`, `projects`, `go`, `lang` etc.; os dois nomes sempre funcionam.
 - **Som** (desligado no começo): um ambiente grave gerado na hora com Web Audio, um vento que cresce com a velocidade da rolagem e cliques curtos na interface.
 - **Atalhos**: `/` abre o terminal (`atalhos off` no terminal desliga), `Alt+0` a `Alt+3` levam aos capítulos, `Esc` fecha o terminal e o menu.
 
@@ -64,6 +64,8 @@ node build.js
 Esse comando reescreve o `index.html`, que junta tudo num arquivo só, pronto para o GitHub Pages, e o `en.html`, a versão em inglês (a mesma página, com o `<head>` já em inglês).
 
 O ponteiro fica em `assets/cursor/` e é gerado, pixel a pixel, por `node ferramentas/ponteiro.js` (as cores estão no começo do arquivo).
+
+A foto fica em `assets/foto/` e é gerada por `python3 ferramentas/foto.py <foto>` (precisa de `python3 -m pip install pillow numpy pillow-heif`). Ela aceita a foto do iPhone em HEIC, e tira o fundo pelo mapa de profundidade que vem junto, ou um recorte já sem fundo em PNG (no app Fotos: toque e segure em você e escolha Compartilhar). Os arquivos gerados saem sem nenhum metadado da foto original, nem a localização; por isso a foto original nunca vai para o repositório.
 
 ## Idiomas
 
