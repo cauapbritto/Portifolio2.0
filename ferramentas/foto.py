@@ -4,10 +4,10 @@
 # Precisa de: python3 -m pip install pillow numpy pillow-heif
 #
 # Saída (WebP, sem nenhum metadado da foto original: nada de EXIF nem localização):
-#   eu.webp      960 px de largura, para telas grandes e retina
-#   eu-640.webp  640 px, para o celular; o terminal também desenha o comando foto a partir dela
-#   eu-luz.webp  só a luz nas bordas (laranja no lado direito, azul fraco no esquerdo), por cima da foto no tema escuro
-#   rosto.webp   o rosto, quadrado e sem fundo, para o ícone ao lado do e-mail
+#   retrato.webp      960 x 1200, a foto com o fundo, da cintura para cima, para o card do capítulo Sobre
+#   retrato-640.webp  640 x 800, a mesma para o celular
+#   eu-640.webp       o recorte sem fundo; o terminal desenha o comando foto a partir dele
+#   rosto.webp        o rosto, quadrado e sem fundo, para o ícone ao lado do e-mail
 import io
 import os
 import sys
@@ -18,8 +18,6 @@ from PIL import Image, ImageCms, ImageFilter
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SAIDA = os.path.join(RAIZ, 'assets', 'foto')
 PROPORCAO = 0.65   # largura / altura do recorte final (da cabeça até o meio da coxa)
-LARANJA = np.array([255, 122, 69], np.float32)   # --accent / --glow
-AZUL = np.array([120, 150, 255], np.float32)     # --cool
 
 
 def caixa(a, r):
@@ -112,24 +110,19 @@ def enquadrar(alfa):
     return esq, topo, esq + larg, min(h, topo + alt)
 
 
-def luz_das_bordas(alfa):
-    """Uma faixa fina por dentro do contorno: laranja no lado direito, azul fraco no esquerdo."""
-    a = Image.fromarray((alfa * 255).astype(np.uint8))
-    raio = max(3, round(a.width / 160))
-    erodida = np.asarray(a.filter(ImageFilter.MinFilter(raio * 2 + 1)), np.float32) / 255
-    faixa = np.clip(alfa - erodida, 0, 1)
-    faixa = np.asarray(Image.fromarray((faixa * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(raio * 0.8)), np.float32) / 255
-    faixa = np.minimum(faixa * 1.6, 1) * alfa
+def retrato(foto, alfa):
+    """Card do Sobre: a foto inteira, com o fundo, em 4:5, da cabeça até um pouco abaixo da cintura."""
+    ys, xs = np.nonzero(alfa > 0.5)
     h, w = alfa.shape
-    x = np.linspace(0, 1, w)[None, :]
-    y = np.linspace(0, 1, h)[:, None]
-    # só nas laterais: no alto a luz pintaria o cabelo
-    quente = np.clip(x * 2.2 - 1.15, 0, 1) * np.clip(y * 3 - 0.45, 0, 1) * 0.75
-    fria = np.clip(0.8 - x * 2, 0, 1) * np.clip(y * 2 - 0.4, 0, 1) * 0.45
-    cor = (LARANJA * quente[..., None] + AZUL * fria[..., None]) / np.maximum(quente + fria, 1e-3)[..., None]
-    forca = np.clip(quente + fria, 0, 1) * faixa
-    rgba = np.dstack([cor, forca * 255]).astype(np.uint8)
-    return Image.fromarray(rgba, 'RGBA')
+    y0 = ys.min()
+    alt = min(h - max(0, y0 - 1), int((ys.max() - y0) * 0.74))
+    topo = max(0, y0 - int(alt * 0.07))
+    alt = min(h - topo, alt)
+    larg = min(w, int(alt * 0.8))
+    alt = int(larg / 0.8)
+    cx = int(np.median(xs[ys < y0 + alt * 0.5]))
+    esq = max(0, min(w - larg, cx - larg // 2))
+    return foto.crop((esq, topo, esq + larg, topo + alt))
 
 
 def main():
@@ -149,11 +142,12 @@ def main():
     eu = Image.fromarray(np.clip(cor, 0, 255).astype(np.uint8)).crop(caixa_)
     eu.putalpha(Image.fromarray((alfa * 255).astype(np.uint8)).crop(caixa_))
     os.makedirs(SAIDA, exist_ok=True)
-    for largura, nome in ((960, 'eu.webp'), (640, 'eu-640.webp')):
-        tam = (largura, round(largura / PROPORCAO))
-        eu.resize(tam, Image.LANCZOS).save(os.path.join(SAIDA, nome), quality=80, method=6)
+    # O card leva as cores como saíram da câmera, com o fundo.
+    card = retrato(foto, alfa)
+    for largura, nome in ((960, 'retrato.webp'), (640, 'retrato-640.webp')):
+        card.resize((largura, largura * 5 // 4), Image.LANCZOS).save(os.path.join(SAIDA, nome), quality=80, method=6)
     pequena = eu.resize((640, round(640 / PROPORCAO)), Image.LANCZOS)
-    luz_das_bordas(np.asarray(pequena.getchannel('A'), np.float32) / 255).save(os.path.join(SAIDA, 'eu-luz.webp'), quality=82, method=6)
+    pequena.save(os.path.join(SAIDA, 'eu-640.webp'), quality=80, method=6)
     # Rosto: um quadrado no alto, centrado na cabeça (o meio do que é pessoa no primeiro sexto da altura).
     a_eu = np.asarray(pequena.getchannel('A'), np.float32) / 255
     topo = a_eu[: a_eu.shape[0] // 6]
@@ -161,7 +155,7 @@ def main():
     lado = int(pequena.width * 0.5)
     esq = max(0, min(pequena.width - lado, cx - lado // 2))
     pequena.crop((esq, 0, esq + lado, lado)).resize((192, 192), Image.LANCZOS).save(os.path.join(SAIDA, 'rosto.webp'), quality=82, method=6)
-    for nome in ('eu.webp', 'eu-640.webp', 'eu-luz.webp', 'rosto.webp'):
+    for nome in ('retrato.webp', 'retrato-640.webp', 'eu-640.webp', 'rosto.webp'):
         f = os.path.join(SAIDA, nome)
         print(f'{os.path.relpath(f, RAIZ)}: {os.path.getsize(f) // 1024} KB')
 

@@ -1130,43 +1130,55 @@ html:not(.js) .inicio__dica { display: none; }
   user-select: none;
 }
 
-/* Foto: o Cauã recortado, sem fundo, no céu. O corpo some num degradê para baixo, e no tema escuro a luz
-   do céu (laranja à direita, azul à esquerda) acende a borda dele. Na cena, ele chega junto com o texto:
-   aparece e sobe um pouco enquanto as palavras acendem, e a luz da borda vem depois. Só opacity e transform. */
-.sobre__eu {
+/* Foto: um card com a foto inteira, como os cards de projeto: borda fina, cantos levemente redondos e
+   uma luz laranja que segue o mouse. Na cena, o card chega junto com o texto: aparece e sobe um pouco
+   enquanto as palavras acendem, e a foto assenta dentro dele. Só opacity e transform animam. */
+.sobre__eu { width: min(100%, 300px); }
+.sobre__quadro {
   position: relative;
-  z-index: 0;
-  justify-self: start;
-  height: clamp(140px, 24svh, 230px);
-  aspect-ratio: 640 / 985;
-  pointer-events: none;
-  user-select: none;
-  -webkit-mask-image: linear-gradient(to bottom, #000 50%, rgba(0, 0, 0, .4) 72%, transparent 94%);
-  mask-image: linear-gradient(to bottom, #000 50%, rgba(0, 0, 0, .4) 72%, transparent 94%);
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  background: var(--surface);
 }
-.sobre__eu img { display: block; width: 100%; height: 100%; }
-.sobre__luz { position: absolute; inset: 0; }
-@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) .sobre__luz { display: none; } }
-:root[data-theme="light"] .sobre__luz { display: none; }
-/* Tela estreita: a foto fica acima do texto, as duas no meio da tela. */
-.sobre__palco { align-content: center; row-gap: 4px; }
+.sobre__foto { display: block; width: 100%; height: 100%; object-fit: cover; }
+.sobre__quadro::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(360px circle at var(--x, 50%) var(--y, 30%), rgba(var(--glow), .2), rgba(var(--glow), 0) 60%);
+  box-shadow: inset 0 0 0 1px rgba(var(--glow), .55);
+  opacity: 0;
+  transition: opacity 320ms var(--ease-out);
+  pointer-events: none;
+}
+.sobre__quadro.is-luz::after { opacity: 1; }
+.sobre__legenda {
+  margin-top: 12px;
+  font-family: var(--font-label);
+  font-size: 11px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+:root[data-font="titulos"] .sobre__legenda, :root[data-font="tudo"] .sobre__legenda { font-size: 12px; letter-spacing: .03em; }
 
-.sobre--cena .sobre__eu {
+.sobre--cena .sobre__eu[data-revelar] {
   opacity: clamp(.12, calc(var(--p, 1) * 2.6), 1);
   transform: translate3d(0, calc((1 - min(1, var(--p, 1) * 2.2)) * 4vh), 0);
   will-change: opacity, transform;
 }
-.sobre--cena .sobre__luz { opacity: clamp(0, calc(var(--p, 1) * 2.4 - .7), 1); }
-.sobre.is-aceso .sobre__eu, .sobre.is-aceso .sobre__luz { opacity: 1; transform: none; }
+.sobre--cena .sobre__foto { transform: scale(calc(1.08 - min(1, var(--p, 1) * 2.2) * .08)); }
+.sobre.is-aceso .sobre__eu[data-revelar], .sobre.is-aceso .sobre__foto { opacity: 1; transform: none; }
 
-/* Tela larga e deitada: a foto vai para a direita do texto, de pé no fundo da cena, alinhada à borda do conteúdo. */
-@media (min-width: 1100px) and (min-aspect-ratio: 5/4) {
-  .sobre__eu {
-    position: absolute;
-    right: calc(var(--gutter) + max(0px, (100% - 2 * var(--gutter) - 1276px) / 2) + 96px);
-    bottom: 0;
-    height: min(84%, 46vw, 780px);
-  }
+/* Tela média e larga: o card à esquerda, o texto à direita, como no mockup. O card nunca passa da altura
+   que deixa a cena caber na tela. */
+@media (min-width: 900px) {
+  .sobre__miolo { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); align-items: center; column-gap: clamp(40px, 5vw, 80px); }
+  .sobre__miolo > .capitulo { grid-column: 1 / -1; }
+  .sobre__eu { width: min(100%, 440px, calc((100svh - 400px) * .8)); min-width: 220px; }
 }
 
 /* Tela larga: o texto um pouco maior. */
@@ -1175,6 +1187,7 @@ html:not(.js) .inicio__dica { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .sobre__w { opacity: 1; transition: none; }
+  .sobre__quadro::after { transition: none; }
   .sobre__numero { transform: none; }
 }
 
@@ -1193,7 +1206,8 @@ html:not(.js) .inicio__dica { display: none; }
 
 .calmo .sobre__w { opacity: 1; transition: none; }
 .calmo .sobre__numero { transform: none; }
-.calmo .sobre__eu, .calmo .sobre__luz { opacity: 1; transform: none; }
+.calmo .sobre__eu[data-revelar], .calmo .sobre__foto { opacity: 1; transform: none; }
+.calmo .sobre__quadro::after { transition: none; }
 @media print { .sobre__eu { display: none; } }
 </style>
 <style>/* projetos */
@@ -2874,12 +2888,14 @@ html:not(.js) .arco { display: none; }
 <section class="sobre" id="sobre" data-capitulo="01" data-nome="Sobre" data-en-nome="About" aria-labelledby="sobre-t">
   <div class="sobre__palco">
     <span class="sobre__numero" aria-hidden="true">01</span>
-    <div class="sobre__eu">
-      <img class="sobre__foto" src="assets/foto/eu-640.webp" srcset="assets/foto/eu-640.webp 640w, assets/foto/eu.webp 960w" sizes="(min-width: 1100px) 32vw, 40vw" width="640" height="985" loading="lazy" decoding="async" alt="Cauã sorrindo, de camisa branca com as mangas dobradas e as mãos nos bolsos" data-en-alt="Cauã smiling, in a white shirt with rolled-up sleeves and his hands in his pockets">
-      <img class="sobre__luz" src="assets/foto/eu-luz.webp" width="640" height="985" loading="lazy" decoding="async" alt="">
-    </div>
     <div class="sobre__miolo">
       <h2 class="capitulo" id="sobre-t" data-foco data-en='<span class="capitulo__n">0<span class="um">1</span></span>About'><span class="capitulo__n">0<span class="um">1</span></span>Sobre</h2>
+      <figure class="sobre__eu" data-revelar>
+        <div class="sobre__quadro">
+          <img class="sobre__foto" src="assets/foto/retrato-640.webp" srcset="assets/foto/retrato-640.webp 640w, assets/foto/retrato.webp 960w" sizes="(min-width: 900px) 34vw, 300px" width="640" height="800" loading="lazy" decoding="async" alt="Cauã sorrindo, de camisa branca com as mangas dobradas e as mãos nos bolsos, num corredor claro com janelas redondas" data-en-alt="Cauã smiling, in a white shirt with rolled-up sleeves and his hands in his pockets, in a bright hallway with round windows">
+        </div>
+        <figcaption class="sobre__legenda">Cauã Pedrozo Brito</figcaption>
+      </figure>
       <p class="sobre__manifesto" data-revelar data-en='I’m Cauã. I work in IT in Cuiabá, study Systems Analysis and Development, and I enjoy turning code into <em>places to explore</em>: interfaces that respond to the people moving through them, fast, accessible and crafted with attention to detail.'>Sou o Cauã. Trabalho com TI em Cuiabá, estudo Análise e Desenvolvimento de Sistemas e gosto de transformar código em <em>lugares para explorar</em>: interfaces que respondem a quem passa por elas, rápidas, acessíveis e cuidadas nos detalhes.</p>
     </div>
   </div>
@@ -4452,11 +4468,8 @@ window.CZ = (() => {
     altura = Math.max(1, r.height - innerHeight);
   }
   const miolo = root.querySelector('.sobre__miolo');
-  // A cena prende o texto na tela: só vale se ele couber inteiro (com folga para o HUD).
-  // A foto conta quando fica acima do texto (tela estreita); na tela larga ela fica ao lado, fora da conta.
-  const eu = root.querySelector('.sobre__eu');
-  const alturaFoto = () => (eu && getComputedStyle(eu).position !== 'absolute' ? eu.offsetHeight : 0);
-  const cabe = () => !miolo || miolo.offsetHeight + alturaFoto() + 200 <= innerHeight;
+  // A cena prende o texto e a foto na tela: só vale se couberem inteiros (com folga para o HUD).
+  const cabe = () => !miolo || miolo.offsetHeight + 200 <= innerHeight;
   function avaliar() {
     const quer = !CZ.reduzido() && mqAlta.matches && cabe();
     if (quer !== cena) {
@@ -4485,6 +4498,25 @@ window.CZ = (() => {
     aceso = true;
     root.classList.add('is-aceso');
   });
+
+  // Luz que segue o mouse no card da foto (só com mouse; o CSS acende e apaga).
+  const quadro = root.querySelector('.sobre__quadro');
+  if (quadro) {
+    let rafLuz = 0, ex = 0, ey = 0;
+    const pintar = () => {
+      rafLuz = 0;
+      const r = quadro.getBoundingClientRect();
+      quadro.style.setProperty('--x', `${(ex - r.left).toFixed(1)}px`);
+      quadro.style.setProperty('--y', `${(ey - r.top).toFixed(1)}px`);
+    };
+    quadro.addEventListener('pointermove', (e) => {
+      if (e.pointerType !== 'mouse' || CZ.reduzido()) return;
+      ex = e.clientX; ey = e.clientY;
+      quadro.classList.add('is-luz');
+      if (!rafLuz) rafLuz = requestAnimationFrame(pintar);
+    });
+    quadro.addEventListener('pointerleave', () => quadro.classList.remove('is-luz'));
+  }
 
   CZ.on('rolagem', ({ y }) => atualizar(y));
   CZ.on('movimento', avaliar);

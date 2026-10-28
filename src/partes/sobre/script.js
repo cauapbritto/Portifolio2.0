@@ -42,11 +42,8 @@
     altura = Math.max(1, r.height - innerHeight);
   }
   const miolo = root.querySelector('.sobre__miolo');
-  // A cena prende o texto na tela: só vale se ele couber inteiro (com folga para o HUD).
-  // A foto conta quando fica acima do texto (tela estreita); na tela larga ela fica ao lado, fora da conta.
-  const eu = root.querySelector('.sobre__eu');
-  const alturaFoto = () => (eu && getComputedStyle(eu).position !== 'absolute' ? eu.offsetHeight : 0);
-  const cabe = () => !miolo || miolo.offsetHeight + alturaFoto() + 200 <= innerHeight;
+  // A cena prende o texto e a foto na tela: só vale se couberem inteiros (com folga para o HUD).
+  const cabe = () => !miolo || miolo.offsetHeight + 200 <= innerHeight;
   function avaliar() {
     const quer = !CZ.reduzido() && mqAlta.matches && cabe();
     if (quer !== cena) {
@@ -75,6 +72,25 @@
     aceso = true;
     root.classList.add('is-aceso');
   });
+
+  // Luz que segue o mouse no card da foto (só com mouse; o CSS acende e apaga).
+  const quadro = root.querySelector('.sobre__quadro');
+  if (quadro) {
+    let rafLuz = 0, ex = 0, ey = 0;
+    const pintar = () => {
+      rafLuz = 0;
+      const r = quadro.getBoundingClientRect();
+      quadro.style.setProperty('--x', `${(ex - r.left).toFixed(1)}px`);
+      quadro.style.setProperty('--y', `${(ey - r.top).toFixed(1)}px`);
+    };
+    quadro.addEventListener('pointermove', (e) => {
+      if (e.pointerType !== 'mouse' || CZ.reduzido()) return;
+      ex = e.clientX; ey = e.clientY;
+      quadro.classList.add('is-luz');
+      if (!rafLuz) rafLuz = requestAnimationFrame(pintar);
+    });
+    quadro.addEventListener('pointerleave', () => quadro.classList.remove('is-luz'));
+  }
 
   CZ.on('rolagem', ({ y }) => atualizar(y));
   CZ.on('movimento', avaliar);
