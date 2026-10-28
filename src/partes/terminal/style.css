@@ -173,6 +173,18 @@
 }
 .term__links { display: flex; flex-wrap: wrap; column-gap: 3ch; }
 
+/* foto: o retrato em caracteres. O tamanho da letra vem do script, para caber na largura da janela. */
+.term__arte {
+  margin: 6px 0 2px;
+  font-family: var(--font-code);
+  font-size: 6px;
+  line-height: 1;
+  letter-spacing: 0;
+  color: var(--text);
+  white-space: pre;
+  overflow: hidden;
+}
+
 /* Nome na fonte da marca, revelado letra a letra por uma máscara. */
 .term__name {
   display: inline-block;
